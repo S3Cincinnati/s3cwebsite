@@ -1,7 +1,121 @@
 <!DOCTYPE html>
-<html>
-    <body>
-        {% block content%}
-        {% endblock content%}
-    </body>
+<html lang="en" dir="ltr" style="height: 100%; margin: 0;">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="/static/home.css"> -->
+    <link rel="stylesheet" href="/static/stylesheets/base.css">
+
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+
+      <script type="text/javascript">
+          $(window).ready(function(){
+              $("#myModal").modal('show');
+          });
+      </script>
+    <title></title>
+  </head>
+  <body style="height: 100%; margin: 0;" class="lightergrey_background">
+    <!-- background-color: #ffffff;  -->
+    <div class="wrapper" style="min-height: 100%; margin-bottom: -50px;">
+
+      <!--Navbar -->
+      <!-- TODO put this in external file somehow -->
+      <!-- TODO make larger text the picture from the other site D3373E-->
+      <nav class="mb-1 navbar navbar-expand-lg navbar-dark lighten-1 yellow_background darkgrey_bottom_border">
+
+        <!--<a class="navbar-brand" >UC Runnig Club</a>-->
+        <a href="/home"><img src="/static/UCRunningClubLogo.png"> </a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-555"
+          aria-controls="navbarSupportedContent-555" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent-555">
+          <ul class="navbar-nav mr-auto">
+
+            {% if homeActive%} <li class="nav-item active">
+            {% else %} <li class="nav-item">
+            {% endif %}
+              <a class="nav-link  primary_text" href="/">Home
+                <span class="sr-only">(current)</span>
+              </a>
+            </li>
+
+
+            {% if newsActive%} <li class="nav-item active">
+            {% else %} <li class="nav-item">
+            {% endif %}
+              <a class="nav-link primary_text" href="/news">News</a>
+            </li>
+
+            {% if scheduleActive%} <li class="nav-item active">
+            {% else %} <li class="nav-item">
+            {% endif %}
+              <a class="nav-link" href="/schedule">Schedule</a>
+            </li>
+
+            {% if recordsActive%}<li class="nav-item active">
+            {% else %}<li class="nav-item">
+            {% endif %}
+              <a class="nav-link" href="/records">Records</a>
+            </li>
+
+            {% if infoActive%} <li class="nav-item dropdown active">
+            {% else %} <li class="nav-item dropdown">
+            {%endif %}
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Info
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <a class="dropdown-item" href="/about">About</a>
+                <a class="dropdown-item" href="/routes">Routes</a>
+                <a class="dropdown-item" href="/FAQ">FAQs</a>
+                <a class="dropdown-item" href="/exec">Exec Board</a>
+              </div>
+            </li>
+          </ul>
+          <ul class="navbar-nav ml-auto nav-flex-icons">
+            <!--<li class="nav-item avatar">
+              <a class="nav-link p-0" href="#">
+                <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-5.jpg" class="rounded-circle z-depth-0"
+                  alt="avatar image" height="35">
+              </a>
+            </li>-->
+          </ul>
+        </div>
+      </nav>
+      <!--/.Navbar -->
+
+      {% block content%}
+      {% endblock content%}
+
+      <!-- Optional JavaScript -->
+      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+    <div class="push" style="height:50px;"></div>
+  </div>
+  <br><br>
+    <footer class="footer" style="background: #000000;height:75px; border-top: 5px solid #DD0000;">
+<br>
+      <div class="container">
+        <div class="row justify-content-center">
+
+          <!--<hr style="margin-top: 0.5em;margin-bottom: 0.5em; margin-left: auto;    margin-right: auto;    border-style: inset;    border-width: 1px;border-color:red; width: 100%">-->
+          <span class="text-muted"> Designed by Jake Carlson (2019) ||  JakeCarlson00@gmail.com</span>
+        </div>
+      </div>
+    </footer>
+
+  </body>
 </html>

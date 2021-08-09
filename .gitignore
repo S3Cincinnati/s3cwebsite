@@ -132,3 +132,7 @@ dmypy.json
 **.DS_Store
 *.DS_Store
 .DS_Store
+
+# SCSS mapping
+.sass-cache/
+*.css.map

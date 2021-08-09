@@ -1,0 +1,17 @@
+.yellow_background {
+  background-color: #ffcf66 !important; }
+
+.lightergrey_background {
+  background-color: #f4f4f4 !important; }
+
+.lightgrey_background {
+  background-color: #c4c4c4 !important; }
+
+.primary_text {
+  color: #353535 !important; }
+
+.darkgrey_bottom_border {
+  min-height: 90px;
+  border-bottom: 5px solid #595959; }
+
+/*# sourceMappingURL=base.css.map */

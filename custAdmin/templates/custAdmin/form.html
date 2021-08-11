@@ -228,11 +228,6 @@
 
             popped_nodes = pop_nodes_for_sponsor_image()
 
-            // day_count_event_count_str = 'day_'+day_count_val+'_event_'+event_count[day_count_val]
-            
-            // document.getElementById('frm').innerHTML+='<label for="description">Time:</label>';
-            // document.getElementById('frm').innerHTML+='<input id="sponsor_image_' + sponsor_image_count + '" name="sponsor_images" type="file" /><br>'
-            
             var image_input = document.createElement('input')
             image_input.id = 'event_image_' + sponsor_image_count
             image_input.name = 'sponsor_images'
@@ -294,7 +289,6 @@
             <label for="description">Schedule -- </label>
             <input id="day_btn" type="button" onClick="add_new_day_to_schedule(event); return false" value="Add Day to Schedule"><br>
     
-            <!-- <input id="image-file-1" name="image-file-1" type="file" /> -->
             <br><label for="description">Event Images -- </label>
             <input id="event_image_btn" type="button" onClick="add_event_image(); return false" value="Add Image to Event"><br>
             

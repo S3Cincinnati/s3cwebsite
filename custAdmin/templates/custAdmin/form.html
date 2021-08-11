@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script> 
+        var day_count=0;
+        var event_count=[];
+        function pop_nodes_after_day(day_count_val)
+        {
+            var nodes = document.getElementById('frm').children
+            var popped_nodes = []
+            
+            var found_index = 0
+
+            for (node in nodes){
+                console.log(node)
+                if (nodes[node].id === 'day_' + (day_count_val + 1)){
+                        found_index = parseInt(node) - 2
+                        break
+                }
+                if (nodes[node].id === 'submit'){
+                        found_index = parseInt(node)
+                        break
+                }
+            }
+
+            for (n in nodes){
+                if (n >= found_index){
+                    var node = nodes[n]
+                    popped_nodes.push(node)
+                }
+            }
+
+            for (p of popped_nodes){
+                    p.remove()
+            }
+
+            return popped_nodes
+        }
+
+        function add_new_day_to_schedule()
+        {
+            var submitBtn = document.getElementById('submit');
+            submitBtn.remove()
+            document.getElementById('frm').innerHTML+='<br/><label for="description">Date:</label>';
+            document.getElementById('frm').innerHTML+='<input type="text" id="day_'+day_count+'" placeholder="Day '+day_count+'"  /><br/>';
+            document.getElementById('frm').innerHTML+='<button onClick="add_event_to_day('+day_count+')"> Add Event to Day</button><br>'
+            document.getElementById('frm').appendChild(submitBtn);
+            // e.prventDefault();
+            event_count.push(0)
+            day_count++;
+        }
+
+        function add_event_to_day(day_count_val)
+        {
+            popped_nodes = pop_nodes_after_day(day_count_val)
+            console.log(popped_nodes)
+            // var submitBtn = document.getElementById('submit');
+            // submitBtn.remove()
+            
+            day_count_event_count_str = 'day_'+day_count_val+'_event_'+event_count[day_count_val]
+            
+            document.getElementById('frm').innerHTML+='<label for="description">Time:</label>';
+            document.getElementById('frm').innerHTML+='<input type="text" id="'+day_count_event_count_str + '_time" placeholder="'+day_count_event_count_str +'"  /><br/>';
+            document.getElementById('frm').innerHTML+='<label for="description">Description:</label>';
+            document.getElementById('frm').innerHTML+='<input type="text" id="'+day_count_event_count_str + '_description" placeholder="'+day_count_event_count_str+'"  /><br/>';
+            // document.getElementById('frm').appendChild(submitBtn);
+            for (pop of popped_nodes)
+            {
+                console.log(pop)
+                document.getElementById('frm').appendChild(pop);
+            }
+            // e.prventDefault();
+
+            // event_count[day_count_val] = event_count[day_count_val] + 1;
+            event_count[day_count_val]++;
+            console.log(event_count)
+        }
+    </script>
+</head>
+<body>
+    <form id="frm" method="post">
+        {% csrf_token%}
+            <!-- year = forms.CharField()
+        full_date = forms.DateField()
+        course_name = forms.CharField()
+        description = forms.CharField()
+        events = forms.CharField() -->
+        <!-- <label for="f_date">Full Date:</label><br>
+        {{ form.full_date }} <br><br>
+
+        {{ form.description }}
+        {% for f in form.events %}
+                {{f}}
+        {% endfor %} -->
+        <label for="description">Year:</label><br>
+        <input type="text" name="year" id="year"><br><br>
+        <label for="description">Description:</label><br>
+        <input type="text" name="description" id="description" value="John"><br><br>
+        <label for="description">Schedule:</label>
+        <button onClick="add_new_day_to_schedule()"> Add Day to Schedule</button><br>
+        <div id='schedule_div'>
+
+        </div>
+
+        <button id="submit" type="submit"> Submit</button>
+    </form>
+</body>
+</html>

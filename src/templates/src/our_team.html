@@ -1,0 +1,44 @@
+{% extends "src/base.html" %}
+
+{% block content %}
+<div class="container">
+
+    <div class="row">
+        <div class="col-9">
+            <h4>Who We Are</h4>
+            <p>S3C is an Ohio not-for-profit and 501 (c)(3) corporation founded by Darryn G.Chenault, Dana Parker, Gretchen Tash, Julian Deese, and Sherrie Chenault in honor of Sylvia Clark Chenault.  After Sylvia lost her battle with cancer, we were motivated to team together to build an organization, not only to support members of our community whose lives are touched by cancer, but motivate others to make a difference by supporting a cause in their community.</p>
+            <hr>
+
+            <h4>S3C Mission</h4>
+            <p>Our purpose at S3C is to give encouragement to individuals and families impacted by cancer & support organizations that work endless hours researching for a cure, providing excellent patient care, or enhancing the cancer community. </p>
+            <p>Each year we strive to raise awareness and funds for our partner organizations and families within the Cancer Community that need our support.</p>
+            <p>Together we "Pay It Forward" to all members in the Cancer Community!</p>
+            <hr>
+
+            <h4>S3C Team Work Philiosophy</h4>
+            <p>Our mission and strength comes through TEAMwork, making the potential of this foundation boundless.  Remember: We are not born winners or losers; we are born choosers!  Strength lies within the core of an individual and together our strength is untouchable.  We thank you for choosing to be a member of our TEAM!</p>
+
+        </div> 
+        <div class="col-3" style="border: 2px solid black;">
+            <p>Support Us!</p>
+
+            <p>S3C, Inc.<br>
+                9399 Dundee Drive<br>
+                West Chester, OH 45069<br>
+                s3cinc.shutterfly.com<br>
+                www.facebook.com/s3cohio
+            </p>
+
+            {% for p in people %}
+                <p>
+                    <b>{{p.name}}</b><br>
+                    <i>{{p.position}}</i><br>
+                    {{p.email}}<br>
+                    {{p.number}}
+                </p>
+            {% endfor %}
+
+        </div> 
+    </div> 
+</div>
+{% endblock content %}

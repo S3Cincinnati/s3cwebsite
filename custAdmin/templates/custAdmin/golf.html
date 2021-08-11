@@ -1,0 +1,37 @@
+{% extends "custAdmin/admin_base.html" %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col">year_key</th>
+                            <th scope="col">full_date</th>
+                            <th scope="col">golf_course</th>
+                            <th scope="col">edit</th>
+                            <th scope="col">delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for outing in golf_outing %}
+                        <tr>
+                            <td>{{outing.year_key}}</td>
+                            <td>{{outing.full_date}}</td>
+                            <td>{{outing.golf_course}}</td>
+                            <td><a href="/">Edit</a></td>
+                            <td><a href="/">Delete</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-6">
+            </div>
+        </div>
+    </div>
+    
+{% endblock content %}
+
+

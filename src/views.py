@@ -8,6 +8,32 @@ def home(request):
     context = {}
     return render(request, 'src/home.html',context)
 
+def our_team(request):
+
+    people = [
+        {
+            'name':'Darryn G. Chenault',
+            'position':'Event Coordinator – Golf Classic',
+            'email':'dchenault@finneytown.org',
+            'number':'513-233-1861'
+        },
+        {
+            'name':'Sherrie Chenault',
+            'position':'Volunteer Coordinator',
+            'email':'sherrie.chenault@fuse.net',
+            'number':'513-295-4241'
+        },
+        {
+            'name':'Julian Deese',
+            'position':'Event Site Manager',
+            'email':'juliandeese@gmail.com',
+            'number':'513-225-6068'
+        }
+    ]
+    context = {'people':people}
+    return render(request, 'src/our_team.html', context)
+
+
 def get_golf_outing(request, year):
 
     context = {}

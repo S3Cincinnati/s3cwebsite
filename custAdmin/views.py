@@ -1,22 +1,22 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .forms import GolfForm
+from django.contrib.staticfiles.storage import staticfiles_storage
+import csv
 
 # Create your views here.
 def home(request):
 
-    if request.method == 'POST':
-        form = GolfForm(request.POST)
-        if form.is_valid():
+    # context = {'form':form}
+    context = {}
+    return render(request, 'custAdmin/home.html', context)
 
-            name = form.cleaned_data['name']
-            description = form.cleaned_data['description']
+def golf_view(request):
 
-            print(name, description)
-    form = GolfForm()
-    context = {'form':form}
-    return render(request, 'custAdmin/form.html', context)
+    # context = {'form':form}
+    context = {'golf_outing':process_data_by_event_date_code()}
 
+    return render(request, 'custAdmin/golf.html', context)
 
 def new_golf_classic_request(request):
 
@@ -32,3 +32,17 @@ def new_golf_classic_request(request):
     # form = GolfForm()
     context = {}
     return render(request, 'custAdmin/form.html', context)
+
+
+def process_data_by_event_date_code():
+    golf_main_context = []
+    url_main = staticfiles_storage.path('golf_data/golf.csv')
+    url_event_schedule = staticfiles_storage.path('golf_data/event_schedule.csv')
+
+    with open(url_main, newline='') as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
+        for row in spamreader:
+            d_row = dict(row)
+            golf_main_context += [d_row]
+    return golf_main_context
+    

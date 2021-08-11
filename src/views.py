@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+import csv
+from django.contrib.staticfiles.storage import staticfiles_storage
 
 # Create your views here.
 def home(request):
@@ -8,50 +10,52 @@ def home(request):
 
 def get_golf_outing(request, year):
 
-    # TODO check year
+    context = {}
+    context.update(process_data_by_event_date_code(year))
+    
+    return render(request, 'src/golf_classic.html',context)
 
-    # TODO get sample data from csv
+def process_data_by_event_date_code(date_code):
+    golf_main_context = {}
+    url_main = staticfiles_storage.path('golf_data/golf.csv')
+    url_event_schedule = staticfiles_storage.path('golf_data/event_schedule.csv')
 
-    Description = "Join us for the 9th Annual S3C Golf Classic on Saturday, May 13, 2017 at Glenview Golf Course.\nS3C Golf Classic offers an all-inclusive golf experience for all ages and golf skill levels. Golfers will receive 18 holes of golf, lunch, dinner, beer, soft drinks, gifts, and games of chance for a $100 donation to the Cancer Community!  Golf is played in a scramble format.\nS3C will use participants' tax-deductible donations to help families impacted by cancer afford everyday living needs, support local cancer organizations, and partner with Cincinnati Children's to create smiles throughout the Oncology Unit.\n We also welcome you to join us to help us kick-off our weekend!  On Friday, May 12, 2017 we are partnering with Cincinnati Firefighters Local 48 and Cincinnati African-American Fire Fighters to host a charity cookout at Century Inn Restaurant and Tavern from 6:00 – 10:00 pm.  All proceeds benefit the Firefighters Cancer Fund.  No registration is required to participate - $10.00 entry at the door."
-    schedule = [
-        {
-            'date': 'Friday, May 12, 2017',
-            'location':'Century Inn Restaurant & Tavern',
-            'events':[
-                {
-                    'time':'6:00 - 10:00 pm',
-                    'description':'Beer, Cornhole, Volleyball, Music, Raffles' 
-                }
-            ]
-        },
-        {
-            'date': 'Saturday, May 13, 2017',
-            'location':'Glenview Golf Course',
-            'events':[
-                {
-                    'time':'11:30 am',
-                    'description':'Registration and Range Opens' 
-                },
-                {
-                    'time':'12:15 pm',
-                    'description':'Food and Beer Served' 
-                },
-                {
-                    'time':'1:30 pm',
-                    'description':'Shotgun Start' 
-                },
-                {
-                    'time':'6:30 pm',
-                    'description':'Dinner and Awards' 
-                }
-            ]
-        }
-    ]
-    context = {
-        'year':year,
-        'course':'Glenview Golf Course',
-        'date_str':'Saturday, May 7th, 2016',
-        'descr': Description.split('\n'),
+    with open(url_main, newline='') as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
+        for row in spamreader:
+            d_row = dict(row)
+            if date_code in d_row['year_key']:
+               golf_main_context = d_row
+    
+    events = []
+    with open(url_event_schedule, newline='') as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
+        for row in spamreader:
+            d_row = dict(row)
+            if date_code in d_row['key']:
+               events += [d_row]
+
+    schedule = {}
+    for e in events:
+        key = e['full_date'] + '_' + e['location']
+        if key not in schedule.keys():
+            schedule.update({key:{
+                'date':e['full_date'],
+                'location':e['location'],
+                'events':[]
+            }})
+
+        schedule[key]['events'] += [{
+            'time':e['time'],
+            'description':e['description'],
+        }]
+
+    schedule = [schedule[x] for x in schedule.keys()]
+
+    return {
+        'year':date_code[0:4],
+        'course':golf_main_context['golf_course'],
+        'date_str':golf_main_context['full_date'],
+        'descr': golf_main_context['description'].split(';'),
         'schedule':schedule
         }
-    return render(request, 'src/golf_classic.html',context)

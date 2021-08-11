@@ -21,13 +21,12 @@ def home(request):
 def new_golf_classic_request(request):
 
     if request.method == 'POST':
-        # form = GolfForm(request.POST)
-        # if form.is_valid():
+        
+        form_results = dict(request.POST)
+        form_results.pop('csrfmiddlewaretoken')
+    
 
-            # name = form.cleaned_data['name']
-        description = request.POST['description']
-
-        print(dict(request.POST))#, description)
+        print(form_results)
 
 
     # form = GolfForm()

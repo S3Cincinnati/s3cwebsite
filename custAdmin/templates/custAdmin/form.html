@@ -8,6 +8,10 @@
     <script> 
         var day_count=0;
         var event_count=[];
+
+        var event_image_count = 0;
+        var sponsor_image_count = 0;
+
         function pop_nodes_after_day(day_count_val)
         {
             var nodes = document.getElementById('frm').children
@@ -16,7 +20,9 @@
             var found_index = 0
 
             for (node in nodes){
-                if (nodes[node].id === 'day_' + (day_count_val + 1)){
+                if (nodes[node].id === 'day_' + (day_count_val + 1)
+                    || nodes[node].id === 'sponsor_image_btn'
+                    || nodes[node].id === 'event_image_btn'){
                         found_index = parseInt(node) - 2
                         break
                 }
@@ -40,6 +46,66 @@
             return popped_nodes
         }
 
+        function pop_nodes_for_event_image()
+        {
+            var nodes = document.getElementById('frm').children
+            var popped_nodes = []
+            
+            var found_index = 0
+
+            for (node in nodes){
+                if (nodes[node].id === 'sponsor_image_btn'){
+                        found_index = parseInt(node) - 2
+                        break
+                }
+                if (nodes[node].id === 'submit'){
+                        found_index = parseInt(node)
+                        break
+                }
+            }
+
+            for (n in nodes){
+                if (n >= found_index){
+                    var node = nodes[n]
+                    popped_nodes.push(node)
+                }
+            }
+
+            for (p of popped_nodes){
+                    p.remove()
+            }
+
+            return popped_nodes
+        }
+
+        function pop_nodes_for_sponsor_image()
+        {
+            var nodes = document.getElementById('frm').children
+            var popped_nodes = []
+            
+            var found_index = 0
+
+            for (node in nodes){
+                if (nodes[node].id === 'submit'){
+                        found_index = parseInt(node) - 1
+                        break
+                }
+            }
+
+            for (n in nodes){
+                if (n >= found_index){
+                    var node = nodes[n]
+                    popped_nodes.push(node)
+                }
+            }
+
+            for (p of popped_nodes){
+                    p.remove()
+            }
+
+            return popped_nodes
+        }
+        
         // https://stackoverflow.com/questions/17087636/how-to-save-data-from-a-form-with-html5-local-storage
 
         function store_vals()
@@ -55,7 +121,11 @@
             
             for (id of ids)
             {
-                localStorage.setItem(id.id, id.value);
+                if (id.id.includes('image') && !id.id.includes('btn')){
+                    
+                } else {
+                    localStorage.setItem(id.id, id.value);
+                }
             }
             
         }
@@ -73,29 +143,34 @@
             
             for (id of ids)
             {
-                id.value = localStorage.getItem(id.id);
+                if (!id.id.includes('image')){
+                    id.value = localStorage.getItem(id.id);
+                }
             }
         }
 
-        function add_new_day_to_schedule(ev)
+        function add_new_day_to_schedule()
         {
-            ev.preventDefault();
+            // ev.preventDefault();
 
             store_vals()
+            popped_nodes = pop_nodes_after_day(99)
 
-            var submitBtn = document.getElementById('submit');
-            submitBtn.remove()
             document.getElementById('frm').innerHTML+='<br/><label for="description">Date:</label>';
             document.getElementById('frm').innerHTML+='<input type="text" id="day_'+day_count+'" name="day_'+day_count+'" placeholder="Day '+day_count+'"  /><br/>';
             document.getElementById('frm').innerHTML+='<button onClick="add_event_to_day('+day_count+')"> Add Event to Day</button><br>'
-            document.getElementById('frm').appendChild(submitBtn);
 
             event_count.push(0)
             day_count++;
 
+            for (pop of popped_nodes)
+            {
+                document.getElementById('frm').appendChild(pop);
+            }
+            
             write_vals()
 
-            return false;
+            // return false;
         }
 
         function add_event_to_day(day_count_val)
@@ -122,14 +197,75 @@
             
         }
 
-        window.onload = (event) => {
-            console.log('HELLO')
-            localStorage.clear();
+        function add_event_image()
+        {
+            store_vals()
+
+            popped_nodes = pop_nodes_for_event_image()
+
+            var image_input = document.createElement('input')
+            image_input.id = 'event_image_' + event_image_count
+            image_input.name = 'event_images'
+            image_input.type = 'file'
+
+            document.getElementById('frm').appendChild(image_input)
+            document.getElementById('frm').appendChild(document.createElement('br'))
+            
+            for (pop of popped_nodes)
+            {
+                document.getElementById('frm').appendChild(pop);
+            }
+
+            event_image_count++;
+
+            write_vals()
+            
         }
+
+        function add_sponsor_image()
+        {
+            store_vals()
+
+            popped_nodes = pop_nodes_for_sponsor_image()
+
+            // day_count_event_count_str = 'day_'+day_count_val+'_event_'+event_count[day_count_val]
+            
+            // document.getElementById('frm').innerHTML+='<label for="description">Time:</label>';
+            // document.getElementById('frm').innerHTML+='<input id="sponsor_image_' + sponsor_image_count + '" name="sponsor_images" type="file" /><br>'
+            
+            var image_input = document.createElement('input')
+            image_input.id = 'event_image_' + sponsor_image_count
+            image_input.name = 'sponsor_images'
+            image_input.type = 'file'
+
+            document.getElementById('frm').appendChild(image_input)
+            document.getElementById('frm').appendChild(document.createElement('br'))
+
+            for (pop of popped_nodes)
+            {
+                document.getElementById('frm').appendChild(pop);
+            }
+
+            sponsor_image_count++;
+            write_vals()
+            
+        }
+
+        window.onload = (event) => {
+            localStorage.clear();
+            document.getElementById('day_btn').onclick = (event) => {
+                console.log('HELLO')
+                event.preventDefault();
+                add_new_day_to_schedule();
+                return false;
+            }
+        }
+
+        
     </script>
 </head>
 <body>
-    <form id="frm" method="post">
+    <form method="post">
         {% csrf_token%}
             <!-- year = forms.CharField()
         full_date = forms.DateField()
@@ -143,21 +279,32 @@
         {% for f in form.events %}
                 {{f}}
         {% endfor %} -->
-        <label for="description">Year:</label><br>
-        <input type="text" name="year" id="year"><br><br>
-
-        <label for="full_date">Full Date:</label><br>
-        <input type="text" name="full_date" id="full_date"><br><br>
-
-        <label for="golf_course">Golf Course:</label><br>
-        <input type="text" name="golf_course" id="golf_course"><br><br>
-
-        <label for="description">Description:</label><br>
-        <input type="text" name="description" id="description" value="John"><br><br>
-        <label for="description">Schedule:</label>
-        <input type="button" onClick="add_new_day_to_schedule(event); return false" value="Add Day to Schedule"><br>
-
-        <button id="submit" type="submit"> Submit</button>
+        <div id="frm">
+            <label for="description">Year:  </label>
+            <input type="text" name="year" id="year"><br>
+    
+            <label for="full_date">Full Date:  </label>
+            <input type="text" name="full_date" id="full_date"><br>
+    
+            <label for="golf_course">Golf Course:  </label>
+            <input type="text" name="golf_course" id="golf_course"><br>
+    
+            <label for="description">Description:</label><br>
+            <textarea type="text" name="description" id="description" value="John" rows="6" cols="50"></textarea><br><br>
+            <label for="description">Schedule -- </label>
+            <input id="day_btn" type="button" onClick="add_new_day_to_schedule(event); return false" value="Add Day to Schedule"><br>
+    
+            <!-- <input id="image-file-1" name="image-file-1" type="file" /> -->
+            <br><label for="description">Event Images -- </label>
+            <input id="event_image_btn" type="button" onClick="add_event_image(); return false" value="Add Image to Event"><br>
+            
+    
+            <br><label for="description">Sponsor Images -- </label>
+            <input id="sponsor_image_btn" type="button" onClick="add_sponsor_image(); return false" value="Add Sponsor Image to Event"><br><br>
+    
+            <button id="submit" type="submit"> Submit</button>
+        </div>
+        
     </form>
 </body>
 </html>

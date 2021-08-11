@@ -37,21 +37,21 @@
       <!--Navbar -->
       <!-- TODO put this in external file somehow -->
       <!-- TODO make larger text the picture from the other site D3373E-->
-      <nav class="mb-1 navbar navbar-expand-lg navbar-dark lighten-1 yellow_background darkgrey_bottom_border">
+      <nav class="mb-1 navbar navbar-expand-lg navbar-dark lighten-1 yellow_background darkgrey_bottom_border mx-auto" style="align-items: center;">
 
         <!--<a class="navbar-brand" >UC Runnig Club</a>-->
-        <a href="/home"><img src="/static/UCRunningClubLogo.png"> </a>
+        <!-- <a href="/home"><img src="/static/UCRunningClubLogo.png"> </a> -->
 
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-555"
+        <!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent-555"
           aria-controls="navbarSupportedContent-555" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
-        </button>
+        </button> -->
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent-555">
+        <div id="navbarSupportedContent-555" style="width: 100%;">
           <ul class="navbar-nav mr-auto">
 
-            {% if homeActive%} <li class="nav-item active">
-            {% else %} <li class="nav-item">
+            {% if homeActive%} <li class="nav-item active" style="margin: auto;">
+            {% else %} <li class="nav-item" style="margin: auto;">
             {% endif %}
               <a class="nav-link  primary_text" href="/">Home
                 <span class="sr-only">(current)</span>
@@ -59,29 +59,29 @@
             </li>
 
 
-            {% if newsActive%} <li class="nav-item active">
-            {% else %} <li class="nav-item">
+            {% if newsActive%} <li class="nav-item active" style="margin: auto;">
+            {% else %} <li class="nav-item" style="margin: auto;">
             {% endif %}
-              <a class="nav-link primary_text" href="/news">News</a>
+              <a class="nav-link primary_text" href="/news">Our Team</a>
             </li>
 
-            {% if scheduleActive%} <li class="nav-item active">
-            {% else %} <li class="nav-item">
-            {% endif %}
-              <a class="nav-link" href="/schedule">Schedule</a>
+            <li class="nav-item">
+                <a class="nav-link" href="/" style="padding: 0 !important;">
+                    <img src="/static/images/paying_it_forward.png" style="height: 80px">
+                </a>
             </li>
 
-            {% if recordsActive%}<li class="nav-item active">
-            {% else %}<li class="nav-item">
+            {% if scheduleActive%} <li class="nav-item active" style="margin: auto;"> 
+            {% else %} <li class="nav-item" style="margin: auto;">
             {% endif %}
-              <a class="nav-link" href="/records">Records</a>
+              <a class="nav-link primary_text" href="/golf-classic-2017">Golf Classic 2017</a>
             </li>
 
-            {% if infoActive%} <li class="nav-item dropdown active">
-            {% else %} <li class="nav-item dropdown">
+            {% if infoActive%} <li class="nav-item dropdown active" style="margin: auto;">
+            {% else %} <li class="nav-item dropdown" style="margin: auto;">
             {%endif %}
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Info
+              <a class="nav-link dropdown-toggle primary_text" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Events
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                 <a class="dropdown-item" href="/about">About</a>

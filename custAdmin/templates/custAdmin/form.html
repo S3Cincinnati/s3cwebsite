@@ -16,7 +16,6 @@
             var found_index = 0
 
             for (node in nodes){
-                console.log(node)
                 if (nodes[node].id === 'day_' + (day_count_val + 1)){
                         found_index = parseInt(node) - 2
                         break
@@ -41,43 +40,91 @@
             return popped_nodes
         }
 
-        function add_new_day_to_schedule()
+        // https://stackoverflow.com/questions/17087636/how-to-save-data-from-a-form-with-html5-local-storage
+
+        function store_vals()
         {
+            var nodes = document.getElementById('frm').children
+            var ids = []
+
+            for (node of nodes){
+                if (node.id.length > 0 ){
+                    ids.push(node)
+                }
+            }
+            
+            for (id of ids)
+            {
+                localStorage.setItem(id.id, id.value);
+            }
+            
+        }
+
+        function write_vals()
+        {
+            var nodes = document.getElementById('frm').children
+            var ids = []
+
+            for (node of nodes){
+                if (node.id.length > 0 ){
+                    ids.push(node)
+                }
+            }
+            
+            for (id of ids)
+            {
+                id.value = localStorage.getItem(id.id);
+            }
+        }
+
+        function add_new_day_to_schedule(ev)
+        {
+            ev.preventDefault();
+
+            store_vals()
+
             var submitBtn = document.getElementById('submit');
             submitBtn.remove()
             document.getElementById('frm').innerHTML+='<br/><label for="description">Date:</label>';
-            document.getElementById('frm').innerHTML+='<input type="text" id="day_'+day_count+'" placeholder="Day '+day_count+'"  /><br/>';
+            document.getElementById('frm').innerHTML+='<input type="text" id="day_'+day_count+'" name="day_'+day_count+'" placeholder="Day '+day_count+'"  /><br/>';
             document.getElementById('frm').innerHTML+='<button onClick="add_event_to_day('+day_count+')"> Add Event to Day</button><br>'
             document.getElementById('frm').appendChild(submitBtn);
-            // e.prventDefault();
+
             event_count.push(0)
             day_count++;
+
+            write_vals()
+
+            return false;
         }
 
         function add_event_to_day(day_count_val)
         {
+            store_vals()
+
             popped_nodes = pop_nodes_after_day(day_count_val)
-            console.log(popped_nodes)
-            // var submitBtn = document.getElementById('submit');
-            // submitBtn.remove()
-            
+
             day_count_event_count_str = 'day_'+day_count_val+'_event_'+event_count[day_count_val]
             
             document.getElementById('frm').innerHTML+='<label for="description">Time:</label>';
-            document.getElementById('frm').innerHTML+='<input type="text" id="'+day_count_event_count_str + '_time" placeholder="'+day_count_event_count_str +'"  /><br/>';
+            document.getElementById('frm').innerHTML+='<input type="text" id="'+day_count_event_count_str + '_time" name="'+day_count_event_count_str + '_time" placeholder="'+day_count_event_count_str +'"  /><br/>';
             document.getElementById('frm').innerHTML+='<label for="description">Description:</label>';
-            document.getElementById('frm').innerHTML+='<input type="text" id="'+day_count_event_count_str + '_description" placeholder="'+day_count_event_count_str+'"  /><br/>';
-            // document.getElementById('frm').appendChild(submitBtn);
+            document.getElementById('frm').innerHTML+='<input type="text" id="'+day_count_event_count_str + '_description" name="'+day_count_event_count_str + '_description" placeholder="'+day_count_event_count_str+'"  /><br/>';
+            
             for (pop of popped_nodes)
             {
-                console.log(pop)
                 document.getElementById('frm').appendChild(pop);
             }
-            // e.prventDefault();
-
-            // event_count[day_count_val] = event_count[day_count_val] + 1;
+            
             event_count[day_count_val]++;
-            console.log(event_count)
+
+            write_vals()
+            
+        }
+
+        window.onload = (event) => {
+            console.log('HELLO')
+            localStorage.clear();
         }
     </script>
 </head>
@@ -98,13 +145,17 @@
         {% endfor %} -->
         <label for="description">Year:</label><br>
         <input type="text" name="year" id="year"><br><br>
+
+        <label for="full_date">Full Date:</label><br>
+        <input type="text" name="full_date" id="full_date"><br><br>
+
+        <label for="golf_course">Golf Course:</label><br>
+        <input type="text" name="golf_course" id="golf_course"><br><br>
+
         <label for="description">Description:</label><br>
         <input type="text" name="description" id="description" value="John"><br><br>
         <label for="description">Schedule:</label>
-        <button onClick="add_new_day_to_schedule()"> Add Day to Schedule</button><br>
-        <div id='schedule_div'>
-
-        </div>
+        <input type="button" onClick="add_new_day_to_schedule(event); return false" value="Add Day to Schedule"><br>
 
         <button id="submit" type="submit"> Submit</button>
     </form>

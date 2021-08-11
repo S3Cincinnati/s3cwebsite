@@ -27,9 +27,9 @@ def new_golf_classic_request(request):
             # name = form.cleaned_data['name']
         description = request.POST['description']
 
-        print(description)#, description)
+        print(dict(request.POST))#, description)
 
 
-    form = GolfForm()
-    context = {'form':form}
+    # form = GolfForm()
+    context = {}
     return render(request, 'custAdmin/form.html', context)

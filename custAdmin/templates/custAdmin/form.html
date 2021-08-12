@@ -276,16 +276,16 @@
         {% endfor %} -->
         <div id="frm">
             <label for="description">Year:  </label>
-            <input type="text" name="year" id="year"><br>
+            <input type="text" name="year" id="year" value="{{data.year}}"><br>
     
             <label for="full_date">Full Date:  </label>
-            <input type="text" name="full_date" id="full_date"><br>
+            <input type="text" name="full_date" id="full_date" value="{{data.date_str}}"><br>
     
             <label for="golf_course">Golf Course:  </label>
-            <input type="text" name="golf_course" id="golf_course"><br>
+            <input type="text" name="golf_course" id="golf_course" value="{{data.course}}"><br>
     
             <label for="description">Description:</label><br>
-            <textarea type="text" name="description" id="description" value="John" rows="6" cols="50"></textarea><br><br>
+            <textarea type="text" name="description" id="description" value="John" rows="6" cols="50"> {{data.descr}} </textarea><br><br>
             <label for="description">Schedule -- </label>
             <input id="day_btn" type="button" onClick="add_new_day_to_schedule(event); return false" value="Add Day to Schedule"><br>
     

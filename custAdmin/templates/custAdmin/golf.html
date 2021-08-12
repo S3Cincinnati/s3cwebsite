@@ -3,13 +3,14 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-6">
+            <div class="col-8">
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th scope="col">year_key</th>
                             <th scope="col">full_date</th>
                             <th scope="col">golf_course</th>
+                            <th scope="col">download</th>
                             <th scope="col">edit</th>
                             <th scope="col">delete</th>
                         </tr>
@@ -20,14 +21,15 @@
                             <td>{{outing.year_key}}</td>
                             <td>{{outing.full_date}}</td>
                             <td>{{outing.golf_course}}</td>
-                            <td><a href="/">Edit</a></td>
+                            <td><a href="/admin/edit-golf-{{outing.year_key}}">Download</a></td>
+                            <td><a href="/admin/edit-golf-{{outing.year_key}}">Edit</a></td>
                             <td><a href="/">Delete</a></td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-            <div class="col-6">
+            <div class="col-4">
             </div>
         </div>
     </div>

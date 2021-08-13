@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 import csv
 from django.contrib.staticfiles.storage import staticfiles_storage
+from datetime import date
+import inflect
 
 # Create your views here.
 def home(request):
@@ -36,12 +38,14 @@ def our_team(request):
 
 def get_golf_outing(request, year):
 
+    print(year)
     context = {}
-    context.update(process_data_by_event_date_code(year))
+    context.update(get_data_by_event_date_code(year))
     
     return render(request, 'src/golf_classic.html',context)
 
-def process_data_by_event_date_code(date_code):
+def get_data_by_event_date_code(date_code):
+    
     golf_main_context = {}
     url_main = staticfiles_storage.path('golf_data/golf.csv')
     url_event_schedule = staticfiles_storage.path('golf_data/event_schedule.csv')
@@ -78,10 +82,23 @@ def process_data_by_event_date_code(date_code):
 
     schedule = [schedule[x] for x in schedule.keys()]
 
+    date_obj = date.fromisoformat(date_code)
+    p = inflect.engine()
+
     return {
-        'year':date_code[0:4],
+        'year': date_obj.year,
         'course':golf_main_context['golf_course'],
-        'date_str':golf_main_context['full_date'],
-        'descr': golf_main_context['description'].split(';'),
+        'date_str': get_week_day(date_obj.weekday()) + ', ' + get_month(date_obj.month) + ' ' + p.ordinal(date_obj.day) + ', ' + str(date_obj.year),
+        'descr': golf_main_context['description'].split('%&'),
         'schedule':schedule
         }
+
+def get_week_day(day_val):
+    mapp = {0:'Monday', 1:'Tuesday',2:'Wednesday',3:'Thursday',4:'Friday',5:'Saturday',6:'Sunday'}
+
+    return mapp[day_val]
+
+def get_month(month_val):
+    mapp = {1:'January',2:'February',3:'March',4:'April',5:'May',6:'June',7:'July',8:'August',9:'September',10:'October',11:'November',12:'December'}
+
+    return mapp[month_val]

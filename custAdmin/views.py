@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from .forms import GolfForm
 from django.contrib.staticfiles.storage import staticfiles_storage
 import csv
+from datetime import date
 
 # Create your views here.
 def home(request):
@@ -26,7 +27,9 @@ def new_golf_classic_request(request):
         form_results.pop('csrfmiddlewaretoken')
     
 
-        proccess_golf_data(form_results)
+        f_date = date.fromisoformat(form_results['full_date'][0])
+        print(f_date.day, f_date.month, f_date.year, f_date.weekday())
+        #proccess_golf_data(form_results)
 
 
     # form = GolfForm()
@@ -49,9 +52,6 @@ def edit_golf_classic_request(request, key):
     print(outing_data)
     context = {'data':outing_data}
     return render(request, 'custAdmin/form.html', context)
-
-
-
 
 
 
@@ -107,9 +107,8 @@ def get_data_by_event_date_code(date_code):
     schedule = [schedule[x] for x in schedule.keys()]
 
     return {
-        'year':date_code[0:4],
         'course':golf_main_context['golf_course'],
-        'date_str':golf_main_context['full_date'],
+        'date':golf_main_context['year_key'],
         'descr': golf_main_context['description'].split('%&'),
         'schedule':schedule
         }

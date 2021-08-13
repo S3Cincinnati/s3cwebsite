@@ -1,9 +1,20 @@
+from django.http.response import JsonResponse
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.views import View
 import csv
 from django.contrib.staticfiles.storage import staticfiles_storage
 from datetime import date
+
+from stripe.api_resources import checkout
 import inflect
+import json
+import os
+import stripe
+from django.shortcuts import redirect
+
+stripe.api_key = "sk_test_51JO5STDym2z9hVAOjSsmhioXViLv500Ri8Etu1kcc6roeY9OeA0Ot8B8zZ0obPaMAExSv30itNNd8YaTrA3Rdc5L00poUDRc9W"
+
 
 # Create your views here.
 def home(request):
@@ -46,11 +57,42 @@ def get_golf_outing(request, year):
 
 def get_golf_outing_involvment(request, year):
 
+    # if request.method == 'POST':
+        
+
     print(year)
     context = {}
     context.update(get_data_by_event_date_code(year))
+
+    
     
     return render(request, 'src/golf_classic_involvement.html',context)
+
+
+class createSessionCheckoutView(View):
+    def post(self, request, *args, **kwargs):
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=[
+              'card',
+            ],
+            line_items=[
+                {
+                    # TODO: replace this with the `price` of the product you want to sell
+                    'price': 'price_1JO6E6Dym2z9hVAOoheeE5fx',
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            # success_url=YOUR_DOMAIN + '/success.html',
+            # cancel_url=YOUR_DOMAIN + '/cancel.html',
+            success_url='http://localhost:8000/golf-classic-2017-05-13',
+            cancel_url='http://localhost:8000/',
+        )
+
+        # return JsonResponse({
+        #     'id':checkout_session.id
+        # })
+        return redirect(checkout_session.url, code=303)
 
 def get_data_by_event_date_code(date_code):
     

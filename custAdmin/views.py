@@ -5,6 +5,7 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 import csv
 from datetime import date
 
+
 # Create your views here.
 def home(request):
 

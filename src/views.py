@@ -44,6 +44,14 @@ def get_golf_outing(request, year):
     
     return render(request, 'src/golf_classic.html',context)
 
+def get_golf_outing_involvment(request, year):
+
+    print(year)
+    context = {}
+    context.update(get_data_by_event_date_code(year))
+    
+    return render(request, 'src/golf_classic_involvement.html',context)
+
 def get_data_by_event_date_code(date_code):
     
     golf_main_context = {}
@@ -90,7 +98,8 @@ def get_data_by_event_date_code(date_code):
         'course':golf_main_context['golf_course'],
         'date_str': get_week_day(date_obj.weekday()) + ', ' + get_month(date_obj.month) + ' ' + p.ordinal(date_obj.day) + ', ' + str(date_obj.year),
         'descr': golf_main_context['description'].split('%&'),
-        'schedule':schedule
+        'schedule':schedule,
+        'is_golf_registration':True
         }
 
 def get_week_day(day_val):

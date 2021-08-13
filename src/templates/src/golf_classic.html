@@ -12,8 +12,13 @@
     <div class="container">
 
         <h1 class="text-center">Welcome to the {{ year }} S3C Golf Classic!</h1>
-        <h4 class="text-center">{{date_str}} at {{course}}</h4>
-        <p> Sign Up! or Sponsor !</p>
+        <h5 class="text-center">{{date_str}} at {{course}}</h5>
+        {% if is_golf_registration %}
+            <h4 class="text-center">Sponsorship Opportunites and Golfer Registration Open Now</h4>
+        {% endif %}
+        <button class="text-center">
+            
+        </button>
         <div class="row">
             <div class="col-9">
                 <img src="/static/images/golf/{{year}}/header-img.jpg" style="width: 100%;">

@@ -73,17 +73,19 @@ def get_golf_outing_involvment(request, year):
     return render(request, 'src/golf_classic_involvement.html',context)
 
 
-class createSessionCheckoutView(View):
+class CreateSessionCheckoutView(View):
     def post(self, request, *args, **kwargs):
-        # print(args, kwargs)
+        
+
+        registration_type = request.GET.get('type', 'None')
+
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=[
               'card',
             ],
             line_items=[
                 {
-                    # TODO: replace this with the `price` of the product you want to sell
-                    'price': 'price_1JO6ffDym2z9hVAOVc18C5tx',
+                    'price': get_price(registration_type),
                     'quantity': 1,
                 },
             ],
@@ -99,24 +101,29 @@ class createSessionCheckoutView(View):
         form_results = dict(request.POST)
         form_results.pop('csrfmiddlewaretoken')
 
-        print(form_results)
-        temp = FoursomeRegistration()
-        temp.date_code = kwargs['year']
-        temp.payment_id = checkout_session.payment_intent
-        temp.contact_email = form_results['email']
-        temp.golf_1_fname = form_results['fname_1']
-        temp.golf_1_lname = form_results['lname_1']
-        temp.golf_2_fname = form_results['fname_2']
-        temp.golf_2_lname = form_results['lname_2']
-        temp.golf_3_fname = form_results['fname_3']
-        temp.golf_3_lname = form_results['lname_3']
-        temp.golf_4_fname = form_results['fname_4']
-        temp.golf_4_lname = form_results['lname_4']
-        temp.is_payed = False
+        # Checks wether or not registration is for golf (either single or foursome)
+        if registration_type == '1s' or registration_type == '4s':
+            temp = FoursomeRegistration()
+            temp.date_code = request.GET.get('date_code', 'None')
+            temp.payment_id = checkout_session.payment_intent
+            temp.contact_email = form_results['email']
+            temp.golf_1_fname = form_results['fname_1']
+            temp.golf_1_lname = form_results['lname_1']
+            temp.is_payed = False
 
-        temp.save()
+            if registration_type == '4s':
+                temp.golf_2_fname = form_results['fname_2']
+                temp.golf_2_lname = form_results['lname_2']
+                temp.golf_3_fname = form_results['fname_3']
+                temp.golf_3_lname = form_results['lname_3']
+                temp.golf_4_fname = form_results['fname_4']
+                temp.golf_4_lname = form_results['lname_4']
+
+            temp.save()
 
         return redirect(checkout_session.url, code=303)
+
+
 
 # stripe.api_key = "sk_test_51JO5STDym2z9hVAOjSsmhioXViLv500Ri8Etu1kcc6roeY9OeA0Ot8B8zZ0obPaMAExSv30itNNd8YaTrA3Rdc5L00poUDRc9W"
 
@@ -199,3 +206,12 @@ def get_month(month_val):
     mapp = {1:'January',2:'February',3:'March',4:'April',5:'May',6:'June',7:'July',8:'August',9:'September',10:'October',11:'November',12:'December'}
 
     return mapp[month_val]
+
+def get_price(type):
+    if type == '1s':
+        return 'price_1JO6mKDym2z9hVAODSFPgWcO'
+    if type == '4s':
+        return 'price_1JO6ffDym2z9hVAOVc18C5tx'
+    return ''
+
+# class C

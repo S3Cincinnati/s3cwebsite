@@ -15,13 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from src.views import createSessionCheckoutView, my_webhook_view
+from src.views import CreateSessionCheckoutView, my_webhook_view
 
 urlpatterns = [
     path('', include('src.urls')),
     path('admin/', include('custAdmin.urls')),
     path('developer-admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')), # new,
-    path('create-checkout-session-view-<year>', createSessionCheckoutView.as_view(), name='create-checkout-session-view'),
+    path('create-checkout-session-view', CreateSessionCheckoutView.as_view(), name='create-checkout-session-view'),
     path('webhook',my_webhook_view, name='webhook')
 ]

@@ -29,10 +29,22 @@
                         <h6>Single Golfer Registration.</h6>
                     </div>
                     <div class="col-6">
-                        <form id="payment-form" action="/create-checkout-session-view" method="POST">
-                            {% csrf_token%}
-                            <button type="submit">Checkout</button>
-                        </form>
+                        <div id="single_div" style="display:none">
+                            <form id="payment-form" action="/create-checkout-session-view?type=1s&date_code={{date_code}}" method="POST">
+                                {% csrf_token%}
+                                <label>Contact Email:</label>
+                                <input type="text" name="email" id="email" value="{{data.course}}"><br>
+                                <label>Golfer First Name:</label>
+                                <input type="text" name="fname_1" id="fname_1" value="{{data.course}}"><br>
+                                <label>Golfer Last Name:</label>
+                                <input type="text" name="lname_1" id="lname_1" value="{{data.course}}"><br>
+                                <button type="submit">Checkout</button>
+                                <button onclick="open_form('single_div_btn','single_div')" type="button">Close</button>
+                            </form>
+                        </div>
+                        <div id="single_div_btn">
+                            <button onclick="open_form('single_div', 'single_div_btn')">Register</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -45,7 +57,7 @@
                     </div>
                     <div class="col-6">
                         <div id="foursome_div" style="display:none">
-                            <form id="payment-form" action="/create-checkout-session-view-{{date_code}}" method="POST">
+                            <form id="payment-form" action="/create-checkout-session-view?type=4s&date_code={{date_code}}" method="POST">
                                 {% csrf_token%}
                                 <label>Contact Email:</label>
                                 <input type="text" name="email" id="email" value="{{data.course}}"><br>

@@ -5,6 +5,8 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 import csv
 from datetime import date
 
+from PIL import Image  
+import PIL  
 
 # Create your views here.
 def home(request):
@@ -30,7 +32,9 @@ def new_golf_classic_request(request):
 
         f_date = date.fromisoformat(form_results['full_date'][0])
         print(f_date.day, f_date.month, f_date.year, f_date.weekday())
-        #proccess_golf_data(form_results)
+        print(form_results)
+        # proccess_golf_data(form_results)
+        process_golf_images(form_results['full_date'][0], request.FILES)
 
 
     # form = GolfForm()
@@ -123,9 +127,6 @@ def proccess_golf_data(golf_dict):
         for row in golf_reader:
             d_row = dict(row)
             content += [d_row]
-    
-
-    print(content)
 
     content = {x['year_key']:x for x in content}
 
@@ -137,8 +138,6 @@ def proccess_golf_data(golf_dict):
         'description':golf_dict['description'][0].replace('\r\n','%&')
         }})
 
-    print(content)
-
     with open(url_main, 'w', newline='') as csvfile:
         fieldnames = ['year_key', 'full_date', 'golf_course', 'description']
 
@@ -146,3 +145,16 @@ def proccess_golf_data(golf_dict):
         writer.writeheader()
         
         writer.writerows([content[x] for x in content.keys()])
+
+def process_golf_images(date_key, image_list):
+    print(date_key)
+    f_date = date.fromisoformat(date_key)
+    url_main = staticfiles_storage.path('images/golf/' + str(f_date.year) + '/')
+    
+    for im in image_list:
+        if 'event' in im or 'sponsor' in im:
+            temp_url = url_main + '/' + image_list[im].name
+            picture = Image.open(image_list[im])  
+            picture.save(temp_url)
+
+    # TODO - save to csv -> date_key|category (event or sponsor)|file_location

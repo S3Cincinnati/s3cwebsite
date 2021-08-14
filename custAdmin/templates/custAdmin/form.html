@@ -210,7 +210,7 @@
 
         var image_input = document.createElement('input')
         image_input.id = 'event_image_' + event_image_count
-        image_input.name = 'event_images'
+        image_input.name = 'event_image_' + event_image_count
         image_input.type = 'file'
 
         document.getElementById('frm').appendChild(image_input)
@@ -263,7 +263,7 @@
 
     
 </script>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token%}
             <!-- year = forms.CharField()
         full_date = forms.DateField()

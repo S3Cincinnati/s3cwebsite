@@ -5,6 +5,7 @@ from django.views import View
 import csv
 from django.contrib.staticfiles.storage import staticfiles_storage
 from datetime import date
+import ast
 
 from stripe.api_resources import checkout
 import inflect
@@ -52,7 +53,6 @@ def our_team(request):
 
 def get_golf_outing(request, year):
 
-    print(year)
     context = {}
     context.update(get_data_by_event_date_code(year))
     
@@ -187,6 +187,8 @@ def get_data_by_event_date_code(date_code):
     date_obj = date.fromisoformat(date_code)
     p = inflect.engine()
 
+    print(golf_main_context['sponsor_images'])
+    # print()
     return {
         'date_code':date_code,
         'year': date_obj.year,
@@ -194,7 +196,8 @@ def get_data_by_event_date_code(date_code):
         'date_str': get_week_day(date_obj.weekday()) + ', ' + get_month(date_obj.month) + ' ' + p.ordinal(date_obj.day) + ', ' + str(date_obj.year),
         'descr': golf_main_context['description'].split('%&'),
         'schedule':schedule,
-        'is_golf_registration':True
+        'is_golf_registration':True,
+        'sponsor_images':ast.literal_eval(golf_main_context['sponsor_images'])
         }
 
 def get_week_day(day_val):

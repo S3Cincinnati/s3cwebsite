@@ -41,7 +41,9 @@
                 </div> 
             </div> 
             <div class="col-3" style="border: 2px solid black;">
-                shit
+                {% for im in sponsor_images %}
+                    <img src="{{im}}">
+                {% endfor %}
             </div> 
         </div> 
     </div> 

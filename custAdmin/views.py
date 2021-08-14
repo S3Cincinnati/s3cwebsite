@@ -33,7 +33,7 @@ def new_golf_classic_request(request):
         f_date = date.fromisoformat(form_results['full_date'][0])
         print(f_date.day, f_date.month, f_date.year, f_date.weekday())
         print(form_results)
-        # proccess_golf_data(form_results)
+        proccess_golf_data(form_results, request.FILES)
         process_golf_images(form_results['full_date'][0], request.FILES)
 
 
@@ -49,7 +49,8 @@ def edit_golf_classic_request(request, key):
         form_results.pop('csrfmiddlewaretoken')
     
 
-        proccess_golf_data(form_results)
+        proccess_golf_data(form_results, request.FILES)
+        process_golf_images(form_results['full_date'][0], request.FILES)
 
 
     outing_data = get_data_by_event_date_code(key)
@@ -118,9 +119,16 @@ def get_data_by_event_date_code(date_code):
         'schedule':schedule
         }
 
-def proccess_golf_data(golf_dict):
+def proccess_golf_data(golf_dict, files):
+
+    # print(golf_dict)
+
+    year_key = golf_dict['full_date'][0]
+    f_date = date.fromisoformat(year_key)
 
     url_main = staticfiles_storage.path('golf_data/golf.csv')
+    # image_url = staticfiles_storage.path('images/golf/' + str(f_date.year) + '/')
+
     content = []
     with open(url_main, newline='') as csvfile:
         golf_reader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
@@ -131,15 +139,27 @@ def proccess_golf_data(golf_dict):
     content = {x['year_key']:x for x in content}
 
     
-    content.update({'20180512':{
-        'year_key':'20180512', 
-        'full_date':golf_dict['full_date'][0],
+    event_images = []
+    sponsor_images = []
+
+    for im in files:
+        if 'event' in im:
+            event_images += ['/static/images/golf/' + str(f_date.year) + '/' + files[im].name]
+        elif 'sponsor' in im:
+            sponsor_images += ['/static/images/golf/' + str(f_date.year) + '/' + files[im].name]
+            # picture = Image.open(files[im])  
+            # picture.save(temp_url)
+
+    content.update({year_key:{
+        'year_key':year_key,
         'golf_course':golf_dict['golf_course'][0],
-        'description':golf_dict['description'][0].replace('\r\n','%&')
+        'description':golf_dict['description'][0].replace('\r\n','%&'),
+        'event_images':event_images,
+        'sponsor_images':sponsor_images
         }})
 
     with open(url_main, 'w', newline='') as csvfile:
-        fieldnames = ['year_key', 'full_date', 'golf_course', 'description']
+        fieldnames = ['year_key', 'golf_course', 'description', 'event_images','sponsor_images']
 
         writer = csv.DictWriter(csvfile, delimiter='|', fieldnames=fieldnames)
         writer.writeheader()

@@ -7,6 +7,7 @@ from datetime import date
 
 from PIL import Image  
 import PIL  
+import os
 
 # Create your views here.
 def home(request):
@@ -127,6 +128,7 @@ def proccess_golf_data(golf_dict, files):
     f_date = date.fromisoformat(year_key)
 
     url_main = staticfiles_storage.path('golf_data/golf.csv')
+    url_write_backup = os.path.dirname(__file__) + '/../media/golf_data/golf.csv'
     # image_url = staticfiles_storage.path('images/golf/' + str(f_date.year) + '/')
 
     content = []
@@ -158,23 +160,29 @@ def proccess_golf_data(golf_dict, files):
         'sponsor_images':sponsor_images
         }})
 
-    with open(url_main, 'w', newline='') as csvfile:
-        fieldnames = ['year_key', 'golf_course', 'description', 'event_images','sponsor_images']
+    for link in [url_main, url_write_backup]:
+        with open(link, 'w', newline='') as csvfile:
+            fieldnames = ['year_key', 'golf_course', 'description', 'event_images','sponsor_images']
 
-        writer = csv.DictWriter(csvfile, delimiter='|', fieldnames=fieldnames)
-        writer.writeheader()
-        
-        writer.writerows([content[x] for x in content.keys()])
+            writer = csv.DictWriter(csvfile, delimiter='|', fieldnames=fieldnames)
+            writer.writeheader()
+            
+            writer.writerows([content[x] for x in content.keys()])
 
 def process_golf_images(date_key, image_list):
     print(date_key)
     f_date = date.fromisoformat(date_key)
+
     url_main = staticfiles_storage.path('images/golf/' + str(f_date.year) + '/')
-    
-    for im in image_list:
-        if 'event' in im or 'sponsor' in im:
-            temp_url = url_main + '/' + image_list[im].name
-            picture = Image.open(image_list[im])  
-            picture.save(temp_url)
+    url_write_backup = os.path.dirname(__file__) + '/../media/images/golf/' + str(f_date.year) + '/'
+
+    for link in [url_main, url_write_backup]:
+        
+        
+        for im in image_list:
+            if 'event' in im or 'sponsor' in im:
+                temp_url = link + '/' + image_list[im].name
+                picture = Image.open(image_list[im])  
+                picture.save(temp_url)
 
     # TODO - save to csv -> date_key|category (event or sponsor)|file_location

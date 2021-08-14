@@ -13,6 +13,9 @@ import os
 import stripe
 from django.shortcuts import redirect
 
+from django.views.decorators.csrf import csrf_exempt
+from .models import FoursomeRegistration
+
 stripe.api_key = "sk_test_51JO5STDym2z9hVAOjSsmhioXViLv500Ri8Etu1kcc6roeY9OeA0Ot8B8zZ0obPaMAExSv30itNNd8YaTrA3Rdc5L00poUDRc9W"
 
 
@@ -61,6 +64,7 @@ def get_golf_outing_involvment(request, year):
         
 
     print(year)
+    print(FoursomeRegistration.objects.all())
     context = {}
     context.update(get_data_by_event_date_code(year))
 
@@ -71,6 +75,7 @@ def get_golf_outing_involvment(request, year):
 
 class createSessionCheckoutView(View):
     def post(self, request, *args, **kwargs):
+        # print(args, kwargs)
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=[
               'card',
@@ -78,7 +83,7 @@ class createSessionCheckoutView(View):
             line_items=[
                 {
                     # TODO: replace this with the `price` of the product you want to sell
-                    'price': 'price_1JO6E6Dym2z9hVAOoheeE5fx',
+                    'price': 'price_1JO6ffDym2z9hVAOVc18C5tx',
                     'quantity': 1,
                 },
             ],
@@ -88,11 +93,51 @@ class createSessionCheckoutView(View):
             success_url='http://localhost:8000/golf-classic-2017-05-13',
             cancel_url='http://localhost:8000/',
         )
+        
+        # write update to table for registration, use intent as id
+        
+        form_results = dict(request.POST)
+        form_results.pop('csrfmiddlewaretoken')
 
-        # return JsonResponse({
-        #     'id':checkout_session.id
-        # })
+        print(form_results)
+        temp = FoursomeRegistration()
+        temp.date_code = kwargs['year']
+        temp.payment_id = checkout_session.payment_intent
+        temp.contact_email = form_results['email']
+        temp.golf_1_fname = form_results['fname_1']
+        temp.golf_1_lname = form_results['lname_1']
+        temp.golf_2_fname = form_results['fname_2']
+        temp.golf_2_lname = form_results['lname_2']
+        temp.golf_3_fname = form_results['fname_3']
+        temp.golf_3_lname = form_results['lname_3']
+        temp.golf_4_fname = form_results['fname_4']
+        temp.golf_4_lname = form_results['lname_4']
+        temp.is_payed = False
+
+        temp.save()
+
         return redirect(checkout_session.url, code=303)
+
+# stripe.api_key = "sk_test_51JO5STDym2z9hVAOjSsmhioXViLv500Ri8Etu1kcc6roeY9OeA0Ot8B8zZ0obPaMAExSv30itNNd8YaTrA3Rdc5L00poUDRc9W"
+
+@csrf_exempt
+def my_webhook_view(request):
+    payload = request.body
+    # valid_json_string = "[" + payload + "]"  # or "[{0}]".format(your_string)
+    data = json.loads(payload)
+
+    print(data['type'])
+    if (data['type'] == "checkout.session.completed"):
+        # For now, you only need to print out the webhook payload so you can see
+        # the structure.
+        
+        # update table to , use intent as id
+        registration = FoursomeRegistration.objects.get(payment_id=data['data']['object']['payment_intent'])
+        registration.is_payed = True
+        registration.save()
+        print('Intent hook: ' + data['data']['object']['payment_intent'])
+
+    return HttpResponse(status=200)
 
 def get_data_by_event_date_code(date_code):
     
@@ -136,6 +181,7 @@ def get_data_by_event_date_code(date_code):
     p = inflect.engine()
 
     return {
+        'date_code':date_code,
         'year': date_obj.year,
         'course':golf_main_context['golf_course'],
         'date_str': get_week_day(date_obj.weekday()) + ', ' + get_month(date_obj.month) + ' ' + p.ordinal(date_obj.day) + ', ' + str(date_obj.year),

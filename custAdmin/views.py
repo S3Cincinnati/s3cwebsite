@@ -135,8 +135,11 @@ def proccess_golf_data(golf_dict, files):
     year_key = golf_dict['full_date'][0]
     f_date = date.fromisoformat(year_key)
 
-    url_main = staticfiles_storage.path('golf_data/golf.csv')
-    url_write_backup = os.path.dirname(__file__) + '/git_publishing/deploy/media/golf_data/golf.csv'
+    # url_main = staticfiles_storage.path('golf_data/golf.csv')
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_write_backup = os.path.dirname(__file__) + '../media/golf_data/golf.csv'
+    else:
+        url_write_backup = os.path.dirname(__file__) + '/git_publishing/deploy/media/golf_data/golf.csv'
     # image_url = staticfiles_storage.path('images/golf/' + str(f_date.year) + '/')
 
     content = []
@@ -178,13 +181,16 @@ def proccess_golf_data(golf_dict, files):
             writer.writerows([content[x] for x in content.keys()])
 
 def process_golf_images(date_key, image_list):
-    print(date_key)
+    
     f_date = date.fromisoformat(date_key)
 
-    url_main = staticfiles_storage.path('images/golf/' + str(f_date.year) + '/')
-    url_write_backup = os.path.dirname(__file__) + '/git_publishing/deploy/media/images/golf/' + str(f_date.year) + '/'
+    # url_main = staticfiles_storage.path('images/golf/' + str(f_date.year) + '/')
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_write_backup = os.path.dirname(__file__) + '../media/images/golf/' + str(f_date.year) + '/'
+    else:
+        url_write_backup = os.path.dirname(__file__) + '/git_publishing/deploy/media/images/golf/' + str(f_date.year) + '/'
 
-    for link in [url_main, url_write_backup]:
+    for link in [url_write_backup]:
         
         
         for im in image_list:

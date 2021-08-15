@@ -9,7 +9,7 @@ from PIL import Image
 import PIL  
 import os
 
-from git_publishing.git_publish_all import git_publish_all
+from .git_publishing.git_publish_all import git_publish_all, git_clone
 
 # Create your views here.
 def home(request):
@@ -36,6 +36,8 @@ def new_golf_classic_request(request):
         f_date = date.fromisoformat(form_results['full_date'][0])
         # print(f_date.day, f_date.month, f_date.year, f_date.weekday())
         # print(form_results)
+        git_clone()
+
         proccess_golf_data(form_results, request.FILES)
         process_golf_images(form_results['full_date'][0], request.FILES)
 
@@ -51,7 +53,8 @@ def edit_golf_classic_request(request, key):
         
         form_results = dict(request.POST)
         form_results.pop('csrfmiddlewaretoken')
-    
+
+        git_clone()
 
         proccess_golf_data(form_results, request.FILES)
         process_golf_images(form_results['full_date'][0], request.FILES)
@@ -133,7 +136,7 @@ def proccess_golf_data(golf_dict, files):
     f_date = date.fromisoformat(year_key)
 
     url_main = staticfiles_storage.path('golf_data/golf.csv')
-    url_write_backup = os.path.dirname(__file__) + '/../media/golf_data/golf.csv'
+    url_write_backup = os.path.dirname(__file__) + '/git_publishing/deploy/media/golf_data/golf.csv'
     # image_url = staticfiles_storage.path('images/golf/' + str(f_date.year) + '/')
 
     content = []
@@ -179,7 +182,7 @@ def process_golf_images(date_key, image_list):
     f_date = date.fromisoformat(date_key)
 
     url_main = staticfiles_storage.path('images/golf/' + str(f_date.year) + '/')
-    url_write_backup = os.path.dirname(__file__) + '/../media/images/golf/' + str(f_date.year) + '/'
+    url_write_backup = os.path.dirname(__file__) + '/git_publishing/deploy/media/images/golf/' + str(f_date.year) + '/'
 
     for link in [url_main, url_write_backup]:
         

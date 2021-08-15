@@ -18,7 +18,8 @@ def git_publish_all():
 
         os.system("git add .")
         os.system("git commit -m \"Deploy new static files\"")
-        os.system("git remote add origin https://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:x-oauth-basic@github.com/S3Cincinnati/s3cwebsite.git")
+        # os.system("git remote add origin https://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:x-oauth-basic@github.com/S3Cincinnati/s3cwebsite.git")
+        # os.system("git remote set-url origin https://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:x-oauth-basic@github.com/S3Cincinnati/s3cwebsite.git")
         os.system("git push origin main")
 
         # repo.git.add('.')

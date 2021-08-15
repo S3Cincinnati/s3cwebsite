@@ -9,6 +9,8 @@ from PIL import Image
 import PIL  
 import os
 
+from git_publishing.git_publish_all import git_publish_all
+
 # Create your views here.
 def home(request):
 
@@ -32,11 +34,12 @@ def new_golf_classic_request(request):
     
 
         f_date = date.fromisoformat(form_results['full_date'][0])
-        print(f_date.day, f_date.month, f_date.year, f_date.weekday())
-        print(form_results)
+        # print(f_date.day, f_date.month, f_date.year, f_date.weekday())
+        # print(form_results)
         proccess_golf_data(form_results, request.FILES)
         process_golf_images(form_results['full_date'][0], request.FILES)
 
+        git_publish_all()
 
     # form = GolfForm()
     context = {}
@@ -52,6 +55,8 @@ def edit_golf_classic_request(request, key):
 
         proccess_golf_data(form_results, request.FILES)
         process_golf_images(form_results['full_date'][0], request.FILES)
+
+        git_publish_all()
 
 
     outing_data = get_data_by_event_date_code(key)

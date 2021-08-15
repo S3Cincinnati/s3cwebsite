@@ -66,7 +66,7 @@ def edit_golf_classic_request(request, key):
     outing_data['descr'] = '\r\n'.join(outing_data['descr'])
     print(outing_data)
     context = {'data':outing_data}
-    return render(request, 'custAdmin/form.html', context)
+    return render(request, 'custAdmin/golf_form.html', context)
 
 
 
@@ -181,7 +181,7 @@ def proccess_golf_data(golf_dict, files):
             writer.writerows([content[x] for x in content.keys()])
 
 def process_golf_images(date_key, image_list):
-    
+
     f_date = date.fromisoformat(date_key)
 
     # url_main = staticfiles_storage.path('images/golf/' + str(f_date.year) + '/')

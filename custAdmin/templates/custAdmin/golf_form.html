@@ -311,53 +311,53 @@
     {
         store_vals()
 
-        popped_nodes = pop_nodes_for_golf_sign_up()
+        // popped_nodes = pop_nodes_for_golf_sign_up()
 
         var label = document.createElement('p')
         label.textContent = 'Golfer Sign Up Option #' + (golf_option_count + 1)
-        document.getElementById('frm').appendChild(label)
+        document.getElementById('frm_golf_signup').appendChild(label)
 
         var label_golf_option_title = document.createElement('label')
         label_golf_option_title.textContent = 'Title: ' 
-        document.getElementById('frm').appendChild(label_golf_option_title)
+        document.getElementById('frm_golf_signup').appendChild(label_golf_option_title)
 
         var golf_option_title = document.createElement('input')
-        golf_option_title.id = 'golf_option_title' + golf_option_count
-        golf_option_title.name = 'golf_option_title' + golf_option_count
+        golf_option_title.id = 'golf_option_title_' + golf_option_count
+        golf_option_title.name = 'golf_option_title_' + golf_option_count
         golf_option_title.type = 'text'
-        document.getElementById('frm').appendChild(golf_option_title)
-        document.getElementById('frm').appendChild(document.createElement('br'))
+        document.getElementById('frm_golf_signup').appendChild(golf_option_title)
+        document.getElementById('frm_golf_signup').appendChild(document.createElement('br'))
 
         var stripe_price_variable_price = document.createElement('label')
         stripe_price_variable_price.textContent = 'Strip Price Variable: ' 
-        document.getElementById('frm').appendChild(stripe_price_variable_price)
+        document.getElementById('frm_golf_signup').appendChild(stripe_price_variable_price)
 
         var stripe_price_variable_price_input = document.createElement('input')
-        stripe_price_variable_price_input.id = 'stripe_price_variable_price_input' + golf_option_count
-        stripe_price_variable_price_input.name = 'stripe_price_variable_price_input' + golf_option_count
+        stripe_price_variable_price_input.id = 'stripe_price_variable_price_input_golf_' + golf_option_count
+        stripe_price_variable_price_input.name = 'stripe_price_variable_price_input_golf_' + golf_option_count
         stripe_price_variable_price_input.type = 'text'
-        document.getElementById('frm').appendChild(stripe_price_variable_price_input)
-        document.getElementById('frm').appendChild(document.createElement('br'))
+        document.getElementById('frm_golf_signup').appendChild(stripe_price_variable_price_input)
+        document.getElementById('frm_golf_signup').appendChild(document.createElement('br'))
 
         var option_description = document.createElement('label')
         option_description.textContent = 'Option Description: ' 
-        document.getElementById('frm').appendChild(option_description)
-        document.getElementById('frm').appendChild(document.createElement('br'))
+        document.getElementById('frm_golf_signup').appendChild(option_description)
+        document.getElementById('frm_golf_signup').appendChild(document.createElement('br'))
 
         var golf_option_textarea = document.createElement('textarea')
-        golf_option_textarea.id = 'golf_option_textarea' + golf_option_count
-        golf_option_textarea.name = 'golf_option_textarea' + golf_option_count
+        golf_option_textarea.id = 'golf_option_textarea_' + golf_option_count
+        golf_option_textarea.name = 'golf_option_textarea_' + golf_option_count
         golf_option_textarea.type = 'text'
         golf_option_textarea.rows = "6" 
         golf_option_textarea.cols = "50"
-        document.getElementById('frm').appendChild(golf_option_textarea)
-        document.getElementById('frm').appendChild(document.createElement('br'))
+        document.getElementById('frm_golf_signup').appendChild(golf_option_textarea)
+        document.getElementById('frm_golf_signup').appendChild(document.createElement('br'))
 
         
-        for (pop of popped_nodes)
-        {
-            document.getElementById('frm').appendChild(pop);
-        }
+        // for (pop of popped_nodes)
+        // {
+        //     document.getElementById('frm').appendChild(pop);
+        // }
 
         golf_option_count++;
 
@@ -368,53 +368,53 @@
     function add_sponsor_sign_up(){
         store_vals()
 
-        popped_nodes = pop_nodes_for_sponsor_sign_up()
+        // popped_nodes = pop_nodes_for_sponsor_sign_up()
 
         var label = document.createElement('p')
         label.textContent = 'Sponsor Sign Up Option #' + (sponsor_option_count + 1)
-        document.getElementById('frm').appendChild(label)
+        document.getElementById('frm_sponsor_signup').appendChild(label)
 
         var label_sponsor_option_title = document.createElement('label')
         label_sponsor_option_title.textContent = 'Title: ' 
-        document.getElementById('frm').appendChild(label_sponsor_option_title)
+        document.getElementById('frm_sponsor_signup').appendChild(label_sponsor_option_title)
 
         var sponsor_option_title = document.createElement('input')
-        sponsor_option_title.id = 'sponsor_option_title' + sponsor_option_count
-        sponsor_option_title.name = 'sponsor_option_title' + sponsor_option_count
+        sponsor_option_title.id = 'sponsor_option_title_' + sponsor_option_count
+        sponsor_option_title.name = 'sponsor_option_title_' + sponsor_option_count
         sponsor_option_title.type = 'text'
-        document.getElementById('frm').appendChild(sponsor_option_title)
-        document.getElementById('frm').appendChild(document.createElement('br'))
+        document.getElementById('frm_sponsor_signup').appendChild(sponsor_option_title)
+        document.getElementById('frm_sponsor_signup').appendChild(document.createElement('br'))
 
         var stripe_price_variable_price = document.createElement('label')
         stripe_price_variable_price.textContent = 'Strip Price Variable: ' 
-        document.getElementById('frm').appendChild(stripe_price_variable_price)
+        document.getElementById('frm_sponsor_signup').appendChild(stripe_price_variable_price)
 
         var stripe_price_variable_price_input = document.createElement('input')
-        stripe_price_variable_price_input.id = 'stripe_price_variable_price_input_sponsor' + sponsor_option_count
-        stripe_price_variable_price_input.name = 'stripe_price_variable_price_input_sponsor' + sponsor_option_count
+        stripe_price_variable_price_input.id = 'stripe_price_variable_price_input_sponsor_' + sponsor_option_count
+        stripe_price_variable_price_input.name = 'stripe_price_variable_price_input_sponsor_' + sponsor_option_count
         stripe_price_variable_price_input.type = 'text'
-        document.getElementById('frm').appendChild(stripe_price_variable_price_input)
-        document.getElementById('frm').appendChild(document.createElement('br'))
+        document.getElementById('frm_sponsor_signup').appendChild(stripe_price_variable_price_input)
+        document.getElementById('frm_sponsor_signup').appendChild(document.createElement('br'))
 
         var option_description = document.createElement('label')
         option_description.textContent = 'Option Description: ' 
-        document.getElementById('frm').appendChild(option_description)
-        document.getElementById('frm').appendChild(document.createElement('br'))
+        document.getElementById('frm_sponsor_signup').appendChild(option_description)
+        document.getElementById('frm_sponsor_signup').appendChild(document.createElement('br'))
 
         var sponsor_option_textarea = document.createElement('textarea')
-        sponsor_option_textarea.id = 'sponsor_option_textarea' + sponsor_option_count
-        sponsor_option_textarea.name = 'sponsor_option_textarea' + sponsor_option_count
+        sponsor_option_textarea.id = 'sponsor_option_textarea_' + sponsor_option_count
+        sponsor_option_textarea.name = 'sponsor_option_textarea_' + sponsor_option_count
         sponsor_option_textarea.type = 'text'
         sponsor_option_textarea.rows = "6" 
         sponsor_option_textarea.cols = "50"
-        document.getElementById('frm').appendChild(sponsor_option_textarea)
-        document.getElementById('frm').appendChild(document.createElement('br'))
+        document.getElementById('frm_sponsor_signup').appendChild(sponsor_option_textarea)
+        document.getElementById('frm_sponsor_signup').appendChild(document.createElement('br'))
 
         
-        for (pop of popped_nodes)
-        {
-            document.getElementById('frm').appendChild(pop);
-        }
+        // for (pop of popped_nodes)
+        // {
+        //     document.getElementById('frm').appendChild(pop);
+        // }
 
         sponsor_option_count++;
 
@@ -422,6 +422,10 @@
     }
 
     window.onload = (event) => {
+        // for (i of {{data.golf_registration}}){
+        //     console.log(i)
+        // }
+        golf_option_count = parseInt("{{data.golf_option_count}}")
         localStorage.clear();
         document.getElementById('day_btn').onclick = (event) => {
             console.log('HELLO')
@@ -457,10 +461,26 @@
             <input id="sponsor_image_btn" type="button" onClick="add_sponsor_image(); return false" value="Add Sponsor Image to Event"><br>
 
             <br><label for="description" id='golf-label'>Add Golf Sign Up Option-- </label>
-            <input id="sponsor_image_btn" type="button" onClick="add_golf_sign_up(); return false" value="Add Golfer Sign Up Option to Event"><br>
+            <input id="golf_signup_btn" type="button" onClick="add_golf_sign_up(); return false" value="Add Golfer Sign Up Option to Event"><br>
+            <div id="frm_golf_signup">
+                {% for x in data.golf_registration %}
+
+                    <p>Golfer Sign Up Option # {{x.display_count}}</p>
+                    <label>Title: </label>
+                    <input type="text" id="golf_option_title_{{x.count}}" name="golf_option_title_{{x.count}}" value="{{x.golf_option_title}}"><br>
+                    
+                    <label>Strip Price Variable:  </label>
+                    <input type="text" id="stripe_price_variable_price_input_golf_{{x.count}}" name="stripe_price_variable_price_input_golf_{{x.count}}" value="{{x.stripe_price_variable}}"><br>
+
+                    <label>Option Description: </label><br>
+                    <textarea type="text" name="golf_option_textarea_{{x.count}}" id="golf_option_textarea_{{x.count}}" value="John" rows="6" cols="50"> {{x.golf_option_textarea}} </textarea><br><br>
+                    
+                {% endfor %}
+            </div>
 
             <br><label for="description"  id='sponsor-label'>Add Registration Sign Up Option-- </label>
-            <input id="sponsor_image_btn" type="button" onClick="add_sponsor_sign_up(); return false" value="Add Sponsor Image to Event"><br><br>
+            <input id="sponsor_signup_btn" type="button" onClick="add_sponsor_sign_up(); return false" value="Add Sponsor Image to Event"><br><br>
+            <div id="frm_sponsor_signup"></div>
 
             <button id="submit" type="submit"> Submit</button>
         </div>

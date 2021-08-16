@@ -187,7 +187,7 @@ def get_data_by_event_date_code(date_code):
     date_obj = date.fromisoformat(date_code)
     p = inflect.engine()
 
-    print(golf_main_context['sponsor_images'])
+    print('**', golf_main_context['sponsor_images'])
     # print()
     return {
         'date_code':date_code,

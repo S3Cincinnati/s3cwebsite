@@ -86,16 +86,12 @@ def get_data_by_event_date_code(date_code):
     
     golf_main_context = {}
     golf_reg_context = []
+    sponsor_reg_context = []
 
     if os.getenv('DJANGO_ENV','') == 'local':
         url_main = os.path.dirname(__file__) + '/../media/golf_data/'
-        # url_event_schedule = os.path.dirname(__file__) + '/../media/golf_data/'
     else:
         url_main = staticfiles_storage.path('golf_data')
-        # url_event_schedule = os.path.dirname(__file__) + '/git_publishing/deploy/media/golf_data/'
-        
-    # url_main = staticfiles_storage.path('golf_data')
-    # url_event_schedule = staticfiles_storage.path('golf_data/event_schedule.csv')
 
     with open(url_main + '/golf.csv', newline='') as csvfile:
         spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
@@ -110,11 +106,16 @@ def get_data_by_event_date_code(date_code):
         for row in spamreader:
             d_row = dict(row)
             if date_code in d_row['year_key']:
-                # print()
                 d_row.update({'display_count':int(d_row['count']) + 1})
                 golf_reg_context += [d_row]
-            
-    print(golf_reg_context)
+
+    with open(url_main + '/sponsor_registration.csv', newline='') as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
+        for row in spamreader:
+            d_row = dict(row)
+            if date_code in d_row['year_key']:
+                d_row.update({'display_count':int(d_row['count']) + 1})
+                sponsor_reg_context += [d_row]
     
     events = []
     with open(url_main + '/event_schedule.csv', newline='') as csvfile:
@@ -147,7 +148,9 @@ def get_data_by_event_date_code(date_code):
         'descr': golf_main_context['description'].split('%&'),
         'schedule':schedule,
         'golf_registration':golf_reg_context,
-        'golf_option_count':len(golf_reg_context)
+        'golf_option_count':len(golf_reg_context),
+        'sponsor_registration':sponsor_reg_context,
+        'sponsor_option_count':len(sponsor_reg_context)
         }
 
 def proccess_golf_data(golf_dict, files):
@@ -157,12 +160,10 @@ def proccess_golf_data(golf_dict, files):
     year_key = golf_dict['full_date'][0]
     f_date = date.fromisoformat(year_key)
 
-    # url_main = staticfiles_storage.path('golf_data/golf.csv')
     if os.getenv('DJANGO_ENV','') == 'local':
         url_write_backup = os.path.dirname(__file__) + '/../media/golf_data/'
     else:
         url_write_backup = os.path.dirname(__file__) + '/git_publishing/deploy/media/golf_data/'
-    # image_url = staticfiles_storage.path('images/golf/' + str(f_date.year) + '/')
 
     content = []
     with open(url_write_backup + 'golf.csv', newline='') as csvfile:
@@ -184,8 +185,20 @@ def proccess_golf_data(golf_dict, files):
             'golf_option_textarea':golf_dict[golf_option_textarea[x]][0],
             'count':x
         } for x in range(len(golf_option_textarea))]
+
+
+    sponsor_option_title = list(filter(lambda x: ('sponsor_option_title_' in x), golf_dict.keys()))
+    stripe_price_variable_input_sponsor = list(filter(lambda x: ('stripe_price_variable_input_sponsor_' in x), golf_dict.keys()))
+    sponsor_option_textarea = list(filter(lambda x: ('sponsor_option_textarea_' in x), golf_dict.keys()))
+
+    sponsor_registrations = [{
+            'year_key':year_key,
+            'sponsor_option_title':golf_dict[sponsor_option_title[x]][0],
+            'stripe_price_variable':golf_dict[stripe_price_variable_input_sponsor[x]][0],
+            'sponsor_option_textarea':golf_dict[sponsor_option_textarea[x]][0],
+            'count':x
+        } for x in range(len(sponsor_option_title))]
     
-    print(golf_registrations)    
 
     event_images = []
     sponsor_images = []
@@ -221,8 +234,15 @@ def proccess_golf_data(golf_dict, files):
             writer = csv.DictWriter(csvfile, delimiter='|', fieldnames=fieldnames)
             writer.writeheader()
             
-            # writer.writerows([golf_registrations[x] for x in golf_registrations.keys()])
             writer.writerows(golf_registrations)
+
+        with open(link + 'sponsor_registration.csv', 'w', newline='') as csvfile:
+            fieldnames = ['year_key', 'sponsor_option_title', 'stripe_price_variable', 'sponsor_option_textarea','count']
+
+            writer = csv.DictWriter(csvfile, delimiter='|', fieldnames=fieldnames)
+            writer.writeheader()
+            
+            writer.writerows(sponsor_registrations)
 
 def process_golf_images(date_key, image_list):
 

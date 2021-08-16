@@ -390,8 +390,8 @@
         document.getElementById('frm_sponsor_signup').appendChild(stripe_price_variable_price)
 
         var stripe_price_variable_price_input = document.createElement('input')
-        stripe_price_variable_price_input.id = 'stripe_price_variable_price_input_sponsor_' + sponsor_option_count
-        stripe_price_variable_price_input.name = 'stripe_price_variable_price_input_sponsor_' + sponsor_option_count
+        stripe_price_variable_price_input.id = 'stripe_price_variable_input_sponsor_' + sponsor_option_count
+        stripe_price_variable_price_input.name = 'stripe_price_variable_input_sponsor_' + sponsor_option_count
         stripe_price_variable_price_input.type = 'text'
         document.getElementById('frm_sponsor_signup').appendChild(stripe_price_variable_price_input)
         document.getElementById('frm_sponsor_signup').appendChild(document.createElement('br'))
@@ -480,7 +480,22 @@
 
             <br><label for="description"  id='sponsor-label'>Add Registration Sign Up Option-- </label>
             <input id="sponsor_signup_btn" type="button" onClick="add_sponsor_sign_up(); return false" value="Add Sponsor Image to Event"><br><br>
-            <div id="frm_sponsor_signup"></div>
+
+            <div id="frm_sponsor_signup">
+                {% for x in data.sponsor_registration %}
+
+                    <p>Sponsor Sign Up Option # {{x.display_count}}</p>
+                    <label>Title: </label>
+                    <input type="text" id="sponsor_option_title_{{x.count}}" name="sponsor_option_title_{{x.count}}" value="{{x.sponsor_option_title}}"><br>
+                    
+                    <label>Strip Price Variable:  </label>
+                    <input type="text" id="stripe_price_variable_input_sponsor_{{x.count}}" name="stripe_price_variable_input_sponsor_{{x.count}}" value="{{x.stripe_price_variable}}"><br>
+
+                    <label>Option Description: </label><br>
+                    <textarea type="text" name="sponsor_option_textarea_{{x.count}}" id="sponsor_option_textarea_{{x.count}}" value="John" rows="6" cols="50"> {{x.sponsor_option_textarea}} </textarea><br><br>
+                    
+                {% endfor %}
+            </div>
 
             <button id="submit" type="submit"> Submit</button>
         </div>

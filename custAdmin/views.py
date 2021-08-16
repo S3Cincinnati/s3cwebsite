@@ -199,7 +199,6 @@ def proccess_golf_data(golf_dict, files):
             'count':x
         } for x in range(len(sponsor_option_title))]
     
-
     event_images = []
     sponsor_images = []
 
@@ -210,6 +209,8 @@ def proccess_golf_data(golf_dict, files):
             sponsor_images += ['/static/images/golf/' + str(f_date.year) + '/' + files[im].name]
             # picture = Image.open(files[im])  
             # picture.save(temp_url)
+
+    process_schedule(golf_dict)
 
     content.update({year_key:{
         'year_key':year_key,
@@ -243,6 +244,44 @@ def proccess_golf_data(golf_dict, files):
             writer.writeheader()
             
             writer.writerows(sponsor_registrations)
+
+def process_schedule(golf_dict):
+    keys = list(filter(lambda x: ('day_' in x), golf_dict.keys()))
+    schedule = {}
+    days = {}
+    
+    for k in keys:
+        k_new = k[k.find('_')+1:]
+        day_num = k_new[:k_new.find('_')]
+        print(k, k_new, day_num)
+        if len(day_num) == 0 and k_new not in schedule.keys():
+            schedule.update({k_new:{}})
+            days.update({k_new:golf_dict[k]})
+
+        if len(day_num) > 0:
+            k_new = k_new[k_new.find('_')+1:] # removes day_
+            k_new = k_new[k_new.find('_')+1:] # removes event_
+            
+            num = k_new[:k_new.find('_')]
+            k_new = k_new[k_new.find('_')+1:]
+            
+            if num not in schedule[day_num].keys():
+                schedule[day_num].update({num:{}})
+                schedule[day_num][num].update({'date':golf_dict[k][0]})
+            if len(num) != 0:
+                print(schedule)
+                schedule[day_num][num].update({k_new:golf_dict[k][0]})
+    
+    s1 = []
+    for d in schedule.keys():
+        day = []
+        events = schedule[d]
+        for e in events.keys():
+            day += [{'time':schedule[d][e]['time'], 'description':schedule[d][e]['description']}]
+        s1 += [{'day':days[d],'events':day}]
+            
+            
+    return s1
 
 def process_golf_images(date_key, image_list):
 

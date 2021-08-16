@@ -218,7 +218,7 @@
         popped_nodes = pop_nodes_after_day(99)
 
         document.getElementById('frm').innerHTML+='<br/><label for="description">Date:</label>';
-        document.getElementById('frm').innerHTML+='<input type="text" id="day_'+day_count+'" name="day_'+day_count+'" placeholder="Day '+day_count+'"  /><br/>';
+        document.getElementById('frm').innerHTML+='<input type="date" id="day_'+day_count+'" name="day_'+day_count+'" placeholder="Day '+day_count+'"  /><br/>';
         document.getElementById('frm').innerHTML+='<button onClick="add_event_to_day('+day_count+')"> Add Event to Day</button><br>'
 
         event_count.push(0)
@@ -462,6 +462,7 @@
 
             <br><label for="description" id='golf-label'>Add Golf Sign Up Option-- </label>
             <input id="golf_signup_btn" type="button" onClick="add_golf_sign_up(); return false" value="Add Golfer Sign Up Option to Event"><br>
+            
             <div id="frm_golf_signup">
                 {% for x in data.golf_registration %}
 

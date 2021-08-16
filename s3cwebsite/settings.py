@@ -147,3 +147,5 @@ STRIPE_WEB_HOOK_SECRET = ""
 #     DATABASES = {'default': dj_database_url.config()}
 
 django_heroku.settings(locals())
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'

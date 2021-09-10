@@ -17,12 +17,9 @@
               {% if b.key == 'count_vals' %}
               <div class="carousel-item active" style="height: 100% !important">
                 <h6>Our reach ...</h6>
-                <h4> <b>Cancer Research:</b> ${{b.vals.0}}</h4>
-                <h4> <b>Family Support:</b> ${{b.vals.1}}</h4>
-                <h4> <b>Scholarships:</b> ${{b.vals.2}}</h4>
-                <h4> <b>Patient Care Focus (Hospitals, Hospice & Non-Profit):</b> ${{b.vals.3}}</h4>
-                <h4> <b>Product Donation (Hospitals, Benefits, & Non-Profit):</b> ${{b.vals.4}}</h4>
-                <h4> <b>Community Service Hours Awarded to H.S. Students:</b> {{b.vals.5}} hrs</h4>
+                {% for d in b.vals%}
+                  <h4> <b>{{d.text}}:</b> {{d.val}}</h4>
+                {% endfor %}
               </div>
             {% elif b.key == 'two_pic_frame' %}
               <div class="carousel-item" style="height: 100% !important">

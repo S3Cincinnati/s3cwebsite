@@ -271,8 +271,6 @@ def get_home_data():
 
                 data['blocks'] += [{'key':'two_pic_frame','img1':images[0], 'img2':images[0], 'title':t, 'text':text}]
                 # data['blocks'] += [{'key':'golf_outing','flier':, 'outing_number':titles[0], 'date':titles[1],'text':text}]
-            
-
     return data
 def get_week_day(day_val):
     mapp = {0:'Monday', 1:'Tuesday',2:'Wednesday',3:'Thursday',4:'Friday',5:'Saturday',6:'Sunday'}

@@ -1,4 +1,24 @@
 {% extends "custAdmin/admin_base.html" %}
 
 {% block content %}
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token%}
+        <div id="frm">
+
+            {% for b in blocks %}
+                {% if b.key == "count_vals" %}
+                    <label for="cars">Events on donation counter:</label><br>
+                    {% for d in b.vals %}
+                        <label>Text: </label>
+                        <input type="text" name="donation_text_{{d.count}}" id="donation_text_{{d.count}}" value="{{d.text}}">
+                        <label>Value: </label>
+                        <input type="text" name="donation_value_{{d.count}}" id="donation_value_{{d.count}}" value="{{d.val}}"><br>
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+            
+            <button id="submit" type="submit"> Submit</button>
+        </div>
+    </form>
 {% endblock content %}

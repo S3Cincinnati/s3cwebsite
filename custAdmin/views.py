@@ -1,3 +1,4 @@
+from typing import Text
 from django.shortcuts import render
 from django.http import HttpResponse
 from .forms import GolfForm
@@ -12,16 +13,29 @@ import os
 from .git_publishing.git_publish_all import git_publish_all, git_clone
 
 from itertools import groupby
+import ast
 
 # Create your views here.
 def home(request):
 
-    # context = {'form':form}
     context = {}
     return render(request, 'custAdmin/home.html', context)
 
 def edit_home(request):
-    context = {}
+
+    if request.method == 'POST':
+        
+        form_results = dict(request.POST)
+        form_results.pop('csrfmiddlewaretoken')
+
+        git_clone()
+
+        process_home_data(form_results)
+
+        git_publish_all()
+
+    context = get_home_data()
+    print(context)
 
     return render(request, 'custAdmin/home_form.html', context)
 
@@ -318,7 +332,6 @@ def process_golf_images(date_key, image_list):
 
     for link in [url_write_backup]:
         
-        
         for im in image_list:
             if 'event' in im or 'sponsor' in im:
                 temp_url = link + '/' + image_list[im].name
@@ -326,3 +339,78 @@ def process_golf_images(date_key, image_list):
                 picture.save(temp_url)
 
     # TODO - save to csv -> date_key|category (event or sponsor)|file_location
+
+def get_home_data():
+    data = {'blocks':[]}
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_main = os.path.dirname(__file__) + '/../media/static_page_data/'
+    else:
+        url_main = staticfiles_storage.path('static_page_data')
+
+    with open(url_main + '/home.csv', newline='') as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
+        for row in spamreader:
+            d_row = dict(row)
+            if 'count_vals' == d_row['format']:
+                donations_arr = {'key':'count_vals','vals':ast.literal_eval(d_row['text'])}
+                count = 0
+                for d in donations_arr['vals']:
+                    d.update({'count':count})
+                    count += 1
+                data['blocks'] += [donations_arr]
+                print(data['blocks'][-1])
+            elif 'two_pic_frame' == d_row['format']:
+                images = ast.literal_eval(d_row['images'])
+                titles = ast.literal_eval(d_row['titles'])
+                text = ast.literal_eval(d_row['text'])
+                
+                # print(images, titles[0], text)/
+                # data['blocks'] += [{'key':'two_pic_frame','image_1':images[0], 'image_2':images[1], 'title':titles[0], 'text':text}]
+            elif 'golf_outing' == d_row['format']:
+                images = ast.literal_eval(d_row['images'])
+                titles = ast.literal_eval(d_row['titles'])
+                text = ast.literal_eval(d_row['text'])
+                
+                # print(images, titles[0], text)
+                # t = 'Join us at S3C\'s ' + titles[0] + ' Annual fundraising golf outing'
+
+                # data['blocks'] += [{'key':'two_pic_frame','img1':images[0], 'img2':images[0], 'title':t, 'text':text}]
+                # data['blocks'] += [{'key':'golf_outing','flier':, 'outing_number':titles[0], 'date':titles[1],'text':text}]
+    return data
+
+def process_home_data(home_dict):
+
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_write_backup = os.path.dirname(__file__) + '/../media/static_page_data/'
+    else:
+        url_write_backup = os.path.dirname(__file__) + '/git_publishing/deploy/media/static_page_data/'
+
+    donation_data = {'text':{},'val':{}}
+
+    # {'donation_text_0': ['Cancer Research'], 'donation_value_0': ['$43,620.00'], 'donation_text_1': ['Family Support'], 'donation_value_1': ['$145,482.00']}
+    for d in home_dict.keys():
+        temp_d = d
+        if 'donation_' in temp_d:
+            temp_d = temp_d.replace('donation_', '')
+            if 'text_' in temp_d:
+                temp_d = temp_d.replace('text_', '')
+                donation_data['text'].update({temp_d:home_dict[d][0]})
+            elif 'value_' in temp_d:
+                temp_d = temp_d.replace('value_', '')
+                donation_data['val'].update({temp_d:home_dict[d][0]})
+
+    rows = []
+    
+    donations = []
+    for i in range(len(donation_data['text'])):
+        donations += [{'text':donation_data['text'][str(i)], 'val':donation_data['val'][str(i)]}]
+
+    rows += [{'titles':[], 'text':donations, 'images':[], 'format':'count_vals'}]
+
+    with open(url_write_backup + 'home.csv', 'w', newline='') as csvfile:
+        fieldnames = ['titles', 'text','images', 'format']
+
+        writer = csv.DictWriter(csvfile, delimiter='|', fieldnames=fieldnames)
+        writer.writeheader()
+        
+        writer.writerows(rows)

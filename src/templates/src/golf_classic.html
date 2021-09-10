@@ -22,7 +22,7 @@
         </button>
         <div class="row">
             <div class="col-9">
-                <img src="/static/images/golf/{{year}}/header-img.jpg" style="width: 85%;">
+                <img src="/static/images/golf/{{year}}/header-img.jpg" style="width: 85%; padding-bottom: 1rem;" class="mx-auto d-block">
                 <div class="row">
                     <div class="col-8">
                         {% for description_paragraph in descr %}
@@ -31,8 +31,8 @@
                     </div> 
                     <div class="col-4">
                         {% for event in schedule %}
-                            <h4>{{event.date_str}}</h4>
-                            <h5>{{event.location}}</h5>
+                            <h5>{{event.date_str}}</h5>
+                            <h6>{{event.location}}</h6>
                             {% for e in event.data %}
                                 <p><b>{{e.time}}</b> - {{e.description}}</p>
                             {% endfor %}
@@ -40,7 +40,7 @@
                     </div> 
                 </div> 
             </div> 
-            <div class="col-3" style="border: 2px solid black;">
+            <div class="col-3">
                 {% for im in sponsor_images %}
                     <img src="{{im}}" style="width: 100%;">
                 {% endfor %}

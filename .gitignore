@@ -141,3 +141,5 @@ dmypy.json
 
 # **/git_publishing/deploy/*
 # !/git_publishing/deploy/blank.txt
+
+/staticfiles

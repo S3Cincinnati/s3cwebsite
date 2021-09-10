@@ -20,6 +20,11 @@ def home(request):
     context = {}
     return render(request, 'custAdmin/home.html', context)
 
+def edit_home(request):
+    context = {}
+
+    return render(request, 'custAdmin/home_form.html', context)
+
 def golf_view(request):
 
     # context = {'form':form}

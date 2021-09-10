@@ -13,24 +13,45 @@
               <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
             </div>
             <div class="carousel-inner"  style="height: 100% !important">
+              {% for b in blocks %}
+              {% if b.key == 'count_vals' %}
               <div class="carousel-item active" style="height: 100% !important">
-                <img src="/static/images/golf/2017/flier.jpg" class="d-block w-100">
-              </div>
-              <div class="carousel-item" style="height: 100% !important">
-                
-                <img src="/static/images/golf/2017/unrolledloop.png" class="d-block w-100" style="height: 100%;">
-              </div>
-              <div class="carousel-item" style="height: 100% !important">
-                <!-- <img src="/static/images/golf/2017/unrolledloop.png" class="d-block w-100"> -->
                 <h6>Our reach ...</h6>
-                <h4> <b>Cancer Research:</b> $43,620.00</h4>
-                <h4> <b>Family Support:</b> $145,482.00</h4>
-                <h4> <b>Scholarships:</b> $153,230.00</h4>
-                <h4> <b>Patient Care Focus (Hospitals, Hospice & Non-Profit):</b> $35,000.00</h4>
-                <h4> <b>Product Donation (Hospitals, Benefits, & Non-Profit):</b> $22,275.00</h4>
-                <h4> <b>Community Service Hours Awarded to H.S. Students:</b> 1231 hrs</h4>
+                <h4> <b>Cancer Research:</b> ${{b.vals.0}}</h4>
+                <h4> <b>Family Support:</b> ${{b.vals.1}}</h4>
+                <h4> <b>Scholarships:</b> ${{b.vals.2}}</h4>
+                <h4> <b>Patient Care Focus (Hospitals, Hospice & Non-Profit):</b> ${{b.vals.3}}</h4>
+                <h4> <b>Product Donation (Hospitals, Benefits, & Non-Profit):</b> ${{b.vals.4}}</h4>
+                <h4> <b>Community Service Hours Awarded to H.S. Students:</b> {{b.vals.5}} hrs</h4>
               </div>
+            {% elif b.key == 'two_pic_frame' %}
+              <div class="carousel-item" style="height: 100% !important">
+                <div style="display: flex; width: 100% !important; height: 100%;">
+
+                  <div style="flex: 2;">
+                    <h3>{{b.title}}</h3>
+                    {% for t in b.text %} 
+                      <p>{{t}}</p>
+                    {% endfor %}
+                  </div>
+                  <div style="flex: 2; padding: 0.5rem;">
+                    <img src="/static/images/home/{{b.img1}}" class="d-block w-100" style="max-height: 100%; object-fit: contain;">
+                  </div>
+                  
+                  <div style="flex: 2; padding: 0.5rem;">
+                    <img src="/static/images/home/{{b.img2}}" class="d-block w-100" style="max-height: 100%; object-fit: contain;">
+                  </div>
+                  
+                </div>
+              </div>
+            
+            {% endif %}
+                
+                
+                
+              {% endfor %}
             </div>
+              
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
               <span class="visually-hidden">Previous</span>

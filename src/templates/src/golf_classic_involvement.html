@@ -27,6 +27,11 @@
                 <div class="row">
                     <div class="col-6">
                         <h6>Single Golfer Registration.</h6>
+                        <ul>
+                            {% for d in golf_options.1s.description %}
+                                <li> {{d}}</li>
+                            {% endfor %}
+                        </ul>
                     </div>
                     <div class="col-6">
                         <div id="single_div" style="display:none">
@@ -54,6 +59,11 @@
                 <div class="row">
                     <div class="col-6">
                         <h6>Foursome Golfer Registration.</h6>
+                        <ul>
+                            {% for d in golf_options.4s.description %}
+                                <li> {{d}}</li>
+                            {% endfor %}
+                        </ul>
                     </div>
                     <div class="col-6">
                         <div id="foursome_div" style="display:none">
@@ -77,8 +87,8 @@
                                 <input type="text" name="fname_4" id="fname_4" value="{{data.course}}"><br>
                                 <label>Golfer 4 Last Name:</label>
                                 <input type="text" name="lname_4" id="lname_4" value="{{data.course}}"><br>
-                                <button type="submit">Checkout</button>
-                                <button onclick="open_form('foursome_div_btn','foursome_div')" type="button">Close</button>
+                                <button type="submit">Proceed to Secure Checkout</button>
+                                <button onclick="open_form('foursome_div_btn','foursome_div')" type="button">Close Registration Panel</button>
                             </form>
                         </div>
                         <div id="foursome_div_btn">
@@ -90,24 +100,24 @@
         </div>
         <hr>
         <h4>Sponsorship Opportunites</h4>
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-8">
-                        <h5>MVP Sponsor - $5,000</h5>
-                        <ul>
-                            <li>2 – Complimentary golf foursome registrations (fees include greens’ fees, golf cart, 18 holes, lunch, dinner, beverages, gifts, games of chance.)</li>
-                            <li>16 – Complimentary admissions to Friday night's celebration</li>
-                            <li>Recognition as Presenting Event Sponsor</li>
-                            <li>Prominent company logo and name displayed on website, social media outlets, event materials, customized gifts, and tee-box</li>
-                            <li>Complimentary company display & option to distribute promotional items</li>
-                        </ul>
-                    </div>
-                    <div class="col-4">
+        {% for s in sponsor_options %}
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-8">
+                            <h5>{{s.sponsor_option_title}} - $ {{s.stripe_price_variable}}</h5>
+                            <ul>
+                                {% for d in s.description %}
+                                    <li> {{d}}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="col-4">
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        {% endfor %}
     </div>
 
 {% endblock %}

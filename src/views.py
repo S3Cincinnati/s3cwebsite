@@ -65,12 +65,12 @@ def get_golf_outing_involvment(request, year):
     # if request.method == 'POST':
         
 
-    print(year)
-    print(FoursomeRegistration.objects.all())
+    # print(year)
+    # print(FoursomeRegistration.objects.all())
     context = {}
-    context.update(get_data_by_event_date_code(year))
+    context.update(get_sign_up_data_event_date_code(year))
 
-    
+    print(context)
     
     return render(request, 'src/golf_classic_involvement.html',context)
 
@@ -204,6 +204,39 @@ def get_data_by_event_date_code(date_code):
         'sponsor_images':ast.literal_eval(golf_main_context['sponsor_images'])
         }
 
+def get_sign_up_data_event_date_code(date_code):
+    
+    golf_sign_ups = {'1s':{}, '4s':{}}
+    sponsor_sign_ups = []
+
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_main = os.path.dirname(__file__) + '/../media/golf_data/'
+    else:
+        url_main = staticfiles_storage.path('golf_data')
+
+    with open(url_main + '/sponsor_registration.csv', newline='') as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
+        for row in spamreader:
+            d_row = dict(row)
+            if date_code in d_row['year_key']:
+                d_row.update({'description':d_row['sponsor_option_textarea'].split(';')})
+                d_row.pop('sponsor_option_textarea')
+                sponsor_sign_ups += [d_row]
+
+    with open(url_main + '/golf_registration.csv', newline='') as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
+        for row in spamreader:
+            d_row = dict(row)
+            if date_code in d_row['year_key']:
+                d_row.update({'description':d_row['golf_option_textarea'].split(';')})
+                d_row.pop('golf_option_textarea')
+                if d_row['golf_option_title'] == '1s':
+                    golf_sign_ups['1s'] = d_row
+                if d_row['golf_option_title'] == '4s':
+                    golf_sign_ups['4s'] = d_row
+    
+    return {'sponsor_options':sponsor_sign_ups, 'golf_options':golf_sign_ups}
+    
 def get_week_day(day_val):
     mapp = {0:'Monday', 1:'Tuesday',2:'Wednesday',3:'Thursday',4:'Friday',5:'Saturday',6:'Sunday'}
 

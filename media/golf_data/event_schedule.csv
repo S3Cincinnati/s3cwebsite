@@ -1,6 +1,7 @@
-key|full_date|location|time|description
-20170513_0_0|Friday, May 12, 2017|Century Inn Restaurant & Tavern|6:00 - 10:00 pm|Beer, Cornhole, Volleyball, Music, Raffles
-20170513_1_0|Saturday, May 13, 2017|Glenview Golf Course|11:30 am|Registration and Range Opens
-20170513_1_1|Saturday, May 13, 2017|Glenview Golf Course|12:15 pm|Food and Beer Served
-20170513_1_2|Saturday, May 13, 2017|Glenview Golf Course|1:30 pm|Shotgun Start
-20170513_1_3|Saturday, May 13, 2017|Glenview Golf Course|6:30 pm|Dinner and Award
+year_key|event_day|location|time|description
+2017-05-13|2021-08-13|Bar|6:00 PM|Party
+2017-05-13|2021-08-13|Bar|10:00 PM|Party End
+2017-05-13|2021-08-13|Bar|null|none
+2017-05-13|2021-08-14|Glenview Golf Course|1:00 PM|Shotgun Start
+2017-05-13|2021-08-14|Glenview Golf Course|6:00 PM|Awards
+2017-05-13|2021-08-14|Glenview Golf Course|11:30 PM|Range Opens

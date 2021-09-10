@@ -11,6 +11,8 @@ import os
 
 from .git_publishing.git_publish_all import git_publish_all, git_clone
 
+from itertools import groupby
+
 # Create your views here.
 def home(request):
 
@@ -64,7 +66,7 @@ def edit_golf_classic_request(request, key):
 
     outing_data = get_data_by_event_date_code(key)
     outing_data['descr'] = '\r\n'.join(outing_data['descr'])
-    print(outing_data)
+    # print(outing_data)
     context = {'data':outing_data}
     return render(request, 'custAdmin/golf_form.html', context)
 
@@ -81,6 +83,8 @@ def get_event_data():
             golf_main_context += [d_row]
     return golf_main_context
     
+def key_func(k):
+    return k['event_day']
 
 def get_data_by_event_date_code(date_code):
     
@@ -122,26 +126,29 @@ def get_data_by_event_date_code(date_code):
         spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
         for row in spamreader:
             d_row = dict(row)
-            if date_code in d_row['key']:
-               events += [d_row]
+            if date_code in d_row['year_key']:
+                events += [d_row]
 
-    schedule = {}
-    for e in events:
-        key = e['full_date'] + '_' + e['location']
-        if key not in schedule.keys():
-            schedule.update({key:{
-                'date':e['full_date'],
-                'location':e['location'],
-                'events':[]
-            }})
+    schedule = {'total':0,'data':[], 'child_sizes':[]}
+    count = 0
+    for key, value in groupby(events, key_func):
+        date_obj = date.fromisoformat(key)
+        data = list(value)
+        c1 = 0
+        for item in data:
+            item.update( {"count":c1})
+            c1 += 1
 
-        schedule[key]['events'] += [{
-            'time':e['time'],
-            'description':e['description'],
-        }]
+        schedule['data'] += [{
+            'date':key,
+            'location':' ' if len(data) == 0 else data[0]['location'],
+            'data':data,
+            'count':count}]
+        count += 1
+    schedule['total'] = len(schedule['data'])
+    schedule['child_sizes'] = [ len(x['data']) for x in schedule['data']]
 
-    schedule = [schedule[x] for x in schedule.keys()]
-
+    # print(schedule)
     return {
         'course':golf_main_context['golf_course'],
         'date':golf_main_context['year_key'],
@@ -155,7 +162,7 @@ def get_data_by_event_date_code(date_code):
 
 def proccess_golf_data(golf_dict, files):
 
-    print(golf_dict)
+    # print(golf_dict)
 
     year_key = golf_dict['full_date'][0]
     f_date = date.fromisoformat(year_key)
@@ -180,9 +187,9 @@ def proccess_golf_data(golf_dict, files):
 
     golf_registrations = [{
             'year_key':year_key,
-            'golf_option_title':golf_dict[golf_option_title[x]][0],
-            'stripe_price_variable':golf_dict[stripe_price_variable_price_input_golf[x]][0],
-            'golf_option_textarea':golf_dict[golf_option_textarea[x]][0],
+            'golf_option_title':golf_dict[golf_option_title[x]][0].strip(),
+            'stripe_price_variable':golf_dict[stripe_price_variable_price_input_golf[x]][0].strip(),
+            'golf_option_textarea':golf_dict[golf_option_textarea[x]][0].strip(),
             'count':x
         } for x in range(len(golf_option_textarea))]
 
@@ -193,9 +200,9 @@ def proccess_golf_data(golf_dict, files):
 
     sponsor_registrations = [{
             'year_key':year_key,
-            'sponsor_option_title':golf_dict[sponsor_option_title[x]][0],
-            'stripe_price_variable':golf_dict[stripe_price_variable_input_sponsor[x]][0],
-            'sponsor_option_textarea':golf_dict[sponsor_option_textarea[x]][0],
+            'sponsor_option_title':golf_dict[sponsor_option_title[x]][0].strip(),
+            'stripe_price_variable':golf_dict[stripe_price_variable_input_sponsor[x]][0].strip(),
+            'sponsor_option_textarea':golf_dict[sponsor_option_textarea[x]][0].strip(),
             'count':x
         } for x in range(len(sponsor_option_title))]
     
@@ -210,12 +217,11 @@ def proccess_golf_data(golf_dict, files):
             # picture = Image.open(files[im])  
             # picture.save(temp_url)
 
-    process_schedule(golf_dict)
-
+    
     content.update({year_key:{
         'year_key':year_key,
-        'golf_course':golf_dict['golf_course'][0],
-        'description':golf_dict['description'][0].replace('\r\n','%&'),
+        'golf_course':golf_dict['golf_course'][0].strip(),
+        'description':golf_dict['description'][0].replace('\r\n','%&').strip(),
         'event_images':event_images,
         'sponsor_images':sponsor_images
         }})
@@ -245,18 +251,28 @@ def proccess_golf_data(golf_dict, files):
             
             writer.writerows(sponsor_registrations)
 
-def process_schedule(golf_dict):
+        with open(link + 'event_schedule.csv', 'w', newline='') as csvfile:
+            fieldnames = ['year_key', 'event_day','location', 'time', 'description']
+
+            writer = csv.DictWriter(csvfile, delimiter='|', fieldnames=fieldnames)
+            writer.writeheader()
+            
+            writer.writerows(process_schedule(golf_dict,year_key))
+
+def process_schedule(golf_dict, year_key):
     keys = list(filter(lambda x: ('day_' in x), golf_dict.keys()))
     schedule = {}
     days = {}
+    locations = {}
     
+    print(keys)
     for k in keys:
         k_new = k[k.find('_')+1:]
         day_num = k_new[:k_new.find('_')]
-        print(k, k_new, day_num)
+        
         if len(day_num) == 0 and k_new not in schedule.keys():
             schedule.update({k_new:{}})
-            days.update({k_new:golf_dict[k]})
+            days.update({k_new:golf_dict[k][0]})
 
         if len(day_num) > 0:
             k_new = k_new[k_new.find('_')+1:] # removes day_
@@ -264,22 +280,24 @@ def process_schedule(golf_dict):
             
             num = k_new[:k_new.find('_')]
             k_new = k_new[k_new.find('_')+1:]
-            
-            if num not in schedule[day_num].keys():
-                schedule[day_num].update({num:{}})
-                schedule[day_num][num].update({'date':golf_dict[k][0]})
-            if len(num) != 0:
-                print(schedule)
-                schedule[day_num][num].update({k_new:golf_dict[k][0]})
+
+            if day_num == 'location':
+                locations.update({k_new:golf_dict[k][0]})
+            else:
+                if num not in schedule[day_num].keys():
+                    schedule[day_num].update({num:{}})
+                    schedule[day_num][num].update({'date':golf_dict[k][0]})
+                if len(num) != 0:
+                    schedule[day_num][num].update({k_new:golf_dict[k][0]})
     
+ 
     s1 = []
     for d in schedule.keys():
         day = []
         events = schedule[d]
         for e in events.keys():
-            day += [{'time':schedule[d][e]['time'], 'description':schedule[d][e]['description']}]
-        s1 += [{'day':days[d],'events':day}]
-            
+            day += [{'year_key':year_key, 'event_day':days[d],'location':locations[d],'time':schedule[d][e]['time'], 'description':schedule[d][e]['description']}]
+        s1 += day
             
     return s1
 

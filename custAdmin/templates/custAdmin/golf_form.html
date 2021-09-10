@@ -21,13 +21,14 @@
 
     function pop_nodes_after_day(day_count_val)
     {
+        // console.log('day_' + (parseInt(day_count_val) + 1))
         var nodes = document.getElementById('frm').children
         var popped_nodes = []
         
         var found_index = 0
 
         for (node in nodes){
-            if (nodes[node].id === 'day_' + (day_count_val + 1)
+            if (nodes[node].id === 'day_' + (parseInt(day_count_val)  + 1)
                 || nodes[node].id === 'sponsor_image_btn'
                 || nodes[node].id === 'event_image_btn'){
                     found_index = parseInt(node) - 2
@@ -215,19 +216,21 @@
         // ev.preventDefault();
 
         store_vals()
-        popped_nodes = pop_nodes_after_day(99)
+        // popped_nodes = pop_nodes_after_day(99)
 
-        document.getElementById('frm').innerHTML+='<br/><label for="description">Date:</label>';
-        document.getElementById('frm').innerHTML+='<input type="date" id="day_'+day_count+'" name="day_'+day_count+'" placeholder="Day '+day_count+'"  /><br/>';
-        document.getElementById('frm').innerHTML+='<button onClick="add_event_to_day('+day_count+')"> Add Event to Day</button><br>'
+        document.getElementById('frm_event_add').innerHTML+='<br/><label for="description">Date:</label>';
+        document.getElementById('frm_event_add').innerHTML+='<input type="date" id="day_'+day_count+'" name="day_'+day_count+'" placeholder="Day '+day_count+'"  /><br/>';
+        document.getElementById('frm_event_add').innerHTML+='<br/><label for="description">Location:</label>';
+        document.getElementById('frm_event_add').innerHTML+='<input type="text" id="day_location_'+day_count+'" name="day_location_'+day_count+'" placeholder="Location '+day_count+'"  /><br/>';
+        document.getElementById('frm_event_add').innerHTML+='<button onClick="add_event_to_day('+day_count+')"> Add Event to Day</button><br>'
 
         event_count.push(0)
         day_count++;
 
-        for (pop of popped_nodes)
-        {
-            document.getElementById('frm').appendChild(pop);
-        }
+        // for (pop of popped_nodes)
+        // {
+        //     document.getElementById('frm').appendChild(pop);
+        // }
         
         write_vals()
 
@@ -238,19 +241,25 @@
     {
         store_vals()
 
-        popped_nodes = pop_nodes_after_day(day_count_val)
+        // popped_nodes = pop_nodes_after_day(day_count_val)
 
         day_count_event_count_str = 'day_'+day_count_val+'_event_'+event_count[day_count_val]
         
-        document.getElementById('frm').innerHTML+='<label for="description">Time:</label>';
-        document.getElementById('frm').innerHTML+='<input type="text" id="'+day_count_event_count_str + '_time" name="'+day_count_event_count_str + '_time" placeholder="'+day_count_event_count_str +'"  /><br/>';
-        document.getElementById('frm').innerHTML+='<label for="description">Description:</label>';
-        document.getElementById('frm').innerHTML+='<input type="text" id="'+day_count_event_count_str + '_description" name="'+day_count_event_count_str + '_description" placeholder="'+day_count_event_count_str+'"  /><br/>';
+        // var label = document.createElement('label')
+        // label.textContent = 'Time: '
+
+        // document.getElementById('div_day_'+day_count_val).appendChild(document.createElement('br'))
+
+        console.log('div_day_'+day_count_val)
+        document.getElementById('div_day_'+day_count_val).innerHTML+='<label for="description">Time:</label>';
+        document.getElementById('div_day_'+day_count_val).innerHTML+='<input type="text" id="'+day_count_event_count_str + '_time" name="'+day_count_event_count_str + '_time" placeholder="'+day_count_event_count_str +'"  />';
+        document.getElementById('div_day_'+day_count_val).innerHTML+='<label for="description"> Description:</label>';
+        document.getElementById('div_day_'+day_count_val).innerHTML+='<input type="text" id="'+day_count_event_count_str + '_description" name="'+day_count_event_count_str + '_description" placeholder="'+day_count_event_count_str+'"  /><br/>';
         
-        for (pop of popped_nodes)
-        {
-            document.getElementById('frm').appendChild(pop);
-        }
+        // for (pop of popped_nodes)
+        // {
+        //     document.getElementById('frm').appendChild(pop);
+        // }
         
         event_count[day_count_val]++;
 
@@ -426,9 +435,11 @@
         //     console.log(i)
         // }
         golf_option_count = parseInt("{{data.golf_option_count}}")
+        day_count = parseInt("{{data.schedule.total}}")
+        event_count = JSON.parse("{{data.schedule.child_sizes}}")
+
         localStorage.clear();
         document.getElementById('day_btn').onclick = (event) => {
-            console.log('HELLO')
             event.preventDefault();
             add_new_day_to_schedule();
             return false;
@@ -452,6 +463,40 @@
             <textarea type="text" name="description" id="description" value="John" rows="6" cols="50"> {{data.descr}} </textarea><br><br>
             <label for="description">Schedule -- </label>
             <input id="day_btn" type="button" onClick="add_new_day_to_schedule(event); return false" value="Add Day to Schedule"><br>
+            <div id="frm_event_add">
+                {% for x in data.schedule.data %}
+                    
+                        <br/>
+                        <label for="description">Date:</label>
+                        <input type="date" id="day_{{x.count}}" name="day_{{x.count}}" value="{{x.date}}"  />
+                        <br/>
+                        <label for="description">Location:</label>
+                        <input type="text" id="day_location_{{x.count}}" name="day_location_{{x.count}}" value="{{x.location}}"  />
+                        <br/>
+                        
+                        <div id="div_day_{{x.count}}"> 
+                        {% for e in x.data %}
+                            <!-- <div id="div_day_{{x.count}}_event_{{e.count}}">  -->
+
+                                <!-- </div> -->
+                                <label for="description">Time:</label>
+                                <input type="text" id="day_{{x.count}}_event_{{e.count}}_time" name="day_{{x.count}}_event_{{e.count}}_time" value="{{e.time}}"  />
+                                
+                                <label for="description">Description:</label>
+                                <input type="text" id="day_{{x.count}}_event_{{e.count}}_description" name="day_{{x.count}}_event_{{e.count}}_description" value="{{e.description}}"  />
+                                <br/>
+                            <!-- </div> -->
+            
+                        {% endfor %}
+                        </div>
+                        
+                        
+                        <input  type="button"  onClick="add_event_to_day(parseInt('{{x.count}}'))" value="Add Event to Day">
+                        <br>
+                    
+        
+                {% endfor %}
+            </div>
 
             <br><label for="description">Event Images -- </label>
             <input id="event_image_btn" type="button" onClick="add_event_image(); return false" value="Add Image to Event"><br>

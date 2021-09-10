@@ -19,6 +19,8 @@ from .models import FoursomeRegistration
 
 stripe.api_key = "sk_test_51JO5STDym2z9hVAOjSsmhioXViLv500Ri8Etu1kcc6roeY9OeA0Ot8B8zZ0obPaMAExSv30itNNd8YaTrA3Rdc5L00poUDRc9W"
 
+from itertools import groupby
+
 
 # Create your views here.
 def home(request):
@@ -126,6 +128,8 @@ class CreateSessionCheckoutView(View):
 
 
 # stripe.api_key = "sk_test_51JO5STDym2z9hVAOjSsmhioXViLv500Ri8Etu1kcc6roeY9OeA0Ot8B8zZ0obPaMAExSv30itNNd8YaTrA3Rdc5L00poUDRc9W"
+def key_func(k):
+    return k['event_day']
 
 @csrf_exempt
 def my_webhook_view(request):
@@ -149,10 +153,13 @@ def my_webhook_view(request):
 def get_data_by_event_date_code(date_code):
     
     golf_main_context = {}
-    url_main = staticfiles_storage.path('golf_data/golf.csv')
-    url_event_schedule = staticfiles_storage.path('golf_data/event_schedule.csv')
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_main = os.path.dirname(__file__) + '/../media/golf_data/'
+    else:
+        url_main = staticfiles_storage.path('golf_data')
 
-    with open(url_main, newline='') as csvfile:
+
+    with open(url_main + '/golf.csv', newline='') as csvfile:
         spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
         for row in spamreader:
             d_row = dict(row)
@@ -160,32 +167,29 @@ def get_data_by_event_date_code(date_code):
                golf_main_context = d_row
     
     events = []
-    with open(url_event_schedule, newline='') as csvfile:
+    with open(url_main + '/event_schedule.csv', newline='') as csvfile:
         spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
         for row in spamreader:
             d_row = dict(row)
-            if date_code in d_row['key']:
+            if date_code in d_row['year_key']:
                events += [d_row]
 
-    schedule = {}
-    for e in events:
-        key = e['full_date'] + '_' + e['location']
-        if key not in schedule.keys():
-            schedule.update({key:{
-                'date':e['full_date'],
-                'location':e['location'],
-                'events':[]
-            }})
+    schedule = []
 
-        schedule[key]['events'] += [{
-            'time':e['time'],
-            'description':e['description'],
-        }]
-
-    schedule = [schedule[x] for x in schedule.keys()]
-
-    date_obj = date.fromisoformat(date_code)
     p = inflect.engine()
+
+    for key, value in groupby(events, key_func):
+        date_obj = date.fromisoformat(key)
+        data = list(value)
+        schedule += [{
+            'date':key,
+            'date_str':get_week_day(date_obj.weekday()) + ', ' + get_month(date_obj.month) + ' ' + p.ordinal(date_obj.day) + ', ' + str(date_obj.year), 
+            'location':' ' if len(data) == 0 else data[0]['location'],
+            'data':data}]
+
+    # schedule = [schedule[x] for x in schedule.keys()]
+    print(schedule)
+    date_obj = date.fromisoformat(date_code)
 
     print('**', golf_main_context['sponsor_images'])
     # print()

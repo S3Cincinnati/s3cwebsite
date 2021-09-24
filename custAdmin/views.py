@@ -347,6 +347,7 @@ def get_home_data():
     else:
         url_main = staticfiles_storage.path('static_page_data')
 
+    two_frame_count = 0
     with open(url_main + '/home.csv', newline='') as csvfile:
         spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
         for row in spamreader:
@@ -364,18 +365,16 @@ def get_home_data():
                 titles = ast.literal_eval(d_row['titles'])
                 text = ast.literal_eval(d_row['text'])
                 
-                # print(images, titles[0], text)/
-                # data['blocks'] += [{'key':'two_pic_frame','image_1':images[0], 'image_2':images[1], 'title':titles[0], 'text':text}]
+                data['blocks'] += [{'key':'two_pic_frame', 'title':titles[0], 'descr':'\n'.join(text), 'golf_image_left':images[0], 'golf_image_right':images[1], 'count':two_frame_count}]
+                two_frame_count += 1
+
             elif 'golf_outing' == d_row['format']:
                 images = ast.literal_eval(d_row['images'])
                 titles = ast.literal_eval(d_row['titles'])
                 text = ast.literal_eval(d_row['text'])
                 
-                # print(images, titles[0], text)
-                # t = 'Join us at S3C\'s ' + titles[0] + ' Annual fundraising golf outing'
+                data['blocks'] += [{'key':'golf_outing', 'title':titles[0], 'descr':'\n'.join(text), 'date':titles[1], 'file_name':images[0]}]
 
-                # data['blocks'] += [{'key':'two_pic_frame','img1':images[0], 'img2':images[0], 'title':t, 'text':text}]
-                # data['blocks'] += [{'key':'golf_outing','flier':, 'outing_number':titles[0], 'date':titles[1],'text':text}]
     return data
 
 def process_home_data(home_dict):
@@ -383,7 +382,7 @@ def process_home_data(home_dict):
     if os.getenv('DJANGO_ENV','') == 'local':
         url_write_backup = os.path.dirname(__file__) + '/../media/static_page_data/'
     else:
-        url_write_backup = os.path.dirname(__file__) + '/git_publishing/deploy/media/static_page_data/'
+        url_write_backup = os.path.dirname(__file__) + '/git_publishing/deploy/media/=static_page_data/'
 
     donation_data = {'text':{},'val':{}}
 
@@ -406,7 +405,7 @@ def process_home_data(home_dict):
         donations += [{'text':donation_data['text'][str(i)], 'val':donation_data['val'][str(i)]}]
 
     rows += [{'titles':[], 'text':donations, 'images':[], 'format':'count_vals'}]
-
+    # rows += [{'titles':[], 'text':[], 'images':[], 'format':'golf'}]
     with open(url_write_backup + 'home.csv', 'w', newline='') as csvfile:
         fieldnames = ['titles', 'text','images', 'format']
 

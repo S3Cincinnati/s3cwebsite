@@ -112,6 +112,7 @@
 
             {% for b in blocks %}
                 {% if b.key == "count_vals" %}
+                    <h4>Donation Counter</h4>
                     <label for="cars">Events on donation counter:</label><br>
                     <div id='donation_div'>  
                         {% for d in b.vals %}
@@ -123,9 +124,44 @@
                             <br id='br_line_{{d.count}}'>
                         {% endfor %}
                     </div>
-                    <input  type="button"  onClick="add_new_line()" value="Add Line to Donation Field"><br>
+                    <input  type="button"  onClick="add_new_line()" value="Add Line to Donation Field"><br><br>
+                {% endif %}
+                {% if b.key == "golf_outing" %}
+                    <h4>Current Golf Outing</h4>
+                    <div id='golf_div'>  
+                        <label id="golf_event_text_label">Title: </label>
+                        <input type="text" name="golf_event_text" id="golf_event_text" value="{{b.title}}"><br>
+                        <label for="golf_event_full_date">Outing Date:  </label>
+                        <input type="date" name="golf_event_full_date" id="golf_event_full_date" value="{{b.date}}"><br>
+                        <label id="golf_event_description_label">Description: </label><br>
+                        <textarea type="text" name="golf_event_description" id="golf_event_description" rows="6" cols="50"> {{b.descr}} </textarea><br>
+                        <input type="file" id="golf_image" name="golf_image">
+                        <label>Currently uploaded file - <a href="/static/images/home/{{b.file_name}}" download="{{b.file_name}}">{{b.file_name}}</a></label>
+                        <br>
+                        <br id='br_line_{{d.count}}'>
+                    </div>
+                    <!-- <input  type="button"  onClick="add_new_line()" value="Add Line to Donation Field"><br> -->
+                {% endif %}
+                {% if b.key == "two_pic_frame" %}
+                    <h4>Two Picture Frame - {{b.count}}</h4>
+                    <div id='golf_div'>  
+                        <label id="golf_event_text_label">Title: </label>
+                        <input type="text" name="golf_event_text" id="golf_event_text" value="{{b.title}}"><br>
+                        <label id="golf_event_description_label">Description: </label><br>
+                        <textarea type="text" name="golf_event_description" id="golf_event_description" rows="6" cols="50"> {{b.descr}} </textarea><br>
+                        <label id="golf_event_text_label">Image-left: </label>
+                        <input type="file" id="golf_image_left" name="golf_image_left">
+                        <label>Currently uploaded file - <a href="/static/images/home/{{b.golf_image_left}}" download="{{b.golf_image_left}}">{{b.golf_image_left}}</a></label><br>
+                        <label id="golf_event_text_label">Image-right: </label>
+                        <input type="file" id="golf_image_right" name="golf_image_right">
+                        <label>Currently uploaded file - <a href="/static/images/home/{{b.golf_image_right}}" download="{{b.golf_image_right}}">{{b.golf_image_right}}</a></label>
+                        <br>
+                        <br id='br_line_{{d.count}}'>
+                    </div>
+                    <!-- <input  type="button"  onClick="add_new_line()" value="Add Line to Donation Field"><br> -->
                 {% endif %}
             {% endfor %}
+                
             
             <button id="submit" type="submit"> Submit</button>
         </div>

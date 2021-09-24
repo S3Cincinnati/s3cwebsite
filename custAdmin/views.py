@@ -30,12 +30,12 @@ def edit_home(request):
 
         git_clone()
 
-        process_home_data(form_results)
+        process_home_data(form_results, request.FILES)
 
         git_publish_all()
 
     context = get_home_data()
-    print(context)
+    # print(context)
 
     return render(request, 'custAdmin/home_form.html', context)
 
@@ -55,8 +55,6 @@ def new_golf_classic_request(request):
     
 
         f_date = date.fromisoformat(form_results['full_date'][0])
-        # print(f_date.day, f_date.month, f_date.year, f_date.weekday())
-        # print(form_results)
         git_clone()
 
         proccess_golf_data(form_results, request.FILES)
@@ -284,7 +282,6 @@ def process_schedule(golf_dict, year_key):
     days = {}
     locations = {}
     
-    print(keys)
     for k in keys:
         k_new = k[k.find('_')+1:]
         day_num = k_new[:k_new.find('_')]
@@ -359,7 +356,6 @@ def get_home_data():
                     d.update({'count':count})
                     count += 1
                 data['blocks'] += [donations_arr]
-                print(data['blocks'][-1])
             elif 'two_pic_frame' == d_row['format']:
                 images = ast.literal_eval(d_row['images'])
                 titles = ast.literal_eval(d_row['titles'])
@@ -377,16 +373,26 @@ def get_home_data():
 
     return data
 
-def process_home_data(home_dict):
+def process_home_data(home_dict, image_list):
 
     if os.getenv('DJANGO_ENV','') == 'local':
         url_write_backup = os.path.dirname(__file__) + '/../media/static_page_data/'
     else:
-        url_write_backup = os.path.dirname(__file__) + '/git_publishing/deploy/media/=static_page_data/'
+        url_write_backup = os.path.dirname(__file__) + '/git_publishing/deploy/media/static_page_data/'
+
+    if os.getenv('DJANGO_ENV','') == 'local':
+        image_path = os.path.dirname(__file__) + '/../media/images/home/'
+    else:
+        image_path = os.path.dirname(__file__) + '/git_publishing/deploy/media/images/home/'
+
 
     donation_data = {'text':{},'val':{}}
+    golf_event = {'format':'golf_outing', 'images':['header-img.jpg']}
+    two_image_frames = {}
 
-    # {'donation_text_0': ['Cancer Research'], 'donation_value_0': ['$43,620.00'], 'donation_text_1': ['Family Support'], 'donation_value_1': ['$145,482.00']}
+    images = []
+    
+    print('^^', home_dict)
     for d in home_dict.keys():
         temp_d = d
         if 'donation_' in temp_d:
@@ -397,15 +403,55 @@ def process_home_data(home_dict):
             elif 'value_' in temp_d:
                 temp_d = temp_d.replace('value_', '')
                 donation_data['val'].update({temp_d:home_dict[d][0]})
-
-    rows = []
+        if 'golf_event_' in temp_d:
+            temp_d = temp_d.replace('golf_event_', '')
+            if 'text' in temp_d:
+                golf_event.update({'titles':home_dict[d]})
+            if 'full_date' in temp_d:
+                golf_event.update({'full_date':home_dict[d]})
+            if 'description' in temp_d:
+                golf_event.update({'text':home_dict[d][0].split('\r\n')})
+        if 'two_pic_frame_' in temp_d:
+            temp_d = temp_d.replace('two_pic_frame_', '')
+            index = temp_d[-1]
+            temp_d = temp_d.replace('_'+index, '')
+            if index not in two_image_frames.keys():
+                two_image_frames.update({index:{'format':'two_pic_frame','images':['','']}})
+            
+            if 'title' in temp_d:
+                two_image_frames[index].update({'titles':home_dict[d]})
+            if 'description' in temp_d:
+                two_image_frames[index].update({'text':home_dict[d][0].split('\r\n')})
+    
+    for im in image_list:
+        temp_d = im
+        if 'golf_event_' in temp_d:
+            temp_d = temp_d.replace('golf_event_', '')
+            if 'golf_image' in temp_d:
+                golf_event.update({'images':image_list[im].name})
+        if 'two_pic_frame_' in temp_d:
+            temp_d = temp_d.replace('two_pic_frame_', '')
+            index = temp_d[-1]
+            temp_d = temp_d.replace('_'+index, '')
+            if 'image_left' in temp_d:
+                two_image_frames[index]['images'][0] = image_list[im].name
+            if 'image_right' in temp_d:
+                two_image_frames[index]['images'][1] = image_list[im].name
+    rows = []      
     
     donations = []
     for i in range(len(donation_data['text'])):
         donations += [{'text':donation_data['text'][str(i)], 'val':donation_data['val'][str(i)]}]
 
     rows += [{'titles':[], 'text':donations, 'images':[], 'format':'count_vals'}]
-    # rows += [{'titles':[], 'text':[], 'images':[], 'format':'golf'}]
+    
+    golf_event['titles'] += golf_event['full_date']
+    golf_event.pop('full_date', None)
+    rows += [golf_event]
+
+    for i in two_image_frames.keys():
+        rows += [two_image_frames[i]]
+    
     with open(url_write_backup + 'home.csv', 'w', newline='') as csvfile:
         fieldnames = ['titles', 'text','images', 'format']
 
@@ -413,3 +459,8 @@ def process_home_data(home_dict):
         writer.writeheader()
         
         writer.writerows(rows)
+    
+    for im in image_list:
+        temp_url = image_path + '/' + image_list[im].name
+        picture = Image.open(image_list[im])  
+        picture.save(temp_url)

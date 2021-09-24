@@ -145,16 +145,16 @@
                 {% if b.key == "two_pic_frame" %}
                     <h4>Two Picture Frame - {{b.count}}</h4>
                     <div id='golf_div'>  
-                        <label id="golf_event_text_label">Title: </label>
-                        <input type="text" name="golf_event_text" id="golf_event_text" value="{{b.title}}"><br>
-                        <label id="golf_event_description_label">Description: </label><br>
-                        <textarea type="text" name="golf_event_description" id="golf_event_description" rows="6" cols="50"> {{b.descr}} </textarea><br>
-                        <label id="golf_event_text_label">Image-left: </label>
-                        <input type="file" id="golf_image_left" name="golf_image_left">
-                        <label>Currently uploaded file - <a href="/static/images/home/{{b.golf_image_left}}" download="{{b.golf_image_left}}">{{b.golf_image_left}}</a></label><br>
-                        <label id="golf_event_text_label">Image-right: </label>
-                        <input type="file" id="golf_image_right" name="golf_image_right">
-                        <label>Currently uploaded file - <a href="/static/images/home/{{b.golf_image_right}}" download="{{b.golf_image_right}}">{{b.golf_image_right}}</a></label>
+                        <label id="two_pic_frame_title_label_{{b.count}}">Title: </label>
+                        <input type="text" name="two_pic_frame_title_{{b.count}}" id="two_pic_frame_title_{{b.count}}" value="{{b.title}}"><br>
+                        <label id="two_pic_frame_description_label_{{b.count}}">Description: </label><br>
+                        <textarea type="text" name="two_pic_frame_description_{{b.count}}" id="two_pic_frame_description_{{b.count}}" rows="6" cols="50"> {{b.descr}} </textarea><br>
+                        <label id="two_pic_frame_image_left_label_{{b.count}}">Image-left: </label>
+                        <input type="file" id="two_pic_frame_image_left_{{b.count}}" name="two_pic_frame_image_left_{{b.count}}">
+                        <label id="two_pic_frame_image_left_current_{{b.count}}">Currently uploaded file - <a href="/static/images/home/{{b.golf_image_left}}" download="{{b.golf_image_left}}">{{b.golf_image_left}}</a></label><br>
+                        <label id="two_pic_frame_image_right_label_{{b.count}}">Image-right: </label>
+                        <input type="file" id="two_pic_frame_image_right_{{b.count}}" name="two_pic_frame_image_right_{{b.count}}">
+                        <label id="two_pic_frame_image_right_current_{{b.count}}">Currently uploaded file - <a href="/static/images/home/{{b.golf_image_right}}" download="{{b.golf_image_right}}">{{b.golf_image_right}}</a></label>
                         <br>
                         <br id='br_line_{{d.count}}'>
                     </div>

@@ -269,7 +269,7 @@ def get_home_data():
                 print(images, titles[0], text)
                 t = 'Join us at S3C\'s ' + titles[0] + ' Annual fundraiseing golf outing'
 
-                data['blocks'] += [{'key':'two_pic_frame','img1':images[0], 'img2':images[0], 'title':t, 'text':text}]
+                data['blocks'] += [{'key':'golf_outing','img1':images[0], 'title':t, 'text':text}]
                 # data['blocks'] += [{'key':'golf_outing','flier':, 'outing_number':titles[0], 'date':titles[1],'text':text}]
     return data
 def get_week_day(day_val):

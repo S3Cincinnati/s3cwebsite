@@ -1,6 +1,110 @@
 {% extends "custAdmin/admin_base.html" %}
 
+
 {% block content %}
+    <script>
+
+        var donation_line_count=-1;
+        function store_vals()
+        {
+            var nodes = document.getElementById('frm').children
+            var ids = []
+
+            for (node of nodes){
+                if (node.id.length > 0 ){
+                    ids.push(node)
+                }
+            }
+            
+            for (id of ids)
+            {
+                if (id.id.includes('image') && !id.id.includes('btn')){
+                    
+                } else {
+                    localStorage.setItem(id.id, id.value);
+                }
+            }
+            
+        }
+
+        function write_vals()
+        {
+            var nodes = document.getElementById('frm').children
+            var ids = []
+
+            for (node of nodes){
+                if (node.id.length > 0 ){
+                    ids.push(node)
+                }
+            }
+            
+            for (id of ids)
+            {
+                if (!id.id.includes('image')){
+                    id.value = localStorage.getItem(id.id);
+                }
+            }
+        }
+
+        function add_new_line()
+        {
+            // ev.preventDefault();
+            if (donation_line_count < 0){
+                donation_line_count = document.getElementById('donation_div').childElementCount / 6;
+            }
+            store_vals()
+            // popped_nodes = pop_nodes_after_day(99)
+            var text_label = document.createElement('label')
+            text_label.textContent = 'Text: ' 
+            text_label.id = 'donation_text_label_' + donation_line_count
+            document.getElementById('donation_div').appendChild(text_label)
+
+            var text_input = document.createElement('input')
+            text_input.id = 'donation_text_' + donation_line_count
+            text_input.name = 'donation_text_' + donation_line_count
+            text_input.type = 'text'
+            document.getElementById('donation_div').appendChild(text_input)
+
+            var input_label = document.createElement('label')
+            input_label.textContent = 'Value: ' 
+            input_label.id = 'donation_value_label_' + donation_line_count
+            document.getElementById('donation_div').appendChild(input_label)
+
+            var input_value = document.createElement('input')
+            input_value.id = 'donation_value_' + donation_line_count
+            input_value.name = 'donation_value_' + donation_line_count
+            input_value.type = 'text'
+            document.getElementById('donation_div').appendChild(input_value)
+
+            var remove_line_btn = document.createElement('input')
+            remove_line_btn.id = 'remove_line_btn_' + donation_line_count
+            remove_line_btn.name = 'remove_line_btn_' + donation_line_count
+            remove_line_btn.type = 'button'
+            remove_line_btn.onclick = "remove_line(parseInt('{{d.count}}'))"
+            remove_line_btn.value = 'X'
+            document.getElementById('donation_div').appendChild(remove_line_btn)
+            br = document.createElement('br')
+            br.id = 'br_line_' + donation_line_count
+            document.getElementById('donation_div').appendChild()
+
+            donation_line_count++;
+            
+            write_vals()
+
+        }
+
+        function remove_line(num)
+        {
+            console.log(num)
+            temp = document.getElementById('donation_text_label_' + num).remove()
+            document.getElementById('donation_text_' + num).remove()
+            document.getElementById('donation_value_' + num).remove()
+            document.getElementById('donation_value_label_' + num).remove()
+            document.getElementById('remove_line_btn_' + num).remove()
+            document.getElementById('br_line_' + num).remove()
+        }
+    </script>
+
 
     <form method="post" enctype="multipart/form-data">
         {% csrf_token%}
@@ -9,12 +113,17 @@
             {% for b in blocks %}
                 {% if b.key == "count_vals" %}
                     <label for="cars">Events on donation counter:</label><br>
-                    {% for d in b.vals %}
-                        <label>Text: </label>
-                        <input type="text" name="donation_text_{{d.count}}" id="donation_text_{{d.count}}" value="{{d.text}}">
-                        <label>Value: </label>
-                        <input type="text" name="donation_value_{{d.count}}" id="donation_value_{{d.count}}" value="{{d.val}}"><br>
-                    {% endfor %}
+                    <div id='donation_div'>  
+                        {% for d in b.vals %}
+                            <label id="donation_text_label_{{d.count}}">Text: </label>
+                            <input type="text" name="donation_text_{{d.count}}" id="donation_text_{{d.count}}" value="{{d.text}}">
+                            <label id="donation_value_label_{{d.count}}">Value: </label>
+                            <input type="text" name="donation_value_{{d.count}}" id="donation_value_{{d.count}}" value="{{d.val}}">
+                            <input  type="button"  onClick="remove_line(parseInt('{{d.count}}'))" value="X" id='remove_line_btn_{{d.count}}'>
+                            <br id='br_line_{{d.count}}'>
+                        {% endfor %}
+                    </div>
+                    <input  type="button"  onClick="add_new_line()" value="Add Line to Donation Field"><br>
                 {% endif %}
             {% endfor %}
             

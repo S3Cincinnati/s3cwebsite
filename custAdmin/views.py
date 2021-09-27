@@ -338,7 +338,7 @@ def process_golf_images(date_key, image_list):
     # TODO - save to csv -> date_key|category (event or sponsor)|file_location
 
 def get_home_data():
-    data = {'blocks':[]}
+    data = {'blocks':[], 'two_pics':[]}
     if os.getenv('DJANGO_ENV','') == 'local':
         url_main = os.path.dirname(__file__) + '/../media/static_page_data/'
     else:
@@ -361,7 +361,7 @@ def get_home_data():
                 titles = ast.literal_eval(d_row['titles'])
                 text = ast.literal_eval(d_row['text'])
                 
-                data['blocks'] += [{'key':'two_pic_frame', 'title':titles[0], 'descr':'\n'.join(text), 'golf_image_left':images[0], 'golf_image_right':images[1], 'count':two_frame_count}]
+                data['two_pics'] += [{'key':'two_pic_frame', 'title':titles[0], 'descr':'\n'.join(text), 'golf_image_left':images[0], 'golf_image_right':images[1], 'count':two_frame_count}]
                 two_frame_count += 1
 
             elif 'golf_outing' == d_row['format']:

@@ -240,7 +240,7 @@ def get_sign_up_data_event_date_code(date_code):
     return {'sponsor_options':sponsor_sign_ups, 'golf_options':golf_sign_ups}
 
 def get_home_data():
-    data = {'blocks':[]}
+    data = {'blocks':[], 'two_pics':[]}
     if os.getenv('DJANGO_ENV','') == 'local':
         url_main = os.path.dirname(__file__) + '/../media/static_page_data/'
     else:
@@ -259,18 +259,17 @@ def get_home_data():
                 titles = ast.literal_eval(d_row['titles'])
                 text = ast.literal_eval(d_row['text'])
                 
-                print(images, titles[0], text)
-                data['blocks'] += [{'key':'two_pic_frame','img1':images[0], 'img2':images[1], 'title':titles[0], 'text':text}]
+                data['two_pics'] += [{'key':'two_pic_frame','img1':images[0], 'img2':images[1], 'title':titles[0], 'text':text}]
             elif 'golf_outing' == d_row['format']:
                 images = ast.literal_eval(d_row['images'])
                 titles = ast.literal_eval(d_row['titles'])
                 text = ast.literal_eval(d_row['text'])
                 
-                print(images, titles[0], text)
                 t = 'Join us at S3C\'s ' + titles[0] + ' Annual fundraiseing golf outing'
 
                 data['blocks'] += [{'key':'golf_outing','img1':images[0], 'title':t, 'text':text}]
                 # data['blocks'] += [{'key':'golf_outing','flier':, 'outing_number':titles[0], 'date':titles[1],'text':text}]
+    
     return data
 def get_week_day(day_val):
     mapp = {0:'Monday', 1:'Tuesday',2:'Wednesday',3:'Thursday',4:'Friday',5:'Saturday',6:'Sunday'}

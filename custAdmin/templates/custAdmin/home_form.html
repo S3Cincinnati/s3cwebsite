@@ -5,6 +5,7 @@
     <script>
 
         var donation_line_count=-1;
+        var two_picture_count=-1;
         function store_vals()
         {
             var nodes = document.getElementById('frm').children
@@ -103,6 +104,103 @@
             document.getElementById('remove_line_btn_' + num).remove()
             document.getElementById('br_line_' + num).remove()
         }
+    
+        function add_two_picture_frame(){
+            // ev.preventDefault();
+            if (two_picture_count < 0){
+                two_picture_count = document.getElementById('two_picture_div_big').childElementCount;
+            }
+            store_vals()
+            var div = document.createElement('div')
+            div.id = 'two_picture_div_' + two_picture_count
+            document.getElementById('two_picture_div_big').appendChild(div)
+            
+            var two_picture_title = document.createElement('h4')
+            two_picture_title.id = 'two_pic_frame_title_label_' + two_picture_count
+            two_picture_title.style.display = 'inline'
+            two_picture_title.textContent = 'Two Picture Frame - ' + two_picture_count
+            div.appendChild(two_picture_title)
+
+            var two_picture_remove_btn = document.createElement('input')
+            two_picture_remove_btn.id = 'two_picture_remove_btn_' + two_picture_count
+            two_picture_remove_btn.type = 'button'
+            two_picture_remove_btn.value = 'X'
+            two_picture_remove_btn.setAttribute('onclick','remove_two_picture_frame(parseInt(' + two_picture_count + '))')
+            div.appendChild(two_picture_remove_btn)
+            div.appendChild(document.createElement('br'))
+
+
+            var title_label = document.createElement('label')
+            title_label.textContent = 'Title: ' 
+            title_label.id = 'two_pic_frame_title_label_' + two_picture_count
+            div.appendChild(title_label)
+
+            var title_value = document.createElement('input')
+            title_value.id = 'two_pic_frame_title_' + two_picture_count
+            title_value.name = 'two_pic_frame_title_' + two_picture_count
+            title_value.type = 'text'
+            div.appendChild(title_value)
+            div.appendChild(document.createElement('br'))
+
+            var description_label = document.createElement('label')
+            description_label.textContent = 'Description: ' 
+            description_label.id = 'two_pic_frame_description_label_' + two_picture_count
+            div.appendChild(description_label)
+            div.appendChild(document.createElement('br'))
+
+            var description_text_area = document.createElement('textarea')
+            description_text_area.id = 'two_pic_frame_description_' + two_picture_count
+            description_text_area.name = 'two_pic_frame_description_' + two_picture_count
+            description_text_area.rows = '6'
+            description_text_area.cols = '50'
+            div.appendChild(description_text_area)
+            div.appendChild(document.createElement('br'))
+
+            var left_label = document.createElement('label')
+            left_label.textContent = 'Image-left: ' 
+            left_label.id = 'two_pic_frame_image_left_label_' + two_picture_count
+            div.appendChild(left_label)
+            
+            var left_value = document.createElement('input')
+            left_value.id = 'two_pic_frame_image_left_' + two_picture_count
+            left_value.name = 'two_pic_frame_image_left_' + two_picture_count
+            left_value.type = 'file'
+            div.appendChild(left_value)
+            
+            var left_label_value = document.createElement('label')
+            left_label_value.textContent = 'Currently uploaded file - ' 
+            left_label_value.id = 'two_pic_frame_image_left_current_' + two_picture_count
+            div.appendChild(left_label_value)
+            div.appendChild(document.createElement('br'))
+
+            var right_label = document.createElement('label')
+            right_label.textContent = 'Image-right: ' 
+            right_label.id = 'two_pic_frame_image_right_label_' + two_picture_count
+            div.appendChild(right_label)
+            
+            var right_value = document.createElement('input')
+            right_value.id = 'two_pic_frame_image_right_' + two_picture_count
+            right_value.name = 'two_pic_frame_image_right_' + two_picture_count
+            right_value.type = 'file'
+            div.appendChild(right_value)
+            
+            var right_label_value = document.createElement('label')
+            right_label_value.textContent = 'Currently uploaded file - ' 
+            right_label_value.id = 'two_pic_frame_image_right_current_' + two_picture_count
+            div.appendChild(right_label_value)
+            div.appendChild(document.createElement('br'))
+            div.appendChild(document.createElement('br'))
+            
+            two_picture_count++;
+            
+            write_vals()
+        }
+        
+        function remove_two_picture_frame(num)
+        {
+            console.log('two_picture_div_' + num)
+            document.getElementById('two_picture_div_' + num).remove()
+        }
     </script>
 
 
@@ -140,11 +238,15 @@
                         <br>
                         <br id='br_line_{{d.count}}'>
                     </div>
-                    <!-- <input  type="button"  onClick="add_new_line()" value="Add Line to Donation Field"><br> -->
                 {% endif %}
-                {% if b.key == "two_pic_frame" %}
-                    <h4>Two Picture Frame - {{b.count}}</h4>
-                    <div id='golf_div'>  
+            {% endfor %}
+
+            <div id='two_picture_div_big'>  
+                {% for b in two_pics %}
+                    <div id='two_picture_div_{{b.count}}'>  
+                        <h4 style="display: inline;">Two Picture Frame - {{b.count}}</h4> 
+                        <input type="button" onClick="remove_two_picture_frame(parseInt('{{b.count}}'))" value="X">
+                        <br>
                         <label id="two_pic_frame_title_label_{{b.count}}">Title: </label>
                         <input type="text" name="two_pic_frame_title_{{b.count}}" id="two_pic_frame_title_{{b.count}}" value="{{b.title}}"><br>
                         <label id="two_pic_frame_description_label_{{b.count}}">Description: </label><br>
@@ -158,11 +260,11 @@
                         <br>
                         <br id='br_line_{{d.count}}'>
                     </div>
-                    <!-- <input  type="button"  onClick="add_new_line()" value="Add Line to Donation Field"><br> -->
-                {% endif %}
-            {% endfor %}
+                {% endfor %}
+            </div>
                 
             
+            <input  type="button"  onClick="add_two_picture_frame()" value="Add Two Picture" id='remove_line_btn_{{d.count}}'>
             <button id="submit" type="submit"> Submit</button>
         </div>
     </form>

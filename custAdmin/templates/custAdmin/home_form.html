@@ -96,7 +96,6 @@
 
         function remove_line(num)
         {
-            console.log(num)
             temp = document.getElementById('donation_text_label_' + num).remove()
             document.getElementById('donation_text_' + num).remove()
             document.getElementById('donation_value_' + num).remove()
@@ -106,7 +105,6 @@
         }
     
         function add_two_picture_frame(){
-            // ev.preventDefault();
             if (two_picture_count < 0){
                 two_picture_count = document.getElementById('two_picture_div_big').childElementCount;
             }
@@ -207,6 +205,24 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token%}
         <div id="frm">
+
+            <h4>Left side text:</h4>
+            <label id="left_text_title_label">Title: </label>
+            <input type="text" name="left_text_title" id="left_text_title" value="{{left.title}}"><br>
+            <label id="left_text_text_label">Value: </label><br>
+            <textarea type="text" name="left_text_text" id="left_text_text" rows="6" cols="50"> {{left.text}} </textarea><br>
+            
+            <h4>Right side text:</h4>
+            <label id="right_text_title_label">Title: </label>
+            <input type="text" name="right_text_title" id="right_text_title" value="{{right.title}}"><br>
+            <label id="right_text_text_label">Value: </label><br>
+            <textarea type="text" name="right_text_text" id="right_text_text" rows="6" cols="50"> {{right.text}} </textarea><br>
+
+            <h4>Tax Deduction text:</h4>
+            <label id="tax_text_title_label">Title: </label>
+            <input type="text" name="tax_text_title" id="tax_text_title" value="{{irs.title}}"><br>
+            <label id="tax_text_text_label">Value: </label><br>
+            <textarea type="text" name="tax_text_text" id="tax_text_text" rows="6" cols="50"> {{irs.text}} </textarea><br>
 
             {% for b in blocks %}
                 {% if b.key == "count_vals" %}

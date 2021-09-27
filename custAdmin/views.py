@@ -35,7 +35,6 @@ def edit_home(request):
         git_publish_all()
 
     context = get_home_data()
-    # print(context)
 
     return render(request, 'custAdmin/home_form.html', context)
 
@@ -86,7 +85,6 @@ def edit_golf_classic_request(request, key):
     # print(outing_data)
     context = {'data':outing_data}
     return render(request, 'custAdmin/golf_form.html', context)
-
 
 def get_event_data():
     golf_main_context = []
@@ -321,7 +319,6 @@ def process_golf_images(date_key, image_list):
 
     f_date = date.fromisoformat(date_key)
 
-    # url_main = staticfiles_storage.path('images/golf/' + str(f_date.year) + '/')
     if os.getenv('DJANGO_ENV','') == 'local':
         url_write_backup = os.path.dirname(__file__) + '../media/images/golf/' + str(f_date.year) + '/'
     else:
@@ -338,7 +335,7 @@ def process_golf_images(date_key, image_list):
     # TODO - save to csv -> date_key|category (event or sponsor)|file_location
 
 def get_home_data():
-    data = {'blocks':[], 'two_pics':[]}
+    data = {'blocks':[], 'two_pics':[],'left':{}, 'right':{}, 'irs':{}}
     if os.getenv('DJANGO_ENV','') == 'local':
         url_main = os.path.dirname(__file__) + '/../media/static_page_data/'
     else:
@@ -363,13 +360,19 @@ def get_home_data():
                 
                 data['two_pics'] += [{'key':'two_pic_frame', 'title':titles[0], 'descr':'\n'.join(text), 'golf_image_left':images[0], 'golf_image_right':images[1], 'count':two_frame_count}]
                 two_frame_count += 1
-
             elif 'golf_outing' == d_row['format']:
                 images = ast.literal_eval(d_row['images'])
                 titles = ast.literal_eval(d_row['titles'])
                 text = ast.literal_eval(d_row['text'])
                 
                 data['blocks'] += [{'key':'golf_outing', 'title':titles[0], 'descr':'\n'.join(text), 'date':titles[1], 'file_name':images[0]}]
+            elif 'left_panel' == d_row['format'] or 'right_panel' == d_row['format'] or 'irs_panel' == d_row['format']:
+                format = d_row['format'].replace('_panel','')
+                images = ast.literal_eval(d_row['images'])
+                titles = ast.literal_eval(d_row['titles'])
+                text = ast.literal_eval(d_row['text'])
+                
+                data[format] = {'title':titles[0], 'text':'\n'.join(text).strip()}
 
     return data
 
@@ -389,6 +392,9 @@ def process_home_data(home_dict, image_list):
     donation_data = {'text':{},'val':{}}
     golf_event = {'format':'golf_outing', 'images':['header-img.jpg']}
     two_image_frames = {}
+    left_text = {'titles':[],'text':[],'images':[],'format':'left_panel'}
+    right_text = {'titles':[],'text':[],'images':[],'format':'right_panel'}
+    irs_text = {'titles':[],'text':[],'images':[],'format':'irs_panel'}
 
     images = []
     
@@ -422,7 +428,31 @@ def process_home_data(home_dict, image_list):
                 two_image_frames[index].update({'titles':home_dict[d]})
             if 'description' in temp_d:
                 two_image_frames[index].update({'text':home_dict[d][0].split('\r\n')})
-    
+        if 'left_text_' in temp_d:
+            temp_d = temp_d.replace('left_text_', '')
+            
+            if 'title' in temp_d:
+                left_text['titles'] = [home_dict[d][0]]
+            if 'text' in temp_d:
+                text = [x.strip() for x in home_dict[d][0].split('\r\n')]
+                left_text['text'] = text
+        if 'right_text_' in temp_d:
+            temp_d = temp_d.replace('right_text_', '')
+            
+            if 'title' in temp_d:
+                right_text['titles'] = [home_dict[d][0]]
+            if 'text' in temp_d:
+                text = [x.strip() for x in home_dict[d][0].split('\r\n')]
+                right_text['text'] = text
+        if 'tax_text_' in temp_d:
+            temp_d = temp_d.replace('tax_text_', '')
+            
+            if 'title' in temp_d:
+                irs_text['titles'] = [home_dict[d][0]]
+            if 'text' in temp_d:
+                text = [x.strip() for x in home_dict[d][0].split('\r\n')]
+                irs_text['text'] = text
+
     for im in image_list:
         temp_d = im
         if 'golf_event_' in temp_d:
@@ -451,6 +481,10 @@ def process_home_data(home_dict, image_list):
 
     for i in two_image_frames.keys():
         rows += [two_image_frames[i]]
+    
+    rows += [left_text]
+    rows += [right_text]
+    rows += [irs_text]
     
     with open(url_write_backup + 'home.csv', 'w', newline='') as csvfile:
         fieldnames = ['titles', 'text','images', 'format']

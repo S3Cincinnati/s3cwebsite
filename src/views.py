@@ -26,7 +26,7 @@ from itertools import groupby
 def home(request):
     context = {}
     context.update(get_home_data())
-    print(context)
+    # print(context)
     return render(request, 'src/home.html',context)
 
 def our_team(request):
@@ -268,7 +268,13 @@ def get_home_data():
                 t = 'Join us at S3C\'s ' + titles[0] + ' Annual fundraiseing golf outing'
 
                 data['blocks'] += [{'key':'golf_outing','img1':images[0], 'title':t, 'text':text}]
-                # data['blocks'] += [{'key':'golf_outing','flier':, 'outing_number':titles[0], 'date':titles[1],'text':text}]
+            elif 'left_panel' == d_row['format'] or 'right_panel' == d_row['format'] or 'irs_panel' == d_row['format']:
+                format = d_row['format'].replace('_panel','')
+                images = ast.literal_eval(d_row['images'])
+                titles = ast.literal_eval(d_row['titles'])
+                text = ast.literal_eval(d_row['text'])
+                
+                data[format] = {'title':titles[0], 'text':text}
     
     return data
 def get_week_day(day_val):

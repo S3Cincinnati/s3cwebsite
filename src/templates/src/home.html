@@ -28,7 +28,7 @@
                   <div style="flex: 2; padding: 0.5rem;">
                     <img src="/static/images/home/{{b.img1}}" class="d-block w-100" style="max-height: 100%; object-fit: contain;">
                   </div>
-                  
+
                   <div style="flex: 2;">
                     <h3>{{b.title}}</h3>
                     {% for t in b.text %} 
@@ -80,23 +80,20 @@
 
           <div class="row" style="padding-top: 1.5rem;">
             <div class="col-6">
-              <h4>S3C Supports the Cancer Community!</h4>
-              <p>S3C’s ambition is to lend support to the cancer community on every level and avenue revealed to us.  Whether it is providing financial assistance to families for cancer related expenses, hosting collection drives for essential items, partnering with clubs and organizations to host fundraisers, volunteering our time at local charity events, raising funds for cancer research, or simply encouraging individuals to find hope, we are on a mission to better our community, specifically those faced with the varied challenges cancer poses.</p>
+              <h4>{{left.title}}</h4>
+              {% for t in left.text %}
+                <p>{{t}}</p>
+              {% endfor %}
             </div>
             <div class="col-6">
-              <h4> S3C's Success Depends on Sponsors</h4>
-              <p>Sponsorship dollars are essential to the success of our annual events.  S3C seeks to underwrite the cost of our events so that every penny will directly impact the Cancer Community.  To date we've successfully covered the expenses and then some from generous corporate sponsors.  Thank you for ensuring every donation impacts a family in our Cancer Community!</p>
-              <p><b>Donations To S3C are Tax-Deductible</b><br>S3C is an Ohio 501 (c)(3) non-profit organization recognized by the IRS, and all donations to S3C are tax-deductible in accordance with IRS regulations.</p>
-              <!-- <div class="row">
-                <div class="col-6">
-                  <p>Follow us on Twitter...</p>
-                  <p>Like us on Facebook...</p>
-                </div>
-                <div class="col-6">
-                  <p>@S3C_Inc</p>
-                  <p>facebook.com/s3cohio</p>
-                </div>
-              </div> -->
+              <h4>{{right.title}}</h4>
+              {% for t in right.text %}
+                <p>{{t}}</p>
+              {% endfor %}
+              <p><b>{{irs.title}}</b></p>
+              {% for t in irs.text %}
+                <p>{{t}}</p>
+              {% endfor %}
             </div>
           </div>
     </div>

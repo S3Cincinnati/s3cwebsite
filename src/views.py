@@ -51,7 +51,8 @@ def our_team(request):
             'number':'513-225-6068'
         }
     ]
-    context = {'people':people}
+    
+    context = {'people':people, 'about':get_about_us_data()}
     return render(request, 'src/our_team.html', context)
 
 
@@ -294,4 +295,19 @@ def get_price(type):
         return 'price_1JO6ffDym2z9hVAOVc18C5tx'
     return ''
 
+def get_about_us_data():
+    data = []
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_main = os.path.dirname(__file__) + '/../media/static_page_data/'
+    else:
+        url_main = staticfiles_storage.path('static_page_data')
+
+    with open(url_main + '/about_us.csv', newline='') as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
+        for row in spamreader:
+            d_row = dict(row)
+            d_row['text'] = ast.literal_eval(d_row['text'])
+            data += [d_row]
+
+    return data
 # class C

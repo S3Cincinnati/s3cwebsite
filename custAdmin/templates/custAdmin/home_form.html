@@ -113,7 +113,7 @@
             div.id = 'two_picture_div_' + two_picture_count
             document.getElementById('two_picture_div_big').appendChild(div)
             
-            var two_picture_title = document.createElement('h4')
+            var two_picture_title = document.createElement('h5')
             two_picture_title.id = 'two_pic_frame_title_label_' + two_picture_count
             two_picture_title.style.display = 'inline'
             two_picture_title.textContent = 'Two Picture Frame - ' + two_picture_count
@@ -201,87 +201,91 @@
         }
     </script>
 
+    <div class="container">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token%}
+            <div id="frm">
 
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token%}
-        <div id="frm">
-
-            <h4>Left side text:</h4>
-            <label id="left_text_title_label">Title: </label>
-            <input type="text" name="left_text_title" id="left_text_title" value="{{left.title}}"><br>
-            <label id="left_text_text_label">Value: </label><br>
-            <textarea type="text" name="left_text_text" id="left_text_text" rows="6" cols="50"> {{left.text}} </textarea><br>
-            
-            <h4>Right side text:</h4>
-            <label id="right_text_title_label">Title: </label>
-            <input type="text" name="right_text_title" id="right_text_title" value="{{right.title}}"><br>
-            <label id="right_text_text_label">Value: </label><br>
-            <textarea type="text" name="right_text_text" id="right_text_text" rows="6" cols="50"> {{right.text}} </textarea><br>
-
-            <h4>Tax Deduction text:</h4>
-            <label id="tax_text_title_label">Title: </label>
-            <input type="text" name="tax_text_title" id="tax_text_title" value="{{irs.title}}"><br>
-            <label id="tax_text_text_label">Value: </label><br>
-            <textarea type="text" name="tax_text_text" id="tax_text_text" rows="6" cols="50"> {{irs.text}} </textarea><br>
-
-            {% for b in blocks %}
-                {% if b.key == "count_vals" %}
-                    <h4>Donation Counter</h4>
-                    <label for="cars">Events on donation counter:</label><br>
-                    <div id='donation_div'>  
-                        {% for d in b.vals %}
-                            <label id="donation_text_label_{{d.count}}">Text: </label>
-                            <input type="text" name="donation_text_{{d.count}}" id="donation_text_{{d.count}}" value="{{d.text}}">
-                            <label id="donation_value_label_{{d.count}}">Value: </label>
-                            <input type="text" name="donation_value_{{d.count}}" id="donation_value_{{d.count}}" value="{{d.val}}">
-                            <input  type="button"  onClick="remove_line(parseInt('{{d.count}}'))" value="X" id='remove_line_btn_{{d.count}}'>
-                            <br id='br_line_{{d.count}}'>
-                        {% endfor %}
-                    </div>
-                    <input  type="button"  onClick="add_new_line()" value="Add Line to Donation Field"><br><br>
-                {% endif %}
-                {% if b.key == "golf_outing" %}
-                    <h4>Current Golf Outing</h4>
-                    <div id='golf_div'>  
-                        <label id="golf_event_text_label">Title: </label>
-                        <input type="text" name="golf_event_text" id="golf_event_text" value="{{b.title}}"><br>
-                        <label for="golf_event_full_date">Outing Date:  </label>
-                        <input type="date" name="golf_event_full_date" id="golf_event_full_date" value="{{b.date}}"><br>
-                        <label id="golf_event_description_label">Description: </label><br>
-                        <textarea type="text" name="golf_event_description" id="golf_event_description" rows="6" cols="50"> {{b.descr}} </textarea><br>
-                        <input type="file" id="golf_image" name="golf_image">
-                        <label>Currently uploaded file - <a href="/static/images/home/{{b.file_name}}" download="{{b.file_name}}">{{b.file_name}}</a></label>
-                        <br>
-                        <br id='br_line_{{d.count}}'>
-                    </div>
-                {% endif %}
-            {% endfor %}
-
-            <div id='two_picture_div_big'>  
-                {% for b in two_pics %}
-                    <div id='two_picture_div_{{b.count}}'>  
-                        <h4 style="display: inline;">Two Picture Frame - {{b.count}}</h4> 
-                        <input type="button" onClick="remove_two_picture_frame(parseInt('{{b.count}}'))" value="X">
-                        <br>
-                        <label id="two_pic_frame_title_label_{{b.count}}">Title: </label>
-                        <input type="text" name="two_pic_frame_title_{{b.count}}" id="two_pic_frame_title_{{b.count}}" value="{{b.title}}"><br>
-                        <label id="two_pic_frame_description_label_{{b.count}}">Description: </label><br>
-                        <textarea type="text" name="two_pic_frame_description_{{b.count}}" id="two_pic_frame_description_{{b.count}}" rows="6" cols="50"> {{b.descr}} </textarea><br>
-                        <label id="two_pic_frame_image_left_label_{{b.count}}">Image-left: </label>
-                        <input type="file" id="two_pic_frame_image_left_{{b.count}}" name="two_pic_frame_image_left_{{b.count}}">
-                        <label id="two_pic_frame_image_left_current_{{b.count}}">Currently uploaded file - <a href="/static/images/home/{{b.golf_image_left}}" download="{{b.golf_image_left}}">{{b.golf_image_left}}</a></label><br>
-                        <label id="two_pic_frame_image_right_label_{{b.count}}">Image-right: </label>
-                        <input type="file" id="two_pic_frame_image_right_{{b.count}}" name="two_pic_frame_image_right_{{b.count}}">
-                        <label id="two_pic_frame_image_right_current_{{b.count}}">Currently uploaded file - <a href="/static/images/home/{{b.golf_image_right}}" download="{{b.golf_image_right}}">{{b.golf_image_right}}</a></label>
-                        <br>
-                        <br id='br_line_{{d.count}}'>
-                    </div>
-                {% endfor %}
-            </div>
+                <h2>Home Screen Text</h2>
+                <h5>Left side text:</h5>
+                <label id="left_text_title_label">Title: </label>
+                <input type="text" name="left_text_title" id="left_text_title" value="{{left.title}}"><br>
+                <label id="left_text_text_label">Value: </label><br>
+                <textarea type="text" name="left_text_text" id="left_text_text" rows="6" cols="50"> {{left.text}} </textarea><br>
                 
-            
-            <input  type="button"  onClick="add_two_picture_frame()" value="Add Two Picture" id='remove_line_btn_{{d.count}}'>
-            <button id="submit" type="submit"> Submit</button>
-        </div>
-    </form>
+                <h5>Right side text:</h5>
+                <label id="right_text_title_label">Title: </label>
+                <input type="text" name="right_text_title" id="right_text_title" value="{{right.title}}"><br>
+                <label id="right_text_text_label">Value: </label><br>
+                <textarea type="text" name="right_text_text" id="right_text_text" rows="6" cols="50"> {{right.text}} </textarea><br>
+
+                <h5>Tax Deduction text:</h5>
+                <label id="tax_text_title_label">Title: </label>
+                <input type="text" name="tax_text_title" id="tax_text_title" value="{{irs.title}}"><br>
+                <label id="tax_text_text_label">Value: </label><br>
+                <textarea type="text" name="tax_text_text" id="tax_text_text" rows="6" cols="50"> {{irs.text}} </textarea><br>
+                
+                <hr><br>
+                <h2>Rotating Panel Content</h2>
+                {% for b in blocks %}
+                    {% if b.key == "count_vals" %}
+                        <h5>Donation Counter</h5>
+                        <label for="cars">Events on donation counter:</label><br>
+                        <div id='donation_div'>  
+                            {% for d in b.vals %}
+                                <label id="donation_text_label_{{d.count}}">Text: </label>
+                                <input type="text" name="donation_text_{{d.count}}" id="donation_text_{{d.count}}" value="{{d.text}}">
+                                <label id="donation_value_label_{{d.count}}">Value: </label>
+                                <input type="text" name="donation_value_{{d.count}}" id="donation_value_{{d.count}}" value="{{d.val}}">
+                                <input  type="button"  onClick="remove_line(parseInt('{{d.count}}'))" value="X" id='remove_line_btn_{{d.count}}'>
+                                <br id='br_line_{{d.count}}'>
+                            {% endfor %}
+                        </div>
+                        <input  type="button"  onClick="add_new_line()" value="Add Line to Donation Field"><br><br>
+                    {% endif %}
+                    {% if b.key == "golf_outing" %}
+                        <h5>Current Golf Outing</h5>
+                        <div id='golf_div'>  
+                            <label id="golf_event_text_label">Title: </label>
+                            <input type="text" name="golf_event_text" id="golf_event_text" value="{{b.title}}"><br>
+                            <label for="golf_event_full_date">Outing Date:  </label>
+                            <input type="date" name="golf_event_full_date" id="golf_event_full_date" value="{{b.date}}"><br>
+                            <label id="golf_event_description_label">Description: </label><br>
+                            <textarea type="text" name="golf_event_description" id="golf_event_description" rows="6" cols="50"> {{b.descr}} </textarea><br>
+                            <input type="file" id="golf_image" name="golf_image">
+                            <label>Currently uploaded file - <a href="/static/images/home/{{b.file_name}}" download="{{b.file_name}}">{{b.file_name}}</a></label>
+                            <br>
+                            <br id='br_line_{{d.count}}'>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+                <div id='two_picture_div_big'>  
+                    {% for b in two_pics %}
+                        <div id='two_picture_div_{{b.count}}'>  
+                            <h5 style="display: inline;">Two Picture Frame - {{b.count}}</h5> 
+                            <input type="button" onClick="remove_two_picture_frame(parseInt('{{b.count}}'))" value="X">
+                            <br>
+                            <label id="two_pic_frame_title_label_{{b.count}}">Title: </label>
+                            <input type="text" name="two_pic_frame_title_{{b.count}}" id="two_pic_frame_title_{{b.count}}" value="{{b.title}}"><br>
+                            <label id="two_pic_frame_description_label_{{b.count}}">Description: </label><br>
+                            <textarea type="text" name="two_pic_frame_description_{{b.count}}" id="two_pic_frame_description_{{b.count}}" rows="6" cols="50"> {{b.descr}} </textarea><br>
+                            <label id="two_pic_frame_image_left_label_{{b.count}}">Image-left: </label>
+                            <input type="file" id="two_pic_frame_image_left_{{b.count}}" name="two_pic_frame_image_left_{{b.count}}">
+                            <label id="two_pic_frame_image_left_current_{{b.count}}">Currently uploaded file - <a href="/static/images/home/{{b.golf_image_left}}" download="{{b.golf_image_left}}">{{b.golf_image_left}}</a></label><br>
+                            <label id="two_pic_frame_image_right_label_{{b.count}}">Image-right: </label>
+                            <input type="file" id="two_pic_frame_image_right_{{b.count}}" name="two_pic_frame_image_right_{{b.count}}">
+                            <label id="two_pic_frame_image_right_current_{{b.count}}">Currently uploaded file - <a href="/static/images/home/{{b.golf_image_right}}" download="{{b.golf_image_right}}">{{b.golf_image_right}}</a></label>
+                            <br>
+                            <br id='br_line_{{d.count}}'>
+                        </div>
+                    {% endfor %}
+                </div>
+                    
+                
+                <input  type="button"  onClick="add_two_picture_frame()" value="Add Two Picture" id='remove_line_btn_{{d.count}}'>
+                <button id="submit" type="submit"> Submit</button>
+            </div>
+        </form>
+    </div>
 {% endblock content %}

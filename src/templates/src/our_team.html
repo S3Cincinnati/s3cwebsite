@@ -5,7 +5,7 @@
 
     <div class="row">
         <div class="col-9">
-            <h4>Who We Are</h4>
+            <!-- <h4>Who We Are</h4>
             <p>S3C is an Ohio not-for-profit and 501 (c)(3) corporation founded by Darryn G.Chenault, Dana Parker, Gretchen Tash, Julian Deese, and Sherrie Chenault in honor of Sylvia Clark Chenault.  After Sylvia lost her battle with cancer, we were motivated to team together to build an organization, not only to support members of our community whose lives are touched by cancer, but motivate others to make a difference by supporting a cause in their community.</p>
             <hr>
 
@@ -16,8 +16,14 @@
             <hr>
 
             <h4>S3C Team Work Philiosophy</h4>
-            <p>Our mission and strength comes through TEAMwork, making the potential of this foundation boundless.  Remember: We are not born winners or losers; we are born choosers!  Strength lies within the core of an individual and together our strength is untouchable.  We thank you for choosing to be a member of our TEAM!</p>
-
+            <p>Our mission and strength comes through TEAMwork, making the potential of this foundation boundless.  Remember: We are not born winners or losers; we are born choosers!  Strength lies within the core of an individual and together our strength is untouchable.  We thank you for choosing to be a member of our TEAM!</p> -->
+            {% for a in about%}
+            <h4>{{a.title}}</h4>
+                {% for t in a.text %} 
+                <p>{{t}}</p>
+                {% endfor %}
+                <hr>
+            {% endfor %}
         </div> 
         <div class="col-3" style="border: 2px solid black;">
             <p>Support Us!</p>

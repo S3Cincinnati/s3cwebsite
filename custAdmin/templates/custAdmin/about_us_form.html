@@ -1,0 +1,93 @@
+{% extends "custAdmin/admin_base.html" %}
+
+
+{% block content %}
+    <script>
+        count=-1
+
+        function add_about(){
+            if (count < 0){
+                count = document.getElementById('frm_about').childElementCount;
+            }
+            // store_vals()
+            var div = document.createElement('div')
+            div.id = 'about_' + count
+            document.getElementById('frm_about').appendChild(div)
+            
+            var two_picture_title = document.createElement('h5')
+            two_picture_title.style.display = 'inline'
+            two_picture_title.textContent = 'Section ' + count
+            div.appendChild(two_picture_title)
+
+            var about_remove_btn = document.createElement('input')
+            about_remove_btn.id = 'about_remove' + count
+            about_remove_btn.type = 'button'
+            about_remove_btn.value = 'X'
+            about_remove_btn.setAttribute('onclick','remove_about(parseInt(' + count + '))')
+            div.appendChild(about_remove_btn)
+            div.appendChild(document.createElement('br'))
+
+            var title_label = document.createElement('label')
+            title_label.textContent = 'Title: ' 
+            title_label.id = 'title_label_' + count
+            div.appendChild(title_label)
+
+            var title_value = document.createElement('input')
+            title_value.id = 'title_text_' + count
+            title_value.name = 'title_text_' + count
+            title_value.type = 'text'
+            div.appendChild(title_value)
+            div.appendChild(document.createElement('br'))
+
+            var text_label = document.createElement('label')
+            text_label.textContent = 'Value: ' 
+            text_label.id = 'text_label_' + count
+            div.appendChild(text_label)
+            div.appendChild(document.createElement('br'))
+
+            var text_text_area = document.createElement('textarea')
+            text_text_area.id = 'text_text_' + count
+            text_text_area.name = 'text_text_' + count
+            text_text_area.rows = '6'
+            text_text_area.cols = '50'
+            div.appendChild(text_text_area)
+            div.appendChild(document.createElement('br'))
+            div.appendChild(document.createElement('br'))
+
+            count++;
+        }
+
+        function remove_about(num)
+        {
+            console.log('about_' + num)
+            document.getElementById('about_' + num).remove()
+        }
+       
+    </script>
+
+    <div class="container">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token%}
+            <div id="frm_about">
+                {% for d in data %}
+                <div id="about_{{d.index}}">
+                    <h5 style="display: inline;">Section {{d.index}}</h5>
+                    <input  type="button"  onClick="remove_about(parseInt('{{d.index}}'))" value="X" id='remove_about_btn_{{d.count}}'>
+                    <br>
+                    <label id="title_label">Title: </label>
+                    <input type="text" name="title_text_{{d.index}}" id="title_text_{{d.index}}" value="{{d.title}}"><br>
+                    <label id="text_label">Value: </label><br>
+                    <textarea type="text" name="text_text_{{d.index}}" id="text_text_{{d.index}}" rows="6" cols="50"> {{d.text}} </textarea>
+                    <br>
+                    <br>
+                </div>
+                {% endfor %}
+                
+            </div>
+            <input  type="button"  onClick="add_about()" value="Add text section">
+            <button id="submit" type="submit"> Submit</button>
+        </form>
+    </div>
+
+
+{% endblock content %}

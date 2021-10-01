@@ -45,6 +45,27 @@ def golf_view(request):
 
     return render(request, 'custAdmin/golf.html', context)
 
+def edit_about(request):
+    if request.method == 'POST':
+        
+        form_results = dict(request.POST)
+        form_results.pop('csrfmiddlewaretoken')
+
+        git_clone()
+
+        print(form_results)
+        process_about_data(form_results)
+
+        git_publish_all()
+
+    context = {'data':get_about_us_data()}
+    # context = {'golf_outing':get_event_data()}
+    
+    return render(request, 'custAdmin/about_us_form.html', context)
+
+
+
+
 def new_golf_classic_request(request):
 
     if request.method == 'POST':
@@ -396,9 +417,6 @@ def process_home_data(home_dict, image_list):
     right_text = {'titles':[],'text':[],'images':[],'format':'right_panel'}
     irs_text = {'titles':[],'text':[],'images':[],'format':'irs_panel'}
 
-    images = []
-    
-    print('^^', home_dict)
     for d in home_dict.keys():
         temp_d = d
         if 'donation_' in temp_d:
@@ -416,7 +434,8 @@ def process_home_data(home_dict, image_list):
             if 'full_date' in temp_d:
                 golf_event.update({'full_date':home_dict[d]})
             if 'description' in temp_d:
-                golf_event.update({'text':home_dict[d][0].split('\r\n')})
+                text = [x.strip() for x in home_dict[d][0].split('\r\n')]
+                golf_event.update({'text':text})
         if 'two_pic_frame_' in temp_d:
             temp_d = temp_d.replace('two_pic_frame_', '')
             index = temp_d[-1]
@@ -427,7 +446,8 @@ def process_home_data(home_dict, image_list):
             if 'title' in temp_d:
                 two_image_frames[index].update({'titles':home_dict[d]})
             if 'description' in temp_d:
-                two_image_frames[index].update({'text':home_dict[d][0].split('\r\n')})
+                text = [x.strip() for x in home_dict[d][0].split('\r\n')]
+                two_image_frames[index].update({'text':text})
         if 'left_text_' in temp_d:
             temp_d = temp_d.replace('left_text_', '')
             
@@ -498,3 +518,53 @@ def process_home_data(home_dict, image_list):
         temp_url = image_path + '/' + image_list[im].name
         picture = Image.open(image_list[im])  
         picture.save(temp_url)
+
+def get_about_us_data():
+    data = []
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_main = os.path.dirname(__file__) + '/../media/static_page_data/'
+    else:
+        url_main = staticfiles_storage.path('static_page_data')
+
+    index = 0
+    with open(url_main + '/about_us.csv', newline='') as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
+        for row in spamreader:
+            d_row = dict(row)
+            d_row.update({'index':index})
+            d_row['text'] = '\n'.join(ast.literal_eval(d_row['text'])).strip()
+            data += [d_row]
+            index += 1
+
+    return data
+
+def process_about_data(data):
+
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_write_backup = os.path.dirname(__file__) + '/../media/static_page_data/'
+    else:
+        url_write_backup = os.path.dirname(__file__) + '/git_publishing/deploy/media/static_page_data/'
+
+    write_data = {}
+    for d in data.keys():
+        index = str(d[-1])
+        if index not in write_data.keys():
+            write_data.update({index:{'title':'', 'text':[]}})
+        
+        if d[:d.find('_')] == 'title':
+            write_data[index]['title'] = data[d][0]
+        if d[:d.find('_')] == 'text':
+            write_data[index]['text'] = data[d][0].strip().split('\r\n')
+
+    rows = [x[1] for x in write_data.items()]
+    
+    with open(url_write_backup + 'about_us.csv', 'w', newline='') as csvfile:
+        fieldnames = ['title', 'text']
+
+        writer = csv.DictWriter(csvfile, delimiter='|', fieldnames=fieldnames)
+        writer.writeheader()
+        
+        writer.writerows(rows)
+            
+    
+

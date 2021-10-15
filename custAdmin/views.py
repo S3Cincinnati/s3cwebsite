@@ -77,7 +77,6 @@ def edit_people(request):
 
         return home(request)
         
-
     context = {'data':get_people_data()}
 
     return render(request, 'custAdmin/people_form.html', context)

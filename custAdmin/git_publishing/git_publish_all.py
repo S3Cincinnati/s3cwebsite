@@ -20,7 +20,13 @@ def git_publish_all():
         try:
             remote = repo.create_remote('code_push', url='https://' + os.getenv('SC3-dev-token','') + ':x-oauth-basic@github.com/S3Cincinnati/s3cwebsite.git')
         except:
-            print('Already exisits')
+            print('code_push already exisits')
+
+        try:
+            remote = repo.create_remote('heroku_push', 'https://heroku:' + os.getenv('heroku-token','') + '@git.heroku.com/s3c-dev.git')
+        except:
+            print('heroku already exisits')
         
         repo.git.push('code_push','main')
+        repo.git.push('heroku_push','main')
 

@@ -74,6 +74,8 @@ def edit_people(request):
 
         git_publish_all()
 
+        return home(request)
+
     context = {'data':get_people_data()}
 
     return render(request, 'custAdmin/people_form.html', context)

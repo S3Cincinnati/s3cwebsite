@@ -1,0 +1,121 @@
+{% extends "custAdmin/admin_base.html" %}
+
+
+{% block content %}
+    <script>
+        count=-1
+
+        function add_team_member(){
+            if (count < 0){
+                count = document.getElementById('frm_about').childElementCount;
+            }
+            // store_vals()
+            var div = document.createElement('div')
+            div.id = 'person_' + count
+            document.getElementById('frm_about').appendChild(div)
+            
+            var two_picture_title = document.createElement('h5')
+            two_picture_title.style.display = 'inline'
+            two_picture_title.textContent = 'Team Member ' + count
+            div.appendChild(two_picture_title)
+
+            var about_remove_btn = document.createElement('input')
+            about_remove_btn.id = 'about_remove' + count
+            about_remove_btn.type = 'button'
+            about_remove_btn.value = 'X'
+            about_remove_btn.setAttribute('onclick','remove_team(parseInt(' + count + '))')
+            div.appendChild(about_remove_btn)
+            div.appendChild(document.createElement('br'))
+
+            var name_label = document.createElement('label')
+            name_label.textContent = 'Name: ' 
+            name_label.id = 'name_label_' + count
+            div.appendChild(name_label)
+
+            var name_value = document.createElement('input')
+            name_value.id = 'name_text_' + count
+            name_value.name = 'name_text_' + count
+            name_value.type = 'text'
+            div.appendChild(name_value)
+            div.appendChild(document.createElement('br'))
+
+            var title_label = document.createElement('label')
+            title_label.textContent = 'Title: ' 
+            title_label.id = 'title_label_' + count
+            div.appendChild(title_label)
+
+            var title_value = document.createElement('input')
+            title_value.id = 'title_text_' + count
+            title_value.name = 'title_text_' + count
+            title_value.type = 'text'
+            div.appendChild(title_value)
+            div.appendChild(document.createElement('br'))
+
+            var email_label = document.createElement('label')
+            email_label.textContent = 'Email: ' 
+            email_label.id = 'email_label_' + count
+            div.appendChild(email_label)
+
+            var email_value = document.createElement('input')
+            email_value.id = 'email_text_' + count
+            email_value.name = 'email_text_' + count
+            email_value.type = 'text'
+            div.appendChild(email_value)
+            div.appendChild(document.createElement('br'))
+
+            var phone_label = document.createElement('label')
+            phone_label.textContent = 'Phone: ' 
+            phone_label.id = 'phone_label_' + count
+            div.appendChild(phone_label)
+
+            var phone_value = document.createElement('input')
+            phone_value.id = 'phone_text_' + count
+            phone_value.name = 'phone_text_' + count
+            phone_value.type = 'text'
+            div.appendChild(phone_value)
+            div.appendChild(document.createElement('br'))
+            div.appendChild(document.createElement('br'))
+            div.appendChild(document.createElement('br'))
+
+            count++;
+        }
+
+        function remove_team(num)
+        {
+            console.log('person_' + num)
+            document.getElementById('person_' + num).remove()
+        }
+       
+    </script>
+
+    <div class="container">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token%}
+            <h2>Main Text Panel</h2>
+            <div id="frm_about">
+                {% for d in data %}
+                <div id="person_{{d.index}}">
+                    <h5 style="display: inline;">Team Member {{d.index}}</h5>
+                    <input  type="button"  onClick="remove_team(parseInt('{{d.index}}'))" value="X" id='remove_about_btn_{{d.count}}'>
+                    <br>
+                    <label id="name_label">Name: </label>
+                    <input type="text" name="name_text_{{d.index}}" id="name_text_{{d.index}}" value="{{d.name}}"><br>
+                    <label id="title_label">Title: </label>
+                    <input type="text" name="title_text_{{d.index}}" id="title_text_{{d.index}}" value="{{d.title}}"><br>
+                    <label id="email_label">Email: </label>
+                    <input type="text" name="email_text_{{d.index}}" id="email_text_{{d.index}}" value="{{d.email}}"><br>
+                    <label id="phone_label">Phone: </label>
+                    <input type="text" name="phone_text_{{d.index}}" id="phone_text_{{d.index}}" value="{{d.phone}}"><br>
+                    <br>
+                    <br>
+                </div>
+                {% endfor %}
+                
+            </div>
+            <input  type="button"  onClick="add_team_member()" value="Add team member">
+            <button id="submit" type="submit"> Submit</button>
+        </form>
+    </div>
+
+
+{% endblock content %}

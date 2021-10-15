@@ -68,6 +68,7 @@
     <div class="container">
         <form method="post" enctype="multipart/form-data">
             {% csrf_token%}
+            <h2>Main Text Panel</h2>
             <div id="frm_about">
                 {% for d in data %}
                 <div id="about_{{d.index}}">

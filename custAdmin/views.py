@@ -53,7 +53,6 @@ def edit_about(request):
 
         git_clone()
 
-        print(form_results)
         process_about_data(form_results)
 
         git_publish_all()
@@ -63,6 +62,21 @@ def edit_about(request):
     
     return render(request, 'custAdmin/about_us_form.html', context)
 
+def edit_people(request):
+    if request.method == 'POST':
+        
+        form_results = dict(request.POST)
+        form_results.pop('csrfmiddlewaretoken')
+
+        git_clone()
+
+        process_people_data(form_results)
+
+        git_publish_all()
+
+    context = {'data':get_people_data()}
+
+    return render(request, 'custAdmin/people_form.html', context)
 
 
 
@@ -566,5 +580,53 @@ def process_about_data(data):
         
         writer.writerows(rows)
             
+def get_people_data():
+    data = []
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_main = os.path.dirname(__file__) + '/../media/static_page_data/'
+    else:
+        url_main = staticfiles_storage.path('static_page_data')
+
+    index = 0
+    with open(url_main + '/people.csv', newline='') as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
+        for row in spamreader:
+            d_row = dict(row)
+            d_row.update({'index':index})
+            data += [d_row]
+            index += 1
+    return data
+
+
+def process_people_data(data):
     
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_write_backup = os.path.dirname(__file__) + '/../media/static_page_data/'
+    else:
+        url_write_backup = os.path.dirname(__file__) + '/git_publishing/deploy/media/static_page_data/'
+
+    write_data = {}
+    for d in data.keys():
+        index = str(d[-1])
+        if index not in write_data.keys():
+            write_data.update({index:{'title':'', 'name':'', 'email':'', 'phone':''}})
+        
+        if d[:d.find('_')] == 'name':
+            write_data[index]['name'] = data[d][0]
+        if d[:d.find('_')] == 'title':
+            write_data[index]['title'] = data[d][0]
+        if d[:d.find('_')] == 'email':
+            write_data[index]['email'] = data[d][0]
+        if d[:d.find('_')] == 'phone':
+            write_data[index]['phone'] = data[d][0]
+
+    rows = [x[1] for x in write_data.items()]
+    
+    with open(url_write_backup + 'people.csv', 'w', newline='') as csvfile:
+        fieldnames = ['name', 'title', 'email','phone']
+
+        writer = csv.DictWriter(csvfile, delimiter='|', fieldnames=fieldnames)
+        writer.writeheader()
+        
+        writer.writerows(rows)
 

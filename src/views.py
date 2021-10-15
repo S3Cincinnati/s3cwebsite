@@ -52,7 +52,7 @@ def our_team(request):
         }
     ]
     
-    context = {'people':people, 'about':get_about_us_data()}
+    context = {'people':get_people_data(), 'about':get_about_us_data()}
     return render(request, 'src/our_team.html', context)
 
 
@@ -310,4 +310,20 @@ def get_about_us_data():
             data += [d_row]
 
     return data
-# class C
+
+def get_people_data():
+    data = []
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_main = os.path.dirname(__file__) + '/../media/static_page_data/'
+    else:
+        url_main = staticfiles_storage.path('static_page_data')
+
+    index = 0
+    with open(url_main + '/people.csv', newline='') as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
+        for row in spamreader:
+            d_row = dict(row)
+            d_row.update({'index':index})
+            data += [d_row]
+            index += 1
+    return data

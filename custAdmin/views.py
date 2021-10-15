@@ -1,5 +1,5 @@
 from typing import Text
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from .forms import GolfForm
 from django.contrib.staticfiles.storage import staticfiles_storage
@@ -72,7 +72,11 @@ def edit_people(request):
 
         process_people_data(form_results)
 
+        redirect('/admin/')
         git_publish_all()
+
+        return home(request)
+        
 
     context = {'data':get_people_data()}
 

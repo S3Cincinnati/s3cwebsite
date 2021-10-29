@@ -140,8 +140,8 @@ LOGIN_REDIRECT_URL = '/admin'
 
 STRIPE_PUBLIC_KEY = "pk_test_51JO5STDym2z9hVAOXkNwEEZ1Mt7qdFiNX4sNp3FFLd9dPW2fCFXYhsYiEix6LiqWmTtSQITtC3QJgm0HLGKRuOxa00w3h29zWx"
 STRIPE_PRIVATE_KEY = "sk_test_51JO5STDym2z9hVAOjSsmhioXViLv500Ri8Etu1kcc6roeY9OeA0Ot8B8zZ0obPaMAExSv30itNNd8YaTrA3Rdc5L00poUDRc9W"
-STRIPE_WEB_HOOK_SECRET = ""
-
+STRIPE_WEB_HOOK_SECRET = " whsec_iOfv3spVBULOJJor2V0fWpFiqdpLAVpK"
+STRIPE_SIGNING_SECRET = " whsec_iOfv3spVBULOJJor2V0fWpFiqdpLAVpK"
 # if 'DATABASE_URL' in os.environ:
 #     import dj_database_url
 #     DATABASES = {'default': dj_database_url.config()}

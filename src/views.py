@@ -16,6 +16,9 @@ from django.shortcuts import redirect
 
 from django.views.decorators.csrf import csrf_exempt
 from .models import FoursomeRegistration
+from django.views.decorators.http import require_POST
+from django.conf import settings
+import json
 
 stripe.api_key = "sk_test_51JO5STDym2z9hVAOjSsmhioXViLv500Ri8Etu1kcc6roeY9OeA0Ot8B8zZ0obPaMAExSv30itNNd8YaTrA3Rdc5L00poUDRc9W"
 
@@ -31,27 +34,6 @@ def home(request):
 
 def our_team(request):
 
-    people = [
-        {
-            'name':'Darryn G. Chenault',
-            'position':'Event Coordinator – Golf Classic',
-            'email':'dchenault@finneytown.org',
-            'number':'513-233-1861'
-        },
-        {
-            'name':'Sherrie Chenault',
-            'position':'Volunteer Coordinator',
-            'email':'sherrie.chenault@fuse.net',
-            'number':'513-295-4241'
-        },
-        {
-            'name':'Julian Deese',
-            'position':'Event Site Manager',
-            'email':'juliandeese@gmail.com',
-            'number':'513-225-6068'
-        }
-    ]
-    
     context = {'people':get_people_data(), 'about':get_about_us_data()}
     return render(request, 'src/our_team.html', context)
 
@@ -70,7 +52,7 @@ def get_golf_outing_involvment(request, year):
 
     # print(year)
     # print(FoursomeRegistration.objects.all())
-    context = {}
+    context = {'date_code':year}
     context.update(get_sign_up_data_event_date_code(year))
 
     print(context)
@@ -80,7 +62,6 @@ def get_golf_outing_involvment(request, year):
 
 class CreateSessionCheckoutView(View):
     def post(self, request, *args, **kwargs):
-        
 
         registration_type = request.GET.get('type', 'None')
 
@@ -106,8 +87,10 @@ class CreateSessionCheckoutView(View):
         form_results = dict(request.POST)
         form_results.pop('csrfmiddlewaretoken')
 
+        print(registration_type)
         # Checks wether or not registration is for golf (either single or foursome)
         if registration_type == '1s' or registration_type == '4s':
+            print(request.GET)
             temp = FoursomeRegistration()
             temp.date_code = request.GET.get('date_code', 'None')
             temp.payment_id = checkout_session.payment_intent
@@ -124,8 +107,9 @@ class CreateSessionCheckoutView(View):
                 temp.golf_4_fname = form_results['fname_4']
                 temp.golf_4_lname = form_results['lname_4']
 
+            print(temp)
             temp.save()
-
+        
         return redirect(checkout_session.url, code=303)
 
 
@@ -152,6 +136,51 @@ def my_webhook_view(request):
         print('Intent hook: ' + data['data']['object']['payment_intent'])
 
     return HttpResponse(status=200)
+
+@require_POST
+@csrf_exempt
+def stripe_webhook_paid_endpoint(request):
+
+    payload = request.body.decode('utf-8')
+    event = None
+
+    try:
+        event = json.loads(payload)
+    except:
+        print('⚠️  Webhook error while parsing basic request.' + str(e))
+        return HttpResponse(status=200)
+
+    # Handle the event
+    if event and event['type'] == 'payment_intent.succeeded':
+        payment_intent = event['data']['object']  # contains a stripe.PaymentIntent
+        print('Payment for {} succeeded'.format(payment_intent['amount']))
+        # Then define and call a method to handle the successful payment intent.
+        # handle_payment_intent_succeeded(payment_intent)
+    elif event['type'] == 'payment_method.attached':
+        payment_method = event['data']['object']  # contains a stripe.PaymentMethod
+        # Then define and call a method to handle the successful attachment of a PaymentMethod.
+        # handle_payment_method_attached(payment_method)
+    else:
+        # Unexpected event type
+        print('Unhandled event type {}'.format(event['type']))
+
+    # return HttpResponse(status=200)
+
+  # Handle the checkout.session.completed event
+    if event['type'] == 'checkout.session.completed':
+        checkout_session = event['data']['object']
+        # Make sure is already paid and not delayed
+        if checkout_session['payment_status'] == "paid":
+            _handle_successful_payment(checkout_session)
+
+    # Passed signature verification
+    return HttpResponse(status=200)
+
+def _handle_successful_payment(checkout_session):
+    # Define what to do after the user has successfully paid
+    registration = FoursomeRegistration.objects.get(payment_id=checkout_session['payment_intent'])
+    registration.is_payed = True
+    registration.save()
 
 def get_data_by_event_date_code(date_code):
     

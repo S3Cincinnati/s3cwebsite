@@ -98,6 +98,7 @@ class CreateSessionCheckoutView(View):
             temp.golf_1_fname = form_results['fname_1']
             temp.golf_1_lname = form_results['lname_1']
             temp.is_payed = False
+            temp.four = False
 
             if registration_type == '4s':
                 temp.golf_2_fname = form_results['fname_2']
@@ -106,6 +107,7 @@ class CreateSessionCheckoutView(View):
                 temp.golf_3_lname = form_results['lname_3']
                 temp.golf_4_fname = form_results['fname_4']
                 temp.golf_4_lname = form_results['lname_4']
+                temp.four = True
 
             print(temp)
             temp.save()

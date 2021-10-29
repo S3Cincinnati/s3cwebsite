@@ -10,4 +10,5 @@ urlpatterns = [
     path('new-golf', views.new_golf_classic_request, name=''),
     path('about_us', views.edit_about, name=''),
     path('people', views.edit_people, name=''),
+    path('golf_registration', views.get_golf_registrations, name=''),
 ]

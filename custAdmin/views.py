@@ -1,7 +1,7 @@
 from typing import Text
 from django.shortcuts import redirect, render
-from django.http import HttpResponse
-from .forms import GolfForm
+from django.http import HttpResponse, FileResponse
+from .forms import FoursomeRegistration, GolfForm
 from django.contrib.staticfiles.storage import staticfiles_storage
 import csv
 from datetime import date
@@ -14,6 +14,9 @@ from .git_publishing.git_publish_all import git_publish_all, git_clone
 
 from itertools import groupby
 import ast
+
+from src.models import *
+import xlsxwriter
 
 # Create your views here.
 def home(request):
@@ -81,6 +84,12 @@ def edit_people(request):
 
     return render(request, 'custAdmin/people_form.html', context)
 
+def get_golf_registrations(request):
+        
+    get_payed_registrations('2017-05-13')
+
+    response = FileResponse(open('Golf_Registration.xlsx', 'rb'))
+    return response
 
 
 def new_golf_classic_request(request):
@@ -600,7 +609,6 @@ def get_people_data():
             index += 1
     return data
 
-
 def process_people_data(data):
     
     if os.getenv('DJANGO_ENV','') == 'local':
@@ -633,3 +641,23 @@ def process_people_data(data):
         
         writer.writerows(rows)
 
+def get_payed_registrations(date_):
+    
+    workbook = xlsxwriter.Workbook('Golf_Registration.xlsx')
+    worksheet = workbook.add_worksheet()
+
+    worksheet.write(0, 0, 'Contact Email')
+    worksheet.write(0, 1, 'Contact First Name')
+    worksheet.write(0, 2, 'Contact Last Name')
+    worksheet.write(0, 3, 'Group Size')
+
+    row = 1
+    for r in FoursomeRegistration.objects.all().filter(date_code=date_).filter(is_payed=True):
+        print(r.contact_email, r.golf_1_fname, r.golf_1_lname)
+        worksheet.write(row, 0, r.contact_email.replace('[\'','').replace('\']',''))
+        worksheet.write(row, 1, r.golf_1_fname.replace('[\'','').replace('\']',''))
+        worksheet.write(row, 2, r.golf_1_lname.replace('[\'','').replace('\']',''))
+        worksheet.write(row, 3, 'Single' if not r.four else 'Foursome')
+        row += 1
+
+    workbook.close()

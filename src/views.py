@@ -15,6 +15,8 @@ import stripe
 from django.shortcuts import redirect
 
 from django.views.decorators.csrf import csrf_exempt
+
+from s3cwebsite.settings import DOMAIN
 from .models import FoursomeRegistration
 from django.views.decorators.http import require_POST
 from django.conf import settings
@@ -64,7 +66,10 @@ class CreateSessionCheckoutView(View):
     def post(self, request, *args, **kwargs):
 
         registration_type = request.GET.get('type', 'None')
-
+        
+        success = settings.DOMAIN.strip() + '/golf-classic-2017-05-13'
+        cancel = settings.DOMAIN.strip() 
+        print(success, cancel)
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=[
               'card',
@@ -78,8 +83,8 @@ class CreateSessionCheckoutView(View):
             mode='payment',
             # success_url=YOUR_DOMAIN + '/success.html',
             # cancel_url=YOUR_DOMAIN + '/cancel.html',
-            success_url='http://localhost:8000/golf-classic-2017-05-13',
-            cancel_url='http://localhost:8000/',
+            success_url=success,
+            cancel_url=cancel,
         )
         
         # write update to table for registration, use intent as id
@@ -183,6 +188,7 @@ def _handle_successful_payment(checkout_session):
     registration = FoursomeRegistration.objects.get(payment_id=checkout_session['payment_intent'])
     registration.is_payed = True
     registration.save()
+    print(registration)
 
 def get_data_by_event_date_code(date_code):
     

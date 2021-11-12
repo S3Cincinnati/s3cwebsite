@@ -148,4 +148,6 @@ STRIPE_SIGNING_SECRET = " whsec_iOfv3spVBULOJJor2V0fWpFiqdpLAVpK"
 
 django_heroku.settings(locals())
 
+DOMAIN = os.getenv('domain','http://localhost:8000')
+
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'

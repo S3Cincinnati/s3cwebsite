@@ -15,7 +15,11 @@
         <h5 class="text-center">{{date_str}} at {{course}}</h5>
         {% if is_golf_registration %}
             <h4 class="text-center">Sponsorship Opportunites and Golfer Registration Open Now</h4>
-            <a class="nav-link primary_text text-center" href="/golf-classic-{{date_code}}/involvement"><h6>Get Invloved</h6></a>
+            <div style="display: flex;justify-content: center;">
+                <a class="nav-link primary_text text-center" style="text-align: center;" href="/golf-classic-{{date_code}}/involvement">
+                    <h5 class="yellow_background" style="border-radius: 25px;width: 10rem; height: 3rem; display: flex;justify-content: center;align-items: center;text-align: center;">Get Invloved</h5>
+                </a>
+            </div>
         {% endif %}
         <!-- <button class="text-center"> -->
             

@@ -22,4 +22,5 @@ stripe==2.60.0
 typing-extensions==3.10.0.0
 urllib3==1.26.6
 whitenoise==5.3.0
+XlsxWriter==3.0.1
 zipp==3.5.0

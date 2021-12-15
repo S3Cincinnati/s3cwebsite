@@ -91,7 +91,6 @@ def get_golf_registrations(request):
     response = FileResponse(open('Golf_Registration.xlsx', 'rb'))
     return response
 
-
 def new_golf_classic_request(request):
 
     if request.method == 'POST':
@@ -114,6 +113,9 @@ def new_golf_classic_request(request):
 
 def edit_golf_classic_request(request, key):
 
+    print(key)
+    # event_images = get_event_images(key)
+    # print(event_images)
     if request.method == 'POST':
         
         form_results = dict(request.POST)
@@ -121,6 +123,7 @@ def edit_golf_classic_request(request, key):
 
         git_clone()
 
+        # print(form_results)
         proccess_golf_data(form_results, request.FILES)
         process_golf_images(form_results['full_date'][0], request.FILES)
 
@@ -165,6 +168,7 @@ def get_data_by_event_date_code(date_code):
             d_row = dict(row)
             if date_code in d_row['year_key']:
                golf_main_context = d_row
+
 
     
     with open(url_main + '/golf_registration.csv', newline='') as csvfile:
@@ -219,7 +223,8 @@ def get_data_by_event_date_code(date_code):
         'golf_registration':golf_reg_context,
         'golf_option_count':len(golf_reg_context),
         'sponsor_registration':sponsor_reg_context,
-        'sponsor_option_count':len(sponsor_reg_context)
+        'sponsor_option_count':len(sponsor_reg_context),
+        'event_images':[{'count':x, 'image_name':img} for x, img in enumerate(get_event_images(date_code))]
         }
 
 def proccess_golf_data(golf_dict, files):
@@ -271,20 +276,21 @@ def proccess_golf_data(golf_dict, files):
     event_images = []
     sponsor_images = []
 
-    for im in files:
-        if 'event' in im:
-            event_images += ['/static/images/golf/' + str(f_date.year) + '/' + files[im].name]
-        elif 'sponsor' in im:
-            sponsor_images += ['/static/images/golf/' + str(f_date.year) + '/' + files[im].name]
-            # picture = Image.open(files[im])  
-            # picture.save(temp_url)
+    # for im in files:
+    #     print('&', im)
+    #     if 'event' in im:
+    #         event_images += ['/static/images/golf/' + str(f_date.year) + '/' + files[im].name]
+    #     elif 'sponsor' in im:
+    #         sponsor_images += ['/static/images/golf/' + str(f_date.year) + '/' + files[im].name]
+    #         # picture = Image.open(files[im])  
+    #         # picture.save(temp_url)
 
     
     content.update({year_key:{
         'year_key':year_key,
         'golf_course':golf_dict['golf_course'][0].strip(),
         'description':golf_dict['description'][0].replace('\r\n','%&').strip(),
-        'event_images':event_images,
+        'event_images':get_image_list(year_key, golf_dict),
         'sponsor_images':sponsor_images
         }})
 
@@ -367,15 +373,18 @@ def process_golf_images(date_key, image_list):
     f_date = date.fromisoformat(date_key)
 
     if os.getenv('DJANGO_ENV','') == 'local':
-        url_write_backup = os.path.dirname(__file__) + '../media/images/golf/' + str(f_date.year) + '/'
+        url_write_backup = os.path.dirname(__file__) + '/../media/images/golf/' + str(f_date.year) + '/'
     else:
         url_write_backup = os.path.dirname(__file__) + '/git_publishing/deploy/media/images/golf/' + str(f_date.year) + '/'
 
     for link in [url_write_backup]:
         
         for im in image_list:
+            print('-', im)
             if 'event' in im or 'sponsor' in im:
                 temp_url = link + '/' + image_list[im].name
+
+                print('*', temp_url)
                 picture = Image.open(image_list[im])  
                 picture.save(temp_url)
 
@@ -641,6 +650,53 @@ def process_people_data(data):
         
         writer.writerows(rows)
 
+def get_event_images(date_code):
+    golf_main_context = {}
+
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_main = os.path.dirname(__file__) + '/../media/golf_data/'
+    else:
+        url_main = staticfiles_storage.path('golf_data')
+
+    with open(url_main + '/golf.csv', newline='') as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
+        for row in spamreader:
+            d_row = dict(row)
+            if date_code in d_row['year_key']:
+               golf_main_context = d_row
+
+    image_array_str = golf_main_context['event_images']
+    images = ast.literal_eval(image_array_str)
+    print('*',images)
+    for i in range(len(images)):
+        img = images[i]
+        print(img)
+        while img.find('/') >= 0:
+            img = img[img.find('/')+1:]
+        images[i] = img
+    return images
+
+def get_image_list(date_code, golf_dict):
+    images = list(filter(lambda x: ('event_image_text_' in x), golf_dict.keys()))
+    for i in range(len(images)):
+        print('--',golf_dict[images[i]])
+        images[i] = golf_dict[images[i]][0]
+        print(images)
+    print(date_code)
+    actual_images = get_event_images(date_code)
+    print(images, actual_images)
+    for i in range(min(len(images), len(actual_images))):
+        print('^', images[i], actual_images[i])
+        if len(images[i]) > 0:
+            actual_images[i] = images[i]
+    
+    if len(images) > len(actual_images):
+        actual_images = actual_images + images[len(actual_images):]
+    if len(images) < len(actual_images):
+        actual_images = images
+    print('$', actual_images)
+    return actual_images
+        
 def get_payed_registrations(date_):
     
     workbook = xlsxwriter.Workbook('Golf_Registration.xlsx')

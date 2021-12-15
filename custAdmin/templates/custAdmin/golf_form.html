@@ -10,11 +10,17 @@
 {% extends "custAdmin/admin_base.html" %}
 
 {% block content %}
+<style type="text/css">.image_label {
+    background: rgba(0, 0, 0, 0);
+    border: none;
+  }
+  
+  </style>
 <script> 
     var day_count=0;
     var event_count=[];
 
-    var event_image_count = 0;
+    var event_image_count = -1;
     var sponsor_image_count = 0;
     var golf_option_count = 0;
     var sponsor_option_count = 0;
@@ -337,28 +343,54 @@
         document.getElementById('div_day_'+day+'_event_'+event).remove()
     }
 
+    function event_image_change_name(files, label){
+        var myfile = files.files[0];
+        label_ = document.getElementById(label)
+        // console()
+        label_.value = myfile.name
+    }
+
     function add_event_image()
     {
+        if (event_image_count < 0){
+            event_image_count = document.getElementById('event_images').childElementCount;
+        }
+        
         store_vals()
 
-        popped_nodes = pop_nodes_for_event_image()
+        div_id = 'div_' + event_image_count
+        var div = document.createElement('div')
+        div.id = div_id
+        document.getElementById('event_images').appendChild(div)
 
         var image_input = document.createElement('input')
         image_input.id = 'event_image_' + event_image_count
         image_input.name = 'event_image_' + event_image_count
         image_input.type = 'file'
+        image_input.setAttribute("onchange", "event_image_change_name(this, 'event_image_text_" + event_image_count + "')")
 
-        document.getElementById('frm').appendChild(image_input)
-        document.getElementById('frm').appendChild(document.createElement('br'))
+        // <input type="text" id="country" name="country" value="Norway" readonly><br>
+        var image_label = document.createElement('input')
+        image_label.id = 'event_image_text_' + event_image_count
+        image_label.name = 'event_image_text_' + event_image_count
+        image_label.type = 'text'
+        image_label.readOnly = true
+        image_label.className = "image_label"
+        // image_input.setAttribute("onchange", "test('event_image_' + " + event_image_count + ")")
+
+        div.appendChild(image_input)
+        div.appendChild(image_label)
+        div.appendChild(document.createElement('br'))
         
-        for (pop of popped_nodes)
-        {
-            document.getElementById('frm').appendChild(pop);
-        }
-
+ 
         event_image_count++;
 
         write_vals()
+
+        // var el = document.getElementById('#uploadID');
+        // el.onchange = function(){
+        // your code...
+// };
         
     }
 
@@ -500,6 +532,8 @@
         write_vals()
     }
 
+    
+
     window.onload = (event) => {
         // for (i of {{data.golf_registration}}){
         //     console.log(i)
@@ -532,7 +566,7 @@
             <label for="description">Description:</label><br>
             <textarea type="text" name="description" id="description" value="John" rows="6" cols="50"> {{data.descr}} </textarea><br><br>
             <label for="description">Schedule -- </label>
-            <input id="day_btn" type="button" onClick="add_new_day_to_schedule(event); return false" value="Add Day to Schedule"><br>
+            <input id="day_btn" type="button" onClick="add_new_day_to_schedule(event, 'event_image_text_{{e.count}}'); return false" value="Add Day to Schedule"><br>
             <div id="frm_event_add">
                 {% for x in data.schedule.data %}
                     <div id="day_{{x.count}}">
@@ -577,13 +611,18 @@
 
             <br><label for="description">Event Images -- </label>
             <input id="event_image_btn" type="button" onClick="add_event_image(); return false" value="Add Image to Event"><br>
-            
+            <div id="event_images">
+                {% for e in data.event_images %}
+                    <input name="event_image_{{e.count}}" id="event_image_{{e.count}}" type="file" onchange="event_image_change_name(this, 'event_image_text_{{e.count}}'); return false" value="Add Day to Schedule">
+                    <input class="image_label" name="event_image_text_{{e.count}}" id="event_image_text_{{e.count}}" type="text" value="{{e.image_name}}" readonly><br>
+                {% endfor %}
+            </div>
 
             <br><label for="description">Sponsor Images -- </label>
             <input id="sponsor_image_btn" type="button" onClick="add_sponsor_image(); return false" value="Add Sponsor Image to Event"><br>
 
             <br><label for="description" id='golf-label'>Add Golf Sign Up Option-- </label>
-            <input id="golf_signup_btn" type="button" onClick="add_golf_sign_up(); return false" value="Add Golfer Sign Up Option to Event"><br>
+            <input id="golf_signup_btn" type="button" onClick="add_golf_sign_up(); return false" value="Add Golfer Sign Up Option to Event">
             
             <div id="frm_golf_signup">
                 {% for x in data.golf_registration %}

@@ -214,15 +214,61 @@
     function add_new_day_to_schedule()
     {
         // ev.preventDefault();
+        if (day_count < 0){
+            day_count = document.getElementById('frm_about').childElementCount;
+        }
 
         store_vals()
-        // popped_nodes = pop_nodes_after_day(99)
 
-        document.getElementById('frm_event_add').innerHTML+='<br/><label for="description">Date:</label>';
-        document.getElementById('frm_event_add').innerHTML+='<input type="date" id="day_'+day_count+'" name="day_'+day_count+'" placeholder="Day '+day_count+'"  /><br/>';
-        document.getElementById('frm_event_add').innerHTML+='<br/><label for="description">Location:</label>';
-        document.getElementById('frm_event_add').innerHTML+='<input type="text" id="day_location_'+day_count+'" name="day_location_'+day_count+'" placeholder="Location '+day_count+'"  /><br/>';
-        document.getElementById('frm_event_add').innerHTML+='<button onClick="add_event_to_day('+day_count+')"> Add Event to Day</button><br>'
+        div_id = 'day_' + day_count
+        var div = document.createElement('div')
+        div.id = div_id
+        document.getElementById('frm_event_add').appendChild(div)
+
+        var date_label = document.createElement('label')
+        date_label.textContent = 'Date: ' 
+        date_label.id = 'date_label_' + day_count
+        div.appendChild(date_label)
+        
+        var date_value = document.createElement('input')
+        date_value.id = 'day_' + day_count
+        date_value.name = 'day_' + day_count
+        date_value.type = 'date'
+        date_value.placeholder = 'Day '+day_count
+        div.appendChild(date_value)
+        
+        var day_remove_btn = document.createElement('input')
+        day_remove_btn.id = 'day_remove' + day_count
+        day_remove_btn.type = 'button'
+        day_remove_btn.value = 'X'
+        day_remove_btn.setAttribute('onclick','remove_day_from_schedule(parseInt(' + day_count + '))')
+        div.appendChild(day_remove_btn)
+        div.appendChild(document.createElement('br'))
+
+        var location_label = document.createElement('label')
+        location_label.textContent = 'Location: ' 
+        location_label.id = 'location_label_' + day_count
+        div.appendChild(location_label)
+
+        var day_location_value = document.createElement('input')
+        day_location_value.id = 'day_location_' + day_count
+        day_location_value.name = 'day_location_' + day_count
+        day_location_value.type = 'text'
+        day_location_value.placeholder = 'Location '+day_count
+        div.appendChild(day_location_value)
+        div.appendChild(document.createElement('br'))
+
+        var event_div = document.createElement('div')
+        event_div.id = 'event_div_day_' + day_count
+        div.appendChild(event_div)
+
+        var add_day_btn = document.createElement('input')
+        add_day_btn.id = 'day_add_' + day_count
+        add_day_btn.type = 'button'
+        add_day_btn.value = 'Add Event to Day'
+        add_day_btn.setAttribute('onclick','add_event_to_day(parseInt(' + day_count + '))')
+        div.appendChild(add_day_btn)
+        div.appendChild(document.createElement('br'))
 
         event_count.push(0)
         day_count++;
@@ -237,6 +283,11 @@
         // return false;
     }
 
+    function remove_day_from_schedule(day)
+    {
+        document.getElementById('day_' + day).remove()
+    }
+    
     function add_event_to_day(day_count_val)
     {
         store_vals()
@@ -250,12 +301,25 @@
 
         // document.getElementById('div_day_'+day_count_val).appendChild(document.createElement('br'))
 
-        console.log('div_day_'+day_count_val)
-        document.getElementById('div_day_'+day_count_val).innerHTML+='<label for="description">Time:</label>';
-        document.getElementById('div_day_'+day_count_val).innerHTML+='<input type="text" id="'+day_count_event_count_str + '_time" name="'+day_count_event_count_str + '_time" placeholder="'+day_count_event_count_str +'"  />';
-        document.getElementById('div_day_'+day_count_val).innerHTML+='<label for="description"> Description:</label>';
-        document.getElementById('div_day_'+day_count_val).innerHTML+='<input type="text" id="'+day_count_event_count_str + '_description" name="'+day_count_event_count_str + '_description" placeholder="'+day_count_event_count_str+'"  /><br/>';
-        
+        console.log('event_div_day_'+day_count_val)
+
+        div_id = 'div_' + day_count_event_count_str
+        var div = document.createElement('div')
+        div.id = div_id
+        document.getElementById('event_div_day_'+day_count_val).appendChild(div)
+
+        div.innerHTML+='<label for="description">Time:</label>';
+        div.innerHTML+='<input type="text" id="'+day_count_event_count_str + '_time" name="'+day_count_event_count_str + '_time" placeholder="'+day_count_event_count_str +'"  />';
+        div.innerHTML+='<label for="description"> Description:</label>';
+        div.innerHTML+='<input type="text" id="'+day_count_event_count_str + '_description" name="'+day_count_event_count_str + '_description" placeholder="'+day_count_event_count_str+'"  />';
+
+        var event_remove_btn = document.createElement('input')
+        event_remove_btn.id = 'event_remove_' + day_count
+        event_remove_btn.type = 'button'
+        event_remove_btn.value = 'X'
+        event_remove_btn.setAttribute('onclick','remove_event_from_day(parseInt(' + day_count_val + '), parseInt(' + event_count[day_count_val] + '))')
+        div.appendChild(event_remove_btn)
+        div.appendChild(document.createElement('br'))
         // for (pop of popped_nodes)
         // {
         //     document.getElementById('frm').appendChild(pop);
@@ -265,6 +329,12 @@
 
         write_vals()
         
+    }
+
+    function remove_event_from_day(day, event)
+    {
+        console.log('div_day_'+day+'_event_'+event)
+        document.getElementById('div_day_'+day+'_event_'+event).remove()
     }
 
     function add_event_image()
@@ -465,18 +535,20 @@
             <input id="day_btn" type="button" onClick="add_new_day_to_schedule(event); return false" value="Add Day to Schedule"><br>
             <div id="frm_event_add">
                 {% for x in data.schedule.data %}
-                    
-                        <br/>
+                    <div id="day_{{x.count}}">
+                        <!-- <br/> -->
                         <label for="description">Date:</label>
                         <input type="date" id="day_{{x.count}}" name="day_{{x.count}}" value="{{x.date}}"  />
+                        <input  type="button"  onClick="remove_day_from_schedule(parseInt('{{x.count}}'))" value="X" id='remove_day_from_schedule_btn_{{d.count}}'>
+                    
                         <br/>
                         <label for="description">Location:</label>
                         <input type="text" id="day_location_{{x.count}}" name="day_location_{{x.count}}" value="{{x.location}}"  />
                         <br/>
                         
-                        <div id="div_day_{{x.count}}"> 
+                        <div id="event_div_day_{{x.count}}"> 
                         {% for e in x.data %}
-                            <!-- <div id="div_day_{{x.count}}_event_{{e.count}}">  -->
+                            <div id="div_day_{{x.count}}_event_{{e.count}}"> 
 
                                 <!-- </div> -->
                                 <label for="description">Time:</label>
@@ -484,8 +556,10 @@
                                 
                                 <label for="description">Description:</label>
                                 <input type="text" id="day_{{x.count}}_event_{{e.count}}_description" name="day_{{x.count}}_event_{{e.count}}_description" value="{{e.description}}"  />
+
+                                <input  type="button"  onClick="remove_event_from_day(parseInt('{{x.count}}'), parseInt('{{e.count}}'))" value="X" id='remove_day_from_schedule_btn_{{d.count}}'>
                                 <br/>
-                            <!-- </div> -->
+                            </div>
             
                         {% endfor %}
                         </div>
@@ -493,6 +567,9 @@
                         
                         <input  type="button"  onClick="add_event_to_day(parseInt('{{x.count}}'))" value="Add Event to Day">
                         <br>
+                        <br>
+                    </div>
+                        
                     
         
                 {% endfor %}

@@ -241,7 +241,8 @@ def get_data_by_event_date_code(date_code):
         'descr': golf_main_context['description'].split('%&'),
         'schedule':schedule,
         'is_golf_registration':True,
-        'sponsor_images':ast.literal_eval(golf_main_context['sponsor_images'])
+        'sponsor_images':ast.literal_eval(golf_main_context['sponsor_images']),
+        'event_images':[{'link':'/static/images/golf/' + str(date_obj.year) + '/' + x, 'visible': 'active' if i == 0 else ''}for i,x in enumerate(ast.literal_eval(golf_main_context['event_images']))]
         }
 
 def get_sign_up_data_event_date_code(date_code):

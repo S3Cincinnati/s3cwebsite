@@ -7,66 +7,66 @@
         <h1 class="text-center">S3C</h1>
         <h4 class="text-center">Supporting the Cancer Community since 2009</h4>
         <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" style="height: 400px !important">
-            <div class="carousel-indicators">
-              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-              <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-            </div>
-            <div class="carousel-inner"  style="height: 100% !important">
-              {% for b in blocks %}
-              {% if b.key == 'count_vals' %}
-              <div class="carousel-item active" style="height: 100% !important">
-                <h6>Our reach ...</h6>
-                {% for d in b.vals%}
-                  <h4> <b>{{d.text}}:</b> {{d.val}}</h4>
-                {% endfor %}
-              </div>
-            {% elif b.key == 'two_pic_frame' %}
-              <div class="carousel-item" style="height: 100% !important">
-                <div style="display: flex; width: 100% !important; height: 100%;">
-                  
-                  <div style="flex: 2; padding: 0.5rem;">
-                    <img src="/static/images/home/{{b.img1}}" class="d-block w-100" style="max-height: 100%; object-fit: contain;">
-                  </div>
-
-                  <div style="flex: 2;">
-                    <h3>{{b.title}}</h3>
-                    {% for t in b.text %} 
-                      <p>{{t}}</p>
-                    {% endfor %}
-                  </div>
-                  
-                  <div style="flex: 2; padding: 0.5rem;">
-                    <img src="/static/images/home/{{b.img2}}" class="d-block w-100" style="max-height: 100%; object-fit: contain;">
-                  </div>
-                  
-                </div>
-              </div>
-            
-            {% elif b.key == 'golf_outing' %}
-              <div class="carousel-item" style="height: 100% !important">
-                <div style="display: flex; width: 100% !important; height: 100%;">
-
-                  <div style="flex: 3;">
-                    <h3>{{b.title}}</h3>
-                    {% for t in b.text %} 
-                      <p>{{t}}</p>
-                    {% endfor %}
-                  </div>
-                  
-                  <div style="flex: 5; padding: 0.5rem;">
-                    <img src="/static/images/home/{{b.img1}}" class="d-block w-100" style="max-height: 100%; object-fit: contain;">
-                  </div>
-                  
-                </div>
-              </div>
-            
-            {% endif %}
-                
-                
-                
+          <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+          </div>
+          <div class="carousel-inner"  style="height: 100% !important">
+            {% for b in blocks %}
+            {% if b.key == 'count_vals' %}
+            <div class="carousel-item active" style="height: 100% !important">
+              <h6>Our reach ...</h6>
+              {% for d in b.vals%}
+                <h4> <b>{{d.text}}:</b> {{d.val}}</h4>
               {% endfor %}
             </div>
+          {% elif b.key == 'two_pic_frame' %}
+            <div class="carousel-item" style="height: 100% !important">
+              <div style="display: flex; width: 100% !important; height: 100%;">
+                
+                <div style="flex: 2; padding: 0.5rem;">
+                  <img src="/static/images/home/{{b.img1}}" class="d-block w-100" style="max-height: 100%; object-fit: contain;">
+                </div>
+
+                <div style="flex: 2;">
+                  <h3>{{b.title}}</h3>
+                  {% for t in b.text %} 
+                    <p>{{t}}</p>
+                  {% endfor %}
+                </div>
+                
+                <div style="flex: 2; padding: 0.5rem;">
+                  <img src="/static/images/home/{{b.img2}}" class="d-block w-100" style="max-height: 100%; object-fit: contain;">
+                </div>
+                
+              </div>
+            </div>
+          
+          {% elif b.key == 'golf_outing' %}
+            <div class="carousel-item" style="height: 100% !important">
+              <div style="display: flex; width: 100% !important; height: 100%;">
+
+                <div style="flex: 3;">
+                  <h3>{{b.title}}</h3>
+                  {% for t in b.text %} 
+                    <p>{{t}}</p>
+                  {% endfor %}
+                </div>
+                
+                <div style="flex: 5; padding: 0.5rem;">
+                  <img src="/static/images/home/{{b.img1}}" class="d-block w-100" style="max-height: 100%; object-fit: contain;">
+                </div>
+                
+              </div>
+            </div>
+          
+          {% endif %}
+              
+              
+              
+            {% endfor %}
+          </div>
               
             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
               <span class="carousel-control-prev-icon" aria-hidden="true"></span>

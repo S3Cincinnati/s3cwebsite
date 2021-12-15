@@ -345,9 +345,9 @@
 
     function event_image_change_name(files, label){
         var myfile = files.files[0];
-        label_ = document.getElementById(label)
+        // label_ = document.getElementById(label)
         // console()
-        label_.value = myfile.name
+        document.getElementById(label).value = myfile.name
     }
 
     function add_event_image()
@@ -358,7 +358,7 @@
         
         store_vals()
 
-        div_id = 'div_' + event_image_count
+        div_id = 'event_image_div_' + event_image_count
         var div = document.createElement('div')
         div.id = div_id
         document.getElementById('event_images').appendChild(div)
@@ -368,6 +368,13 @@
         image_input.name = 'event_image_' + event_image_count
         image_input.type = 'file'
         image_input.setAttribute("onchange", "event_image_change_name(this, 'event_image_text_" + event_image_count + "')")
+
+        var remove_event_image_btn = document.createElement('input')
+        remove_event_image_btn.id = 'event_remove_' + day_count
+        remove_event_image_btn.type = 'button'
+        remove_event_image_btn.value = 'X'
+        remove_event_image_btn.setAttribute('onclick','clear_event_image(event_image_text_' + event_image_count + ')')
+        div.appendChild(remove_event_image_btn)
 
         // <input type="text" id="country" name="country" value="Norway" readonly><br>
         var image_label = document.createElement('input')
@@ -379,6 +386,7 @@
         // image_input.setAttribute("onchange", "test('event_image_' + " + event_image_count + ")")
 
         div.appendChild(image_input)
+        div.appendChild(remove_event_image_btn)
         div.appendChild(image_label)
         div.appendChild(document.createElement('br'))
         
@@ -392,6 +400,10 @@
         // your code...
 // };
         
+    }
+
+    function clear_event_image(label){
+        document.getElementById(label).value = 'deleted'
     }
 
     function add_sponsor_image()
@@ -532,8 +544,6 @@
         write_vals()
     }
 
-    
-
     window.onload = (event) => {
         // for (i of {{data.golf_registration}}){
         //     console.log(i)
@@ -613,8 +623,13 @@
             <input id="event_image_btn" type="button" onClick="add_event_image(); return false" value="Add Image to Event"><br>
             <div id="event_images">
                 {% for e in data.event_images %}
-                    <input name="event_image_{{e.count}}" id="event_image_{{e.count}}" type="file" onchange="event_image_change_name(this, 'event_image_text_{{e.count}}'); return false" value="Add Day to Schedule">
-                    <input class="image_label" name="event_image_text_{{e.count}}" id="event_image_text_{{e.count}}" type="text" value="{{e.image_name}}" readonly><br>
+                    <div id="event_image_div_{{e.count}}">
+                        <input name="event_image_{{e.count}}" id="event_image_{{e.count}}" type="file" onchange="event_image_change_name(this, 'event_image_text_{{e.count}}'); return false" value="Add Day to Schedule">
+                        
+                        <input  type="button"  onClick="clear_event_image('event_image_text_{{e.count}}')" value="X">
+                        <input class="image_label" name="event_image_text_{{e.count}}" id="event_image_text_{{e.count}}" type="text" value="{{e.image_name}}" readonly>
+                    </div>
+
                 {% endfor %}
             </div>
 

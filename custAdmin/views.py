@@ -679,23 +679,24 @@ def get_event_images(date_code):
 def get_image_list(date_code, golf_dict):
     images = list(filter(lambda x: ('event_image_text_' in x), golf_dict.keys()))
     for i in range(len(images)):
-        print('--',golf_dict[images[i]])
         images[i] = golf_dict[images[i]][0]
-        print(images)
-    print(date_code)
+        
     actual_images = get_event_images(date_code)
-    print(images, actual_images)
-    for i in range(min(len(images), len(actual_images))):
-        print('^', images[i], actual_images[i])
-        if len(images[i]) > 0:
-            actual_images[i] = images[i]
     
-    if len(images) > len(actual_images):
-        actual_images = actual_images + images[len(actual_images):]
-    if len(images) < len(actual_images):
-        actual_images = images
-    print('$', actual_images)
-    return actual_images
+    new_images = []
+    
+    for i in range(max(len(images), len(actual_images))):
+        if i >= len(images):
+            new_images += [actual_images[i]]
+        elif i >= len(actual_images):
+            new_images += [images[i]]
+        elif images[i] != 'deleted':
+            if len(images[i]) > 0:
+                new_images += [images[i]]
+            else:
+                new_images += [actual_images[i]]
+
+    return new_images
         
 def get_payed_registrations(date_):
     

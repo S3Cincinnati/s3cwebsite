@@ -31,6 +31,11 @@ $darkergrey: #353535;
     border-bottom: 5px solid $darkgrey;
 }
 
+.darkgrey_top_border{
+    min-height: 90px; 
+    border-top: 5px solid $darkgrey;
+}
+
 // Spacing
 .center_text{
     text-align: center !important;

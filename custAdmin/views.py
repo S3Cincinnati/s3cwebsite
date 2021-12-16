@@ -173,7 +173,8 @@ def get_data_by_event_date_code(date_code):
         for row in spamreader:
             d_row = dict(row)
             if date_code in d_row['year_key']:
-                d_row.update({'display_count':int(d_row['count']) + 1})
+                d_row.update({'display_count':int(d_row['count'])})
+                print(d_row)
                 golf_reg_context += [d_row]
 
     with open(url_main + '/sponsor_registration.csv', newline='') as csvfile:
@@ -181,7 +182,7 @@ def get_data_by_event_date_code(date_code):
         for row in spamreader:
             d_row = dict(row)
             if date_code in d_row['year_key']:
-                d_row.update({'display_count':int(d_row['count']) + 1})
+                d_row.update({'display_count':int(d_row['count'])})
                 sponsor_reg_context += [d_row]
     
     events = []
@@ -218,9 +219,7 @@ def get_data_by_event_date_code(date_code):
         'descr': golf_main_context['description'].split('%&'),
         'schedule':schedule,
         'golf_registration':golf_reg_context,
-        'golf_option_count':len(golf_reg_context),
         'sponsor_registration':sponsor_reg_context,
-        'sponsor_option_count':len(sponsor_reg_context),
         'event_images':[{'count':x, 'image_name':img} for x, img in enumerate(get_images(date_code, 'event'))],
         'sponsor_images':[{'count':x, 'image_name':img} for x, img in enumerate(get_images(date_code, 'sponsor'))]
         }

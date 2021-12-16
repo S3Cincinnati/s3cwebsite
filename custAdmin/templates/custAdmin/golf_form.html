@@ -21,7 +21,7 @@
     var event_count=[];
 
     var event_image_count = -1;
-    var sponsor_image_count = 0;
+    var sponsor_image_count = -1;
     var golf_option_count = 0;
     var sponsor_option_count = 0;
 
@@ -345,8 +345,6 @@
 
     function event_image_change_name(files, label){
         var myfile = files.files[0];
-        // label_ = document.getElementById(label)
-        // console()
         document.getElementById(label).value = myfile.name
     }
 
@@ -376,14 +374,12 @@
         remove_event_image_btn.setAttribute('onclick','clear_event_image(event_image_text_' + event_image_count + ')')
         div.appendChild(remove_event_image_btn)
 
-        // <input type="text" id="country" name="country" value="Norway" readonly><br>
         var image_label = document.createElement('input')
         image_label.id = 'event_image_text_' + event_image_count
         image_label.name = 'event_image_text_' + event_image_count
         image_label.type = 'text'
         image_label.readOnly = true
         image_label.className = "image_label"
-        // image_input.setAttribute("onchange", "test('event_image_' + " + event_image_count + ")")
 
         div.appendChild(image_input)
         div.appendChild(remove_event_image_btn)
@@ -394,11 +390,6 @@
         event_image_count++;
 
         write_vals()
-
-        // var el = document.getElementById('#uploadID');
-        // el.onchange = function(){
-        // your code...
-// };
         
     }
 
@@ -408,24 +399,45 @@
 
     function add_sponsor_image()
     {
+        if (sponsor_image_count < 0){
+            sponsor_image_count = document.getElementById('event_images').childElementCount;
+        }
+        
         store_vals()
 
-        popped_nodes = pop_nodes_for_sponsor_image()
+        div_id = 'sponsor_image_div_' + sponsor_image_count
+        var div = document.createElement('div')
+        div.id = div_id
+        document.getElementById('sponsor_images').appendChild(div)
 
         var image_input = document.createElement('input')
-        image_input.id = 'event_image_' + sponsor_image_count
-        image_input.name = 'sponsor_images'  + sponsor_image_count
+        image_input.id = 'sponsor_image_' + sponsor_image_count
+        image_input.name = 'sponsor_image_' + sponsor_image_count
         image_input.type = 'file'
+        image_input.setAttribute("onchange", "event_image_change_name(this, 'sponsor_image_text_" + sponsor_image_count + "')")
 
-        document.getElementById('frm').appendChild(image_input)
-        document.getElementById('frm').appendChild(document.createElement('br'))
+        var remove_event_image_btn = document.createElement('input')
+        remove_event_image_btn.id = 'sponsor_remove_' + sponsor_image_count
+        remove_event_image_btn.type = 'button'
+        remove_event_image_btn.value = 'X'
+        remove_event_image_btn.setAttribute('onclick','clear_event_image(sponsor_image_text_' + sponsor_image_count + ')')
+        div.appendChild(remove_event_image_btn)
 
-        for (pop of popped_nodes)
-        {
-            document.getElementById('frm').appendChild(pop);
-        }
+        var image_label = document.createElement('input')
+        image_label.id = 'sponsor_image_text_' + sponsor_image_count
+        image_label.name = 'sponsor_image_text_' + sponsor_image_count
+        image_label.type = 'text'
+        image_label.readOnly = true
+        image_label.className = "image_label"
 
+        div.appendChild(image_input)
+        div.appendChild(remove_event_image_btn)
+        div.appendChild(image_label)
+        div.appendChild(document.createElement('br'))
+        
+ 
         sponsor_image_count++;
+
         write_vals()
         
     }
@@ -635,6 +647,17 @@
 
             <br><label for="description">Sponsor Images -- </label>
             <input id="sponsor_image_btn" type="button" onClick="add_sponsor_image(); return false" value="Add Sponsor Image to Event"><br>
+            <div id="sponsor_images">
+                {% for s in data.sponsor_images %}
+                    <div id="sponsor_image_div_{{e.count}}">
+                        <input name="sponsor_image_{{s.count}}" id="sponsor_image_{{s.count}}" type="file" onchange="event_image_change_name(this, 'sponsor_image_text_{{s.count}}'); return false" value="Add Day to Schedule">
+                        
+                        <input  type="button"  onClick="clear_event_image('sponsor_image_text_{{s.count}}')" value="X">
+                        <input class="image_label" name="sponsor_image_text_{{s.count}}" id="sponsor_image_text_{{s.count}}" type="text" value="{{s.image_name}}" readonly>
+                    </div>
+
+                {% endfor %}
+            </div>
 
             <br><label for="description" id='golf-label'>Add Golf Sign Up Option-- </label>
             <input id="golf_signup_btn" type="button" onClick="add_golf_sign_up(); return false" value="Add Golfer Sign Up Option to Event">

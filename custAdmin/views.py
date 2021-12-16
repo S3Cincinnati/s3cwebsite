@@ -113,9 +113,6 @@ def new_golf_classic_request(request):
 
 def edit_golf_classic_request(request, key):
 
-    print(key)
-    # event_images = get_event_images(key)
-    # print(event_images)
     if request.method == 'POST':
         
         form_results = dict(request.POST)
@@ -224,7 +221,8 @@ def get_data_by_event_date_code(date_code):
         'golf_option_count':len(golf_reg_context),
         'sponsor_registration':sponsor_reg_context,
         'sponsor_option_count':len(sponsor_reg_context),
-        'event_images':[{'count':x, 'image_name':img} for x, img in enumerate(get_event_images(date_code))]
+        'event_images':[{'count':x, 'image_name':img} for x, img in enumerate(get_images(date_code, 'event'))],
+        'sponsor_images':[{'count':x, 'image_name':img} for x, img in enumerate(get_images(date_code, 'sponsor'))]
         }
 
 def proccess_golf_data(golf_dict, files):
@@ -272,26 +270,13 @@ def proccess_golf_data(golf_dict, files):
             'sponsor_option_textarea':golf_dict[sponsor_option_textarea[x]][0].strip(),
             'count':x
         } for x in range(len(sponsor_option_title))]
-    
-    event_images = []
-    sponsor_images = []
-
-    # for im in files:
-    #     print('&', im)
-    #     if 'event' in im:
-    #         event_images += ['/static/images/golf/' + str(f_date.year) + '/' + files[im].name]
-    #     elif 'sponsor' in im:
-    #         sponsor_images += ['/static/images/golf/' + str(f_date.year) + '/' + files[im].name]
-    #         # picture = Image.open(files[im])  
-    #         # picture.save(temp_url)
-
-    
+        
     content.update({year_key:{
         'year_key':year_key,
         'golf_course':golf_dict['golf_course'][0].strip(),
         'description':golf_dict['description'][0].replace('\r\n','%&').strip(),
-        'event_images':get_image_list(year_key, golf_dict),
-        'sponsor_images':sponsor_images
+        'event_images':get_image_list(year_key, golf_dict, 'event'),
+        'sponsor_images':get_image_list(year_key, golf_dict, 'sponsor')
         }})
 
     for link in [url_write_backup]:
@@ -650,7 +635,7 @@ def process_people_data(data):
         
         writer.writerows(rows)
 
-def get_event_images(date_code):
+def get_images(date_code, type):
     golf_main_context = {}
 
     if os.getenv('DJANGO_ENV','') == 'local':
@@ -665,7 +650,7 @@ def get_event_images(date_code):
             if date_code in d_row['year_key']:
                golf_main_context = d_row
 
-    image_array_str = golf_main_context['event_images']
+    image_array_str = golf_main_context[type + '_images']
     images = ast.literal_eval(image_array_str)
     print('*',images)
     for i in range(len(images)):
@@ -676,12 +661,12 @@ def get_event_images(date_code):
         images[i] = img
     return images
 
-def get_image_list(date_code, golf_dict):
-    images = list(filter(lambda x: ('event_image_text_' in x), golf_dict.keys()))
+def get_image_list(date_code, golf_dict, type):
+    images = list(filter(lambda x: (type + '_image_text_' in x), golf_dict.keys()))
     for i in range(len(images)):
         images[i] = golf_dict[images[i]][0]
         
-    actual_images = get_event_images(date_code)
+    actual_images = get_images(date_code, type)
     
     new_images = []
     

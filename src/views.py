@@ -69,7 +69,7 @@ class CreateSessionCheckoutView(View):
         
         success = settings.DOMAIN.strip() + '/golf-classic-2017-05-13'
         cancel = settings.DOMAIN.strip() 
-        print(success, cancel)
+        
         checkout_session = stripe.checkout.Session.create(
             payment_method_types=[
               'card',
@@ -81,8 +81,6 @@ class CreateSessionCheckoutView(View):
                 },
             ],
             mode='payment',
-            # success_url=YOUR_DOMAIN + '/success.html',
-            # cancel_url=YOUR_DOMAIN + '/cancel.html',
             success_url=success,
             cancel_url=cancel,
         )

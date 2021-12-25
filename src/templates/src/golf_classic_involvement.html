@@ -11,9 +11,12 @@
     </div> -->
     <script src="https://js.stripe.com/v3/"></script>
     <script>
+
+        var hide1s = true;
+
         function open_form(div_id_open, div_id_close)
         {
-            document.getElementById(div_id_open).style.display = '';
+            document.getElementById(div_id_open).style.display = 'block';
             document.getElementById(div_id_close).style.display = 'none';
         }
 
@@ -27,6 +30,15 @@
             padding-left: 0.5rem;
             padding-right: 0.5rem;
             height: 2rem;
+        }
+
+        .large_btn{
+            font-size: 1.1rem !important;
+            height: auto !important;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            padding-top: 0.3rem;
+            padding-bottom: 0.3rem;
         }
         .form-row {
             display: flex;
@@ -51,7 +63,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-6">
-                        <h6>Single Golfer Registration.</h6>
+                        <h5>Single Golfer Registration - ${{golf_options.1s.price_display}}</h5>
                         <ul>
                             {% for d in golf_options.1s.description %}
                                 <li> {{d}}</li>
@@ -59,6 +71,7 @@
                         </ul>
                     </div>
                     <div class="col-6">
+                        
                         <div id="single_div" style="display:none">
                             <form id="payment-form" action="/create-checkout-session-view?type=1s&date_code={{date_code}}" method="POST">
                                 {% csrf_token%}
@@ -80,8 +93,10 @@
                                 <button class="registration_btn yellow_background" onclick="open_form('single_div_btn','single_div')" type="button">X</button>
                             </form>
                         </div>
-                        <div id="single_div_btn">
-                            <button class="registration_btn yellow_background" onclick="open_form('single_div', 'single_div_btn')">Register</button>
+                        <div id="single_div_btn"  style="height: 100%;">
+                            <div class="d-flex align-items-center justify-content-center" style="height: 100%;">
+                                <button class="registration_btn yellow_background large_btn" onclick="open_form('single_div', 'single_div_btn')">Register</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -92,7 +107,7 @@
             <div class="card-body">
                 <div class="row">
                     <div class="col-6">
-                        <h6>Foursome Golfer Registration.</h6>
+                        <h5>Foursome Golfer Registration - ${{golf_options.4s.price_display}}</h5>
                         <ul>
                             {% for d in golf_options.4s.description %}
                                 <li> {{d}}</li>
@@ -121,8 +136,10 @@
                                 <button class="registration_btn yellow_background" onclick="open_form('foursome_div_btn','foursome_div')" type="button">X</button>
                             </form>
                         </div>
-                        <div id="foursome_div_btn">
-                            <button class="registration_btn yellow_background" onclick="open_form('foursome_div', 'foursome_div_btn')">Register</button>
+                        <div id="foursome_div_btn" style="height: 100%;">
+                            <div class="d-flex align-items-center justify-content-center" style="height: 100%;">
+                                <button class="registration_btn yellow_background large_btn" onclick="open_form('foursome_div', 'foursome_div_btn')">Register</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -134,19 +151,23 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-8">
-                            <h5>{{s.sponsor_option_title}} - $ {{s.stripe_price_variable}}</h5>
+                        <div class="col-6">
+                            <h5>{{s.sponsor_option_title}} - ${{s.stripe_price_variable}}</h5>
                             <ul>
                                 {% for d in s.description %}
                                     <li> {{d}}</li>
                                 {% endfor %}
                             </ul>
                         </div>
-                        <div class="col-4">
+                        <div class="col-6">
+                            <div class="d-flex align-items-center justify-content-center" style="height: 100%;">
+                                <button class="registration_btn yellow_background large_btn"> Email to Get Involved</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <br>
         {% endfor %}
     </div>
 

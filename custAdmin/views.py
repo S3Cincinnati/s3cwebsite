@@ -174,7 +174,6 @@ def get_data_by_event_date_code(date_code):
             d_row = dict(row)
             if date_code in d_row['year_key']:
                 d_row.update({'display_count':int(d_row['count'])})
-                print(d_row)
                 golf_reg_context += [d_row]
 
     with open(url_main + '/sponsor_registration.csv', newline='') as csvfile:
@@ -246,12 +245,14 @@ def proccess_golf_data(golf_dict, files):
     content = {x['year_key']:x for x in content}
 
     golf_option_title = list(filter(lambda x: ('golf_option_title_' in x), golf_dict.keys()))
+    stripe_price_input_golf = list(filter(lambda x: ('stripe_price_input_golf_' in x), golf_dict.keys()))
     stripe_price_variable_price_input_golf = list(filter(lambda x: ('stripe_price_variable_price_input_golf_' in x), golf_dict.keys()))
     golf_option_textarea = list(filter(lambda x: ('golf_option_textarea_' in x), golf_dict.keys()))
 
     golf_registrations = [{
             'year_key':year_key,
             'golf_option_title':golf_dict[golf_option_title[x]][0].strip(),
+            'price_display':golf_dict[stripe_price_input_golf[x]][0].strip(),
             'stripe_price_variable':golf_dict[stripe_price_variable_price_input_golf[x]][0].strip(),
             'golf_option_textarea':golf_dict[golf_option_textarea[x]][0].strip(),
             'count':x
@@ -288,8 +289,9 @@ def proccess_golf_data(golf_dict, files):
             writer.writerows([content[x] for x in content.keys()])
         
         with open(link + 'golf_registration.csv', 'w', newline='') as csvfile:
-            fieldnames = ['year_key', 'golf_option_title', 'stripe_price_variable', 'golf_option_textarea','count']
-
+            fieldnames = ['year_key', 'golf_option_title', 'price_display', 'stripe_price_variable', 'golf_option_textarea','count']
+            print(fieldnames)
+            print(golf_registrations)
             writer = csv.DictWriter(csvfile, delimiter='|', fieldnames=fieldnames)
             writer.writeheader()
             

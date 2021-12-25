@@ -7,734 +7,790 @@
     <title>Document</title>
     
 </head> -->
+
+
 {% extends "custAdmin/admin_base.html" %}
 
+
+
 {% block content %}
-<style type="text/css">.image_label {
-    background: rgba(0, 0, 0, 0);
-    border: none;
-  }
-  
-  </style>
-<script> 
-    var day_count=0;
-    var event_count=[];
 
-    var event_image_count = -1;
-    var sponsor_image_count = -1;
-    var golf_option_count = -1;
-    var sponsor_option_count = -1;
+    <script> 
 
-    function pop_nodes_after_day(day_count_val)
-    {
-        // console.log('day_' + (parseInt(day_count_val) + 1))
-        var nodes = document.getElementById('frm').children
-        var popped_nodes = []
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
         
-        var found_index = 0
+        var day_count=0;
+        var event_count=[];
 
-        for (node in nodes){
-            if (nodes[node].id === 'day_' + (parseInt(day_count_val)  + 1)
-                || nodes[node].id === 'sponsor_image_btn'
-                || nodes[node].id === 'event_image_btn'){
-                    found_index = parseInt(node) - 2
-                    break
-            }
-            if (nodes[node].id === 'submit'){
-                    found_index = parseInt(node)
-                    break
-            }
-        }
+        var event_image_count = -1;
+        var sponsor_image_count = -1;
+        var golf_option_count = -1;
+        var sponsor_option_count = -1;
 
-        for (n in nodes){
-            if (n >= found_index){
-                var node = nodes[n]
-                popped_nodes.push(node)
-            }
-        }
-
-        for (p of popped_nodes){
-                p.remove()
-        }
-
-        return popped_nodes
-    }
-
-    function pop_nodes_for_event_image()
-    {
-        var nodes = document.getElementById('frm').children
-        var popped_nodes = []
-        
-        var found_index = 0
-
-        for (node in nodes){
-            if (nodes[node].id === 'sponsor_image_btn'){
-                    found_index = parseInt(node) - 2
-                    break
-            }
-            if (nodes[node].id === 'submit'){
-                    found_index = parseInt(node)
-                    break
-            }
-        }
-
-        for (n in nodes){
-            if (n >= found_index){
-                var node = nodes[n]
-                popped_nodes.push(node)
-            }
-        }
-
-        for (p of popped_nodes){
-                p.remove()
-        }
-
-        return popped_nodes
-    }
-
-    function pop_nodes_for_sponsor_image()
-    {
-        var nodes = document.getElementById('frm').children
-        var popped_nodes = []
-        
-        var found_index = 0
-
-        for (node in nodes){
-            if (nodes[node].id === 'golf-label'){
-                    found_index = parseInt(node) - 1
-                    break
-            }
-        }
-
-        for (n in nodes){
-            if (n >= found_index){
-                var node = nodes[n]
-                popped_nodes.push(node)
-            }
-        }
-
-        for (p of popped_nodes){
-                p.remove()
-        }
-
-        return popped_nodes
-    }
-    
-    function pop_nodes_for_golf_sign_up()
-    {
-        var nodes = document.getElementById('frm').children
-        var popped_nodes = []
-        
-        var found_index = 0
-
-        for (node in nodes){
-            if (nodes[node].id === 'sponsor-label'){
-                    found_index = parseInt(node) - 1
-                    break
-            }
-        }
-
-        for (n in nodes){
-            if (n >= found_index){
-                var node = nodes[n]
-                popped_nodes.push(node)
-            }
-        }
-
-        for (p of popped_nodes){
-                p.remove()
-        }
-
-        return popped_nodes
-    }
-
-    function pop_nodes_for_sponsor_sign_up()
-    {
-        var nodes = document.getElementById('frm').children
-        var popped_nodes = []
-        
-        var found_index = 0
-
-        for (node in nodes){
-            if (nodes[node].id === 'submit'){
-                    found_index = parseInt(node) - 1
-                    break
-            }
-        }
-
-        for (n in nodes){
-            if (n >= found_index){
-                var node = nodes[n]
-                popped_nodes.push(node)
-            }
-        }
-
-        for (p of popped_nodes){
-                p.remove()
-        }
-
-        return popped_nodes
-    }
-
-    function store_vals()
-    {
-        var nodes = document.getElementById('frm').children
-        var ids = []
-
-        for (node of nodes){
-            if (node.id.length > 0 ){
-                ids.push(node)
-            }
-        }
-        
-        for (id of ids)
+        function pop_nodes_after_day(day_count_val)
         {
-            if (id.id.includes('image') && !id.id.includes('btn')){
-                
-            } else {
-                localStorage.setItem(id.id, id.value);
-            }
-        }
-        
-    }
-
-    function write_vals()
-    {
-        var nodes = document.getElementById('frm').children
-        var ids = []
-
-        for (node of nodes){
-            if (node.id.length > 0 ){
-                ids.push(node)
-            }
-        }
-        
-        for (id of ids)
-        {
-            if (!id.id.includes('image')){
-                id.value = localStorage.getItem(id.id);
-            }
-        }
-    }
-
-    function add_new_day_to_schedule()
-    {
-        // ev.preventDefault();
-        if (day_count < 0){
-            day_count = document.getElementById('frm_about').childElementCount;
-        }
-
-        store_vals()
-
-        div_id = 'day_' + day_count
-        var div = document.createElement('div')
-        div.id = div_id
-        document.getElementById('frm_event_add').appendChild(div)
-
-        var date_label = document.createElement('label')
-        date_label.textContent = 'Date: ' 
-        date_label.id = 'date_label_' + day_count
-        div.appendChild(date_label)
-        
-        var date_value = document.createElement('input')
-        date_value.id = 'day_' + day_count
-        date_value.name = 'day_' + day_count
-        date_value.type = 'date'
-        date_value.placeholder = 'Day '+day_count
-        div.appendChild(date_value)
-        
-        var day_remove_btn = document.createElement('input')
-        day_remove_btn.id = 'day_remove' + day_count
-        day_remove_btn.type = 'button'
-        day_remove_btn.value = 'X'
-        day_remove_btn.setAttribute('onclick','remove_day_from_schedule(parseInt(' + day_count + '))')
-        div.appendChild(day_remove_btn)
-        div.appendChild(document.createElement('br'))
-
-        var location_label = document.createElement('label')
-        location_label.textContent = 'Location: ' 
-        location_label.id = 'location_label_' + day_count
-        div.appendChild(location_label)
-
-        var day_location_value = document.createElement('input')
-        day_location_value.id = 'day_location_' + day_count
-        day_location_value.name = 'day_location_' + day_count
-        day_location_value.type = 'text'
-        day_location_value.placeholder = 'Location '+day_count
-        div.appendChild(day_location_value)
-        div.appendChild(document.createElement('br'))
-
-        var event_div = document.createElement('div')
-        event_div.id = 'event_div_day_' + day_count
-        div.appendChild(event_div)
-
-        var add_day_btn = document.createElement('input')
-        add_day_btn.id = 'day_add_' + day_count
-        add_day_btn.type = 'button'
-        add_day_btn.value = 'Add Event to Day'
-        add_day_btn.setAttribute('onclick','add_event_to_day(parseInt(' + day_count + '))')
-        div.appendChild(add_day_btn)
-        div.appendChild(document.createElement('br'))
-
-        event_count.push(0)
-        day_count++;
-
-        // for (pop of popped_nodes)
-        // {
-        //     document.getElementById('frm').appendChild(pop);
-        // }
-        
-        write_vals()
-
-        // return false;
-    }
-
-    function remove_day_from_schedule(day)
-    {
-        document.getElementById('day_' + day).remove()
-    }
-    
-    function add_event_to_day(day_count_val)
-    {
-        store_vals()
-
-        // popped_nodes = pop_nodes_after_day(day_count_val)
-
-        day_count_event_count_str = 'day_'+day_count_val+'_event_'+event_count[day_count_val]
-        
-        // var label = document.createElement('label')
-        // label.textContent = 'Time: '
-
-        // document.getElementById('div_day_'+day_count_val).appendChild(document.createElement('br'))
-
-        console.log('event_div_day_'+day_count_val)
-
-        div_id = 'div_' + day_count_event_count_str
-        var div = document.createElement('div')
-        div.id = div_id
-        document.getElementById('event_div_day_'+day_count_val).appendChild(div)
-
-        div.innerHTML+='<label for="description">Time:</label>';
-        div.innerHTML+='<input type="text" id="'+day_count_event_count_str + '_time" name="'+day_count_event_count_str + '_time" placeholder="'+day_count_event_count_str +'"  />';
-        div.innerHTML+='<label for="description"> Description:</label>';
-        div.innerHTML+='<input type="text" id="'+day_count_event_count_str + '_description" name="'+day_count_event_count_str + '_description" placeholder="'+day_count_event_count_str+'"  />';
-
-        var event_remove_btn = document.createElement('input')
-        event_remove_btn.id = 'event_remove_' + day_count
-        event_remove_btn.type = 'button'
-        event_remove_btn.value = 'X'
-        event_remove_btn.setAttribute('onclick','remove_event_from_day(parseInt(' + day_count_val + '), parseInt(' + event_count[day_count_val] + '))')
-        div.appendChild(event_remove_btn)
-        div.appendChild(document.createElement('br'))
-        // for (pop of popped_nodes)
-        // {
-        //     document.getElementById('frm').appendChild(pop);
-        // }
-        
-        event_count[day_count_val]++;
-
-        write_vals()
-        
-    }
-
-    function remove_event_from_day(day, event)
-    {
-        console.log('div_day_'+day+'_event_'+event)
-        document.getElementById('div_day_'+day+'_event_'+event).remove()
-    }
-
-    function event_image_change_name(files, label){
-        var myfile = files.files[0];
-        document.getElementById(label).value = myfile.name
-    }
-
-    function add_event_image()
-    {
-        if (event_image_count < 0){
-            event_image_count = document.getElementById('event_images').childElementCount;
-        }
-        
-        store_vals()
-
-        div_id = 'event_image_div_' + event_image_count
-        var div = document.createElement('div')
-        div.id = div_id
-        document.getElementById('event_images').appendChild(div)
-
-        var image_input = document.createElement('input')
-        image_input.id = 'event_image_' + event_image_count
-        image_input.name = 'event_image_' + event_image_count
-        image_input.type = 'file'
-        image_input.setAttribute("onchange", "event_image_change_name(this, 'event_image_text_" + event_image_count + "')")
-
-        var remove_event_image_btn = document.createElement('input')
-        remove_event_image_btn.id = 'event_remove_' + day_count
-        remove_event_image_btn.type = 'button'
-        remove_event_image_btn.value = 'X'
-        remove_event_image_btn.setAttribute('onclick','clear_event_image(event_image_text_' + event_image_count + ')')
-        div.appendChild(remove_event_image_btn)
-
-        var image_label = document.createElement('input')
-        image_label.id = 'event_image_text_' + event_image_count
-        image_label.name = 'event_image_text_' + event_image_count
-        image_label.type = 'text'
-        image_label.readOnly = true
-        image_label.className = "image_label"
-
-        div.appendChild(image_input)
-        div.appendChild(remove_event_image_btn)
-        div.appendChild(image_label)
-        div.appendChild(document.createElement('br'))
-        
- 
-        event_image_count++;
-
-        write_vals()
-        
-    }
-
-    function clear_event_image(label){
-        document.getElementById(label).value = 'deleted'
-    }
-
-    function add_sponsor_image()
-    {
-        if (sponsor_image_count < 0){
-            sponsor_image_count = document.getElementById('event_images').childElementCount;
-        }
-        
-        store_vals()
-
-        div_id = 'sponsor_image_div_' + sponsor_image_count
-        var div = document.createElement('div')
-        div.id = div_id
-        document.getElementById('sponsor_images').appendChild(div)
-
-        var image_input = document.createElement('input')
-        image_input.id = 'sponsor_image_' + sponsor_image_count
-        image_input.name = 'sponsor_image_' + sponsor_image_count
-        image_input.type = 'file'
-        image_input.setAttribute("onchange", "event_image_change_name(this, 'sponsor_image_text_" + sponsor_image_count + "')")
-
-        var remove_event_image_btn = document.createElement('input')
-        remove_event_image_btn.id = 'sponsor_remove_' + sponsor_image_count
-        remove_event_image_btn.type = 'button'
-        remove_event_image_btn.value = 'X'
-        remove_event_image_btn.setAttribute('onclick','clear_event_image(sponsor_image_text_' + sponsor_image_count + ')')
-        div.appendChild(remove_event_image_btn)
-
-        var image_label = document.createElement('input')
-        image_label.id = 'sponsor_image_text_' + sponsor_image_count
-        image_label.name = 'sponsor_image_text_' + sponsor_image_count
-        image_label.type = 'text'
-        image_label.readOnly = true
-        image_label.className = "image_label"
-
-        div.appendChild(image_input)
-        div.appendChild(remove_event_image_btn)
-        div.appendChild(image_label)
-        div.appendChild(document.createElement('br'))
-        
- 
-        sponsor_image_count++;
-
-        write_vals()
-        
-    }
-
-    function add_golf_sign_up()
-    {   
-        if (golf_option_count < 0){
-            golf_option_count = document.getElementById('frm_golf_signup').childElementCount;
-        }
-
-        store_vals()
-
-        // popped_nodes = pop_nodes_for_golf_sign_up()
-        div_id = 'golf_registration_' + golf_option_count
-        var div = document.createElement('div')
-        div.id = div_id
-        document.getElementById('frm_golf_signup').appendChild(div)
-
-        var label = document.createElement('p')
-        label.textContent = 'Golfer Sign Up Option #' + (golf_option_count + 1)
-        div.appendChild(label)
-
-        var label_golf_option_title = document.createElement('label')
-        label_golf_option_title.textContent = 'Title: ' 
-        div.appendChild(label_golf_option_title)
-
-        var golf_option_title = document.createElement('input')
-        golf_option_title.id = 'golf_option_title_' + golf_option_count
-        golf_option_title.name = 'golf_option_title_' + golf_option_count
-        golf_option_title.type = 'text'
-        div.appendChild(golf_option_title)
-
-        var remove_event_image_btn = document.createElement('input')
-        remove_event_image_btn.id = 'golf_remove_' + day_count
-        remove_event_image_btn.type = 'button'
-        remove_event_image_btn.value = 'X'
-        remove_event_image_btn.setAttribute('onclick',"remove_sign_up('golf_registration_" + golf_option_count + "')")
-        div.appendChild(remove_event_image_btn)
-        div.appendChild(document.createElement('br'))
-
-        var stripe_price_variable_price = document.createElement('label')
-        stripe_price_variable_price.textContent = 'Strip Price Variable: ' 
-        div.appendChild(stripe_price_variable_price)
-
-        var stripe_price_variable_price_input = document.createElement('input')
-        stripe_price_variable_price_input.id = 'stripe_price_variable_price_input_golf_' + golf_option_count
-        stripe_price_variable_price_input.name = 'stripe_price_variable_price_input_golf_' + golf_option_count
-        stripe_price_variable_price_input.type = 'text'
-        div.appendChild(stripe_price_variable_price_input)
-        div.appendChild(document.createElement('br'))
-
-        var option_description = document.createElement('label')
-        option_description.textContent = 'Option Description: ' 
-        div.appendChild(option_description)
-        div.appendChild(document.createElement('br'))
-
-        var golf_option_textarea = document.createElement('textarea')
-        golf_option_textarea.id = 'golf_option_textarea_' + golf_option_count
-        golf_option_textarea.name = 'golf_option_textarea_' + golf_option_count
-        golf_option_textarea.type = 'text'
-        golf_option_textarea.rows = "6" 
-        golf_option_textarea.cols = "50"
-        div.appendChild(golf_option_textarea)
-        div.appendChild(document.createElement('br'))
-
-        
-        // for (pop of popped_nodes)
-        // {
-        //     document.getElementById('frm').appendChild(pop);
-        // }
-
-        golf_option_count++;
-
-        write_vals()
-        
-    }
-
-    function remove_sign_up(tag)
-    {
-        console.log(tag)
-        document.getElementById(tag).remove()
-    }
-
-    function add_sponsor_sign_up(){
-
-        if (sponsor_option_count < 0){
-            sponsor_option_count = document.getElementById('frm_sponsor_signup').childElementCount;
-        }
-
-        store_vals()
-
-        div_id = 'sponsor_registration_' + sponsor_option_count
-        var div = document.createElement('div')
-        div.id = div_id
-        document.getElementById('frm_sponsor_signup').appendChild(div)
-
-        var label = document.createElement('p')
-        label.textContent = 'Sponsor Sign Up Option #' + (sponsor_option_count + 1)
-        div.appendChild(label)
-
-        var label_sponsor_option_title = document.createElement('label')
-        label_sponsor_option_title.textContent = 'Title: ' 
-        div.appendChild(label_sponsor_option_title)
-
-        var sponsor_option_title = document.createElement('input')
-        sponsor_option_title.id = 'sponsor_option_title_' + sponsor_option_count
-        sponsor_option_title.name = 'sponsor_option_title_' + sponsor_option_count
-        sponsor_option_title.type = 'text'
-        div.appendChild(sponsor_option_title)
-
-        var remove_event_image_btn = document.createElement('input')
-        remove_event_image_btn.id = 'sponsor_remove_' + sponsor_option_count
-        remove_event_image_btn.type = 'button'
-        remove_event_image_btn.value = 'X'
-        remove_event_image_btn.setAttribute('onclick',"remove_sign_up('sponsor_registration_" + sponsor_option_count + "')")
-        div.appendChild(remove_event_image_btn)
-        div.appendChild(document.createElement('br'))
-
-        var stripe_price_variable_price = document.createElement('label')
-        stripe_price_variable_price.textContent = 'Strip Price Variable: ' 
-        div.appendChild(stripe_price_variable_price)
-
-        var stripe_price_variable_price_input = document.createElement('input')
-        stripe_price_variable_price_input.id = 'stripe_price_variable_input_sponsor_' + sponsor_option_count
-        stripe_price_variable_price_input.name = 'stripe_price_variable_input_sponsor_' + sponsor_option_count
-        stripe_price_variable_price_input.type = 'text'
-        div.appendChild(stripe_price_variable_price_input)
-        div.appendChild(document.createElement('br'))
-
-        var option_description = document.createElement('label')
-        option_description.textContent = 'Option Description: ' 
-        div.appendChild(option_description)
-        div.appendChild(document.createElement('br'))
-
-        var sponsor_option_textarea = document.createElement('textarea')
-        sponsor_option_textarea.id = 'sponsor_option_textarea_' + sponsor_option_count
-        sponsor_option_textarea.name = 'sponsor_option_textarea_' + sponsor_option_count
-        sponsor_option_textarea.type = 'text'
-        sponsor_option_textarea.rows = "6" 
-        sponsor_option_textarea.cols = "50"
-        div.appendChild(sponsor_option_textarea)
-        div.appendChild(document.createElement('br'))
-
-        
-        // for (pop of popped_nodes)
-        // {
-        //     document.getElementById('frm').appendChild(pop);
-        // }
-
-        sponsor_option_count++;
-
-        write_vals()
-    }
-
-    window.onload = (event) => {
-        
-        day_count = parseInt("{{data.schedule.total}}")
-
-        localStorage.clear();
-        document.getElementById('day_btn').onclick = (event) => {
-            event.preventDefault();
-            add_new_day_to_schedule();
-            return false;
-        }
-    }
-
-    
-</script>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token%}
-        
-        <div id="frm">
-
-            <label for="full_date">Full Date:  </label>
-            <input type="date" name="full_date" id="full_date" value="{{data.date}}"><br>
-
-            <label for="golf_course">Golf Course:  </label>
-            <input type="text" name="golf_course" id="golf_course" value="{{data.course}}"><br>
-
-            <label for="description">Description:</label><br>
-            <textarea type="text" name="description" id="description" value="John" rows="6" cols="50"> {{data.descr}} </textarea><br><br>
-            <label for="description">Schedule -- </label>
-            <input id="day_btn" type="button" onClick="add_new_day_to_schedule(event, 'event_image_text_{{e.count}}'); return false" value="Add Day to Schedule"><br>
-            <div id="frm_event_add">
-                {% for x in data.schedule.data %}
-                    <div id="day_{{x.count}}">
-                        <!-- <br/> -->
-                        <label for="description">Date:</label>
-                        <input type="date" id="day_{{x.count}}" name="day_{{x.count}}" value="{{x.date}}"  />
-                        <input  type="button"  onClick="remove_day_from_schedule(parseInt('{{x.count}}'))" value="X" id='remove_day_from_schedule_btn_{{d.count}}'>
-                    
-                        <br/>
-                        <label for="description">Location:</label>
-                        <input type="text" id="day_location_{{x.count}}" name="day_location_{{x.count}}" value="{{x.location}}"  />
-                        <br/>
-                        
-                        <div id="event_div_day_{{x.count}}"> 
-                        {% for e in x.data %}
-                            <div id="div_day_{{x.count}}_event_{{e.count}}"> 
-
-                                <!-- </div> -->
-                                <label for="description">Time:</label>
-                                <input type="text" id="day_{{x.count}}_event_{{e.count}}_time" name="day_{{x.count}}_event_{{e.count}}_time" value="{{e.time}}"  />
-                                
-                                <label for="description">Description:</label>
-                                <input type="text" id="day_{{x.count}}_event_{{e.count}}_description" name="day_{{x.count}}_event_{{e.count}}_description" value="{{e.description}}"  />
-
-                                <input  type="button"  onClick="remove_event_from_day(parseInt('{{x.count}}'), parseInt('{{e.count}}'))" value="X" id='remove_day_from_schedule_btn_{{d.count}}'>
-                                <br/>
-                            </div>
+            // console.log('day_' + (parseInt(day_count_val) + 1))
+            var nodes = document.getElementById('frm').children
+            var popped_nodes = []
             
-                        {% endfor %}
+            var found_index = 0
+
+            for (node in nodes){
+                if (nodes[node].id === 'day_' + (parseInt(day_count_val)  + 1)
+                    || nodes[node].id === 'sponsor_image_btn'
+                    || nodes[node].id === 'event_image_btn'){
+                        found_index = parseInt(node) - 2
+                        break
+                }
+                if (nodes[node].id === 'submit'){
+                        found_index = parseInt(node)
+                        break
+                }
+            }
+
+            for (n in nodes){
+                if (n >= found_index){
+                    var node = nodes[n]
+                    popped_nodes.push(node)
+                }
+            }
+
+            for (p of popped_nodes){
+                    p.remove()
+            }
+
+            return popped_nodes
+        }
+
+        function pop_nodes_for_event_image()
+        {
+            var nodes = document.getElementById('frm').children
+            var popped_nodes = []
+            
+            var found_index = 0
+
+            for (node in nodes){
+                if (nodes[node].id === 'sponsor_image_btn'){
+                        found_index = parseInt(node) - 2
+                        break
+                }
+                if (nodes[node].id === 'submit'){
+                        found_index = parseInt(node)
+                        break
+                }
+            }
+
+            for (n in nodes){
+                if (n >= found_index){
+                    var node = nodes[n]
+                    popped_nodes.push(node)
+                }
+            }
+
+            for (p of popped_nodes){
+                    p.remove()
+            }
+
+            return popped_nodes
+        }
+
+        function pop_nodes_for_sponsor_image()
+        {
+            var nodes = document.getElementById('frm').children
+            var popped_nodes = []
+            
+            var found_index = 0
+
+            for (node in nodes){
+                if (nodes[node].id === 'golf-label'){
+                        found_index = parseInt(node) - 1
+                        break
+                }
+            }
+
+            for (n in nodes){
+                if (n >= found_index){
+                    var node = nodes[n]
+                    popped_nodes.push(node)
+                }
+            }
+
+            for (p of popped_nodes){
+                    p.remove()
+            }
+
+            return popped_nodes
+        }
+
+        function pop_nodes_for_golf_sign_up()
+        {
+            var nodes = document.getElementById('frm').children
+            var popped_nodes = []
+            
+            var found_index = 0
+
+            for (node in nodes){
+                if (nodes[node].id === 'sponsor-label'){
+                        found_index = parseInt(node) - 1
+                        break
+                }
+            }
+
+            for (n in nodes){
+                if (n >= found_index){
+                    var node = nodes[n]
+                    popped_nodes.push(node)
+                }
+            }
+
+            for (p of popped_nodes){
+                    p.remove()
+            }
+
+            return popped_nodes
+        }
+
+        function pop_nodes_for_sponsor_sign_up()
+        {
+            var nodes = document.getElementById('frm').children
+            var popped_nodes = []
+            
+            var found_index = 0
+
+            for (node in nodes){
+                if (nodes[node].id === 'submit'){
+                        found_index = parseInt(node) - 1
+                        break
+                }
+            }
+
+            for (n in nodes){
+                if (n >= found_index){
+                    var node = nodes[n]
+                    popped_nodes.push(node)
+                }
+            }
+
+            for (p of popped_nodes){
+                    p.remove()
+            }
+
+            return popped_nodes
+        }
+
+        function store_vals()
+        {
+            var nodes = document.getElementById('frm').children
+            var ids = []
+
+            for (node of nodes){
+                if (node.id.length > 0 ){
+                    ids.push(node)
+                }
+            }
+            
+            for (id of ids)
+            {
+                if (id.id.includes('image') && !id.id.includes('btn')){
+                    
+                } else {
+                    localStorage.setItem(id.id, id.value);
+                }
+            }
+            
+        }
+
+        function write_vals()
+        {
+            var nodes = document.getElementById('frm').children
+            var ids = []
+
+            for (node of nodes){
+                if (node.id.length > 0 ){
+                    ids.push(node)
+                }
+            }
+            
+            for (id of ids)
+            {
+                if (!id.id.includes('image')){
+                    id.value = localStorage.getItem(id.id);
+                }
+            }
+        }
+
+        function add_new_day_to_schedule()
+        {
+            // ev.preventDefault();
+            if (day_count < 0){
+                day_count = document.getElementById('frm_about').childElementCount;
+            }
+
+            store_vals()
+
+            div_id = 'day_' + day_count
+            var div = document.createElement('div')
+            div.id = div_id
+            document.getElementById('frm_event_add').appendChild(div)
+
+            var date_label = document.createElement('label')
+            date_label.textContent = 'Date: ' 
+            date_label.id = 'date_label_' + day_count
+            div.appendChild(date_label)
+            
+            var date_value = document.createElement('input')
+            date_value.id = 'day_' + day_count
+            date_value.name = 'day_' + day_count
+            date_value.type = 'date'
+            date_value.placeholder = 'Day '+day_count
+            div.appendChild(date_value)
+            
+            var day_remove_btn = document.createElement('input')
+            day_remove_btn.id = 'day_remove' + day_count
+            day_remove_btn.type = 'button'
+            day_remove_btn.value = 'X'
+            day_remove_btn.setAttribute('onclick','remove_day_from_schedule(parseInt(' + day_count + '))')
+            div.appendChild(day_remove_btn)
+            div.appendChild(document.createElement('br'))
+
+            var location_label = document.createElement('label')
+            location_label.textContent = 'Location: ' 
+            location_label.id = 'location_label_' + day_count
+            div.appendChild(location_label)
+
+            var day_location_value = document.createElement('input')
+            day_location_value.id = 'day_location_' + day_count
+            day_location_value.name = 'day_location_' + day_count
+            day_location_value.type = 'text'
+            day_location_value.placeholder = 'Location '+day_count
+            div.appendChild(day_location_value)
+            div.appendChild(document.createElement('br'))
+
+            var event_div = document.createElement('div')
+            event_div.id = 'event_div_day_' + day_count
+            div.appendChild(event_div)
+
+            var add_day_btn = document.createElement('input')
+            add_day_btn.id = 'day_add_' + day_count
+            add_day_btn.type = 'button'
+            add_day_btn.value = 'Add Event to Day'
+            add_day_btn.setAttribute('onclick','add_event_to_day(parseInt(' + day_count + '))')
+            div.appendChild(add_day_btn)
+            div.appendChild(document.createElement('br'))
+
+            event_count.push(0)
+            day_count++;
+
+            // for (pop of popped_nodes)
+            // {
+            //     document.getElementById('frm').appendChild(pop);
+            // }
+            
+            write_vals()
+
+            // return false;
+        }
+
+        function remove_day_from_schedule(day)
+        {
+            document.getElementById('day_' + day).remove()
+        }
+
+        function add_event_to_day(day_count_val)
+        {
+            store_vals()
+
+            // popped_nodes = pop_nodes_after_day(day_count_val)
+
+            day_count_event_count_str = 'day_'+day_count_val+'_event_'+event_count[day_count_val]
+            
+            // var label = document.createElement('label')
+            // label.textContent = 'Time: '
+
+            // document.getElementById('div_day_'+day_count_val).appendChild(document.createElement('br'))
+
+            console.log('event_div_day_'+day_count_val)
+
+            div_id = 'div_' + day_count_event_count_str
+            var div = document.createElement('div')
+            div.id = div_id
+            document.getElementById('event_div_day_'+day_count_val).appendChild(div)
+
+            div.innerHTML+='<label for="description">Time:</label>';
+            div.innerHTML+='<input type="text" id="'+day_count_event_count_str + '_time" name="'+day_count_event_count_str + '_time" placeholder="'+day_count_event_count_str +'"  />';
+            div.innerHTML+='<label for="description"> Description:</label>';
+            div.innerHTML+='<input type="text" id="'+day_count_event_count_str + '_description" name="'+day_count_event_count_str + '_description" placeholder="'+day_count_event_count_str+'"  />';
+
+            var event_remove_btn = document.createElement('input')
+            event_remove_btn.id = 'event_remove_' + day_count
+            event_remove_btn.type = 'button'
+            event_remove_btn.value = 'X'
+            event_remove_btn.setAttribute('onclick','remove_event_from_day(parseInt(' + day_count_val + '), parseInt(' + event_count[day_count_val] + '))')
+            div.appendChild(event_remove_btn)
+            div.appendChild(document.createElement('br'))
+            // for (pop of popped_nodes)
+            // {
+            //     document.getElementById('frm').appendChild(pop);
+            // }
+            
+            event_count[day_count_val]++;
+
+            write_vals()
+            
+        }
+
+        function remove_event_from_day(day, event)
+        {
+            console.log('div_day_'+day+'_event_'+event)
+            document.getElementById('div_day_'+day+'_event_'+event).remove()
+        }
+
+        function event_image_change_name(files, label){
+            var myfile = files.files[0];
+            document.getElementById(label).value = myfile.name
+        }
+
+        function add_event_image()
+        {
+            if (event_image_count < 0){
+                event_image_count = document.getElementById('event_images').childElementCount;
+            }
+            
+            store_vals()
+
+            div_id = 'event_image_div_' + event_image_count
+            var div = document.createElement('div')
+            div.id = div_id
+            document.getElementById('event_images').appendChild(div)
+
+            var image_input = document.createElement('input')
+            image_input.id = 'event_image_' + event_image_count
+            image_input.name = 'event_image_' + event_image_count
+            image_input.type = 'file'
+            image_input.setAttribute("onchange", "event_image_change_name(this, 'event_image_text_" + event_image_count + "')")
+
+            var remove_event_image_btn = document.createElement('input')
+            remove_event_image_btn.id = 'event_remove_' + day_count
+            remove_event_image_btn.type = 'button'
+            remove_event_image_btn.value = 'X'
+            remove_event_image_btn.setAttribute('onclick','clear_event_image(\'event_image_text_' + event_image_count + '\')')
+            div.appendChild(remove_event_image_btn)
+
+            var image_label = document.createElement('input')
+            image_label.id = 'event_image_text_' + event_image_count
+            image_label.name = 'event_image_text_' + event_image_count
+            image_label.type = 'text'
+            image_label.readOnly = true
+            image_label.className = "image_label"
+            image_label.value = ""
+            
+
+            div.appendChild(image_input)
+            div.appendChild(remove_event_image_btn)
+            div.appendChild(image_label)
+            div.appendChild(document.createElement('br'))
+            
+
+            event_image_count++;
+
+            write_vals()
+            
+        }
+
+        function clear_event_image(label){
+            console.log(label)
+            document.getElementById(label).value = 'deleted'
+        }
+
+        function add_sponsor_image()
+        {
+            if (sponsor_image_count < 0){
+                sponsor_image_count = document.getElementById('event_images').childElementCount;
+            }
+            
+            store_vals()
+
+            div_id = 'sponsor_image_div_' + sponsor_image_count
+            var div = document.createElement('div')
+            div.id = div_id
+            document.getElementById('sponsor_images').appendChild(div)
+
+            var image_input = document.createElement('input')
+            image_input.id = 'sponsor_image_' + sponsor_image_count
+            image_input.name = 'sponsor_image_' + sponsor_image_count
+            image_input.type = 'file'
+            image_input.setAttribute("onchange", "event_image_change_name(this, 'sponsor_image_text_" + sponsor_image_count + "')")
+
+            var remove_event_image_btn = document.createElement('input')
+            remove_event_image_btn.id = 'sponsor_remove_' + sponsor_image_count
+            remove_event_image_btn.type = 'button'
+            remove_event_image_btn.value = 'X'
+            remove_event_image_btn.setAttribute('onclick','clear_event_image(\'sponsor_image_text_' + sponsor_image_count + '\')')
+            div.appendChild(remove_event_image_btn)
+
+            var image_label = document.createElement('input')
+            image_label.id = 'sponsor_image_text_' + sponsor_image_count
+            image_label.name = 'sponsor_image_text_' + sponsor_image_count
+            image_label.type = 'text'
+            image_label.readOnly = true
+            image_label.className = "image_label"
+
+            div.appendChild(image_input)
+            div.appendChild(remove_event_image_btn)
+            div.appendChild(image_label)
+            div.appendChild(document.createElement('br'))
+            
+
+            sponsor_image_count++;
+
+            write_vals()
+            
+        }
+
+        function add_golf_sign_up()
+        {   
+            if (golf_option_count < 0){
+                golf_option_count = document.getElementById('frm_golf_signup').childElementCount;
+            }
+
+            store_vals()
+
+            // popped_nodes = pop_nodes_for_golf_sign_up()
+            div_id = 'golf_registration_' + golf_option_count
+            var div_main = document.createElement('div')
+            div_main.id = div_id
+            document.getElementById('frm_golf_signup').appendChild(div_main)
+            
+            var under = document.createElement('u')
+            
+            var label = document.createElement('p')
+            label.textContent = 'Golfer Sign Up Option #' + (golf_option_count + 1)
+            under.appendChild(label)
+            div_main.appendChild(under)
+
+            
+            var div = document.createElement('div')
+            div.id = div_id
+            div.className = "indent_div_content"
+            div_main.appendChild(div)
+
+            var label_golf_option_title = document.createElement('label')
+            label_golf_option_title.textContent = 'Title: ' 
+            div.appendChild(label_golf_option_title)
+
+            var golf_option_title = document.createElement('input')
+            golf_option_title.id = 'golf_option_title_' + golf_option_count
+            golf_option_title.name = 'golf_option_title_' + golf_option_count
+            golf_option_title.type = 'text'
+            div.appendChild(golf_option_title)
+
+            var remove_event_image_btn = document.createElement('input')
+            remove_event_image_btn.id = 'golf_remove_' + day_count
+            remove_event_image_btn.type = 'button'
+            remove_event_image_btn.value = 'X'
+            remove_event_image_btn.setAttribute('onclick',"remove_sign_up('golf_registration_" + golf_option_count + "')")
+            div.appendChild(remove_event_image_btn)
+            div.appendChild(document.createElement('br'))
+
+            var stripe_price_variable_price = document.createElement('label')
+            stripe_price_variable_price.textContent = 'Strip Price Variable: ' 
+            div.appendChild(stripe_price_variable_price)
+
+            var stripe_price_variable_price_input = document.createElement('input')
+            stripe_price_variable_price_input.id = 'stripe_price_variable_price_input_golf_' + golf_option_count
+            stripe_price_variable_price_input.name = 'stripe_price_variable_price_input_golf_' + golf_option_count
+            stripe_price_variable_price_input.type = 'text'
+            div.appendChild(stripe_price_variable_price_input)
+            div.appendChild(document.createElement('br'))
+
+            var option_description = document.createElement('label')
+            option_description.textContent = 'Option Description: ' 
+            div.appendChild(option_description)
+            div.appendChild(document.createElement('br'))
+
+            var golf_option_textarea = document.createElement('textarea')
+            golf_option_textarea.id = 'golf_option_textarea_' + golf_option_count
+            golf_option_textarea.name = 'golf_option_textarea_' + golf_option_count
+            golf_option_textarea.type = 'text'
+            golf_option_textarea.rows = "6" 
+            golf_option_textarea.cols = "50"
+            div.appendChild(golf_option_textarea)
+            div.appendChild(document.createElement('br'))
+
+            
+            // for (pop of popped_nodes)
+            // {
+            //     document.getElementById('frm').appendChild(pop);
+            // }
+
+            golf_option_count++;
+
+            write_vals()
+            
+        }
+
+        function remove_sign_up(tag)
+        {
+            console.log(tag)
+            document.getElementById(tag).remove()
+        }
+
+        function add_sponsor_sign_up(){
+
+            if (sponsor_option_count < 0){
+                sponsor_option_count = document.getElementById('frm_sponsor_signup').childElementCount;
+            }
+
+            store_vals()
+
+            div_id = 'sponsor_registration_' + sponsor_option_count
+            var div_main = document.createElement('div')
+            div_main.id = div_id
+            document.getElementById('frm_sponsor_signup').appendChild(div_main)
+
+            var under = document.createElement('u')
+
+            var label = document.createElement('p')
+            label.textContent = 'Sponsor Sign Up Option #' + (sponsor_option_count + 1)
+            under.appendChild(label)
+            div_main.appendChild(under)
+
+            var div = document.createElement('div')
+            div.id = div_id
+            div.className = "indent_div_content"
+            div_main.appendChild(div)
+
+            var label_sponsor_option_title = document.createElement('label')
+            label_sponsor_option_title.textContent = 'Title: ' 
+            div.appendChild(label_sponsor_option_title)
+
+            var sponsor_option_title = document.createElement('input')
+            sponsor_option_title.id = 'sponsor_option_title_' + sponsor_option_count
+            sponsor_option_title.name = 'sponsor_option_title_' + sponsor_option_count
+            sponsor_option_title.type = 'text'
+            div.appendChild(sponsor_option_title)
+
+            var remove_event_image_btn = document.createElement('input')
+            remove_event_image_btn.id = 'sponsor_remove_' + sponsor_option_count
+            remove_event_image_btn.type = 'button'
+            remove_event_image_btn.value = 'X'
+            remove_event_image_btn.setAttribute('onclick',"remove_sign_up('sponsor_registration_" + sponsor_option_count + "')")
+            div.appendChild(remove_event_image_btn)
+            div.appendChild(document.createElement('br'))
+
+            var stripe_price_variable_price = document.createElement('label')
+            stripe_price_variable_price.textContent = 'Strip Price Variable: ' 
+            div.appendChild(stripe_price_variable_price)
+
+            var stripe_price_variable_price_input = document.createElement('input')
+            stripe_price_variable_price_input.id = 'stripe_price_variable_input_sponsor_' + sponsor_option_count
+            stripe_price_variable_price_input.name = 'stripe_price_variable_input_sponsor_' + sponsor_option_count
+            stripe_price_variable_price_input.type = 'text'
+            div.appendChild(stripe_price_variable_price_input)
+            div.appendChild(document.createElement('br'))
+
+            var option_description = document.createElement('label')
+            option_description.textContent = 'Option Description: ' 
+            div.appendChild(option_description)
+            div.appendChild(document.createElement('br'))
+
+            var sponsor_option_textarea = document.createElement('textarea')
+            sponsor_option_textarea.id = 'sponsor_option_textarea_' + sponsor_option_count
+            sponsor_option_textarea.name = 'sponsor_option_textarea_' + sponsor_option_count
+            sponsor_option_textarea.type = 'text'
+            sponsor_option_textarea.rows = "6" 
+            sponsor_option_textarea.cols = "50"
+            div.appendChild(sponsor_option_textarea)
+            div.appendChild(document.createElement('br'))
+
+            
+            // for (pop of popped_nodes)
+            // {
+            //     document.getElementById('frm').appendChild(pop);
+            // }
+
+            sponsor_option_count++;
+
+            write_vals()
+        }
+
+        window.onload = (event) => {
+            
+            day_count = parseInt("{{data.schedule.total}}")
+
+            localStorage.clear();
+            document.getElementById('day_btn').onclick = (event) => {
+                event.preventDefault();
+                add_new_day_to_schedule();
+                return false;
+            }
+        }
+
+
+    </script>
+
+    <style 
+        type="text/css">.image_label {
+            background: rgba(0, 0, 0, 0);
+            border: none;
+        }   
+
+        .indent_div_content {
+            padding-left: 1rem !important;
+        }
+
+    </style>
+
+    <div style="padding: 2rem;">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token%}
+            
+            <div id="frm">
+    
+                <label for="full_date">Full Date:  </label>
+                <input type="date" name="full_date" id="full_date" value="{{data.date}}"><br>
+    
+                <label for="golf_course">Golf Course:  </label>
+                <input type="text" name="golf_course" id="golf_course" value="{{data.course}}"><br>
+    
+                <label for="description">Description:</label><br>
+                <textarea type="text" name="description" id="description" value="John" rows="6" cols="50"> {{data.descr}} </textarea><br><br>
+                <b><label for="description">Schedule -- </label></b>
+                <input id="day_btn" type="button" onClick="add_new_day_to_schedule(event, 'event_image_text_{{e.count}}'); return false" value="Add Day to Schedule"><br>
+                <div id="frm_event_add">
+                    {% for x in data.schedule.data %}
+                        <div id="day_{{x.count}}" class="indent_div_content">
+                            <!-- <br/> -->
+                            <label for="description">Date:</label>
+                            <input type="date" id="day_{{x.count}}" name="day_{{x.count}}" value="{{x.date}}"  />
+                            <input  type="button"  onClick="remove_day_from_schedule(parseInt('{{x.count}}'))" value="X" id='remove_day_from_schedule_btn_{{d.count}}'>
+                        
+                            <br/>
+                            <label for="description">Location:</label>
+                            <input type="text" id="day_location_{{x.count}}" name="day_location_{{x.count}}" value="{{x.location}}"  />
+                            <br/>
+                            
+                            <div id="event_div_day_{{x.count}}"  class="indent_div_content"> 
+                            {% for e in x.data %}
+                                <div id="div_day_{{x.count}}_event_{{e.count}}"> 
+    
+                                    <!-- </div> -->
+                                    <label for="description">Time:</label>
+                                    <input type="text" id="day_{{x.count}}_event_{{e.count}}_time" name="day_{{x.count}}_event_{{e.count}}_time" value="{{e.time}}"  />
+                                    
+                                    <label for="description">Description:</label>
+                                    <input type="text" id="day_{{x.count}}_event_{{e.count}}_description" name="day_{{x.count}}_event_{{e.count}}_description" value="{{e.description}}"  />
+    
+                                    <input  type="button"  onClick="remove_event_from_day(parseInt('{{x.count}}'), parseInt('{{e.count}}'))" value="X" id='remove_day_from_schedule_btn_{{d.count}}'>
+                                    <br/>
+                                </div>
+                
+                            {% endfor %}
+                            </div>
+                            
+                            
+                            <input  type="button"  onClick="add_event_to_day(parseInt('{{x.count}}'))" value="Add Event to Day">
+                            <br>
+                            <br>
+                        </div>
+                            
+                        
+            
+                    {% endfor %}
+                </div>
+    
+                <br><b><label for="description">Event Images -- </label></b>
+                <input id="event_image_btn" type="button" onClick="add_event_image(); return false" value="Add Image to Event"><br>
+                <div id="event_images"  class="indent_div_content">
+                    {% for e in data.event_images %}
+                        <div id="event_image_div_{{e.count}}">
+                            <input name="event_image_{{e.count}}" id="event_image_{{e.count}}" type="file" onchange="event_image_change_name(this, 'event_image_text_{{e.count}}'); return false" value="Add Day to Schedule">
+                            
+                            <input  type="button"  onClick="clear_event_image('event_image_text_{{e.count}}')" value="X">
+                            <input class="image_label" name="event_image_text_{{e.count}}" id="event_image_text_{{e.count}}" type="text" value="{{e.image_name}}" readonly>
+                        </div>
+    
+                    {% endfor %}
+                </div>
+    
+                <br><b><label for="description">Sponsor Images -- </label></b>
+                <input id="sponsor_image_btn" type="button" onClick="add_sponsor_image(); return false" value="Add Sponsor Image to Event"><br>
+                <div id="sponsor_images"  class="indent_div_content">
+                    {% for s in data.sponsor_images %}
+                        <div id="sponsor_image_div_{{e.count}}">
+                            <input name="sponsor_image_{{s.count}}" id="sponsor_image_{{s.count}}" type="file" onchange="event_image_change_name(this, 'sponsor_image_text_{{s.count}}'); return false" value="Add Day to Schedule">
+                            
+                            <input  type="button"  onClick="clear_event_image('sponsor_image_text_{{s.count}}')" value="X">
+                            <input class="image_label" name="sponsor_image_text_{{s.count}}" id="sponsor_image_text_{{s.count}}" type="text" value="{{s.image_name}}" readonly>
+                        </div>
+    
+                    {% endfor %}
+                </div>
+    
+                <br><b><label for="description" id='golf-label'>Add Golf Sign Up Option-- </label></b>
+                <input id="golf_signup_btn" type="button" onClick="add_golf_sign_up(); return false" value="Add Golfer Sign Up Option to Event">
+                <div id="frm_golf_signup" class="indent_div_content">
+                    {% for x in data.golf_registration %}
+                        <div id="golf_registration_{{x.display_count}}">
+                            <u><p>Golfer Sign Up Option # {{x.display_count|add:1}}</p></u>
+                            <div  class="indent_div_content">
+                                <label>Title: </label>
+                                <input type="text" id="golf_option_title_{{x.count}}" name="golf_option_title_{{x.count}}" value="{{x.golf_option_title}}">
+                                <input  type="button"  onClick="remove_sign_up('golf_registration_{{x.display_count}}')" value="X"><br>
+                                
+                                <label>Price Display Value:  </label>
+                                <input type="text" id="stripe_price_input_golf_{{x.count}}" name="stripe_price_input_golf_{{x.count}}" value="{{x.price_display}}"><br>
+        
+                                <label>Strip Price Variable:  </label>
+                                <input type="text" id="stripe_price_variable_price_input_golf_{{x.count}}" name="stripe_price_variable_price_input_golf_{{x.count}}" value="{{x.stripe_price_variable}}"><br>
+        
+                                <label>Option Description: - this will be a bulleted list so follow each row with a semicolon to display correctly</label><br>
+                                <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="Tooltip on top">
+                                    Tooltip on top
+                                  </button>
+                                <textarea type="text" name="golf_option_textarea_{{x.count}}" id="golf_option_textarea_{{x.count}}" value="John" rows="6" cols="50"> {{x.golf_option_textarea}} </textarea><br><br>
+                            </div>
                         </div>
                         
-                        
-                        <input  type="button"  onClick="add_event_to_day(parseInt('{{x.count}}'))" value="Add Event to Day">
-                        <br>
-                        <br>
-                    </div>
-                        
-                    
+                    {% endfor %}
+                </div>
+    
+                <br>
+                <b>
+                    <label for="description"  id='sponsor-label'>Add Registration Sign Up Option-- </label>
+                </b>
+                <input id="sponsor_signup_btn" type="button" onClick="add_sponsor_sign_up(); return false" value="Add Sponsor Image to Event"><br><br>
+    
+                <div id="frm_sponsor_signup" class="indent_div_content">
+                    {% for x in data.sponsor_registration %}
+                        <div id="sponsor_registration_{{x.display_count}}">
+    
+                            <u>
+                                <p>Sponsor Sign Up Option # {{x.display_count|add:1}}</p>
+                            </u>
+                            <div  class="indent_div_content">
+                                <label>Title: </label>
+                                <input type="text" id="sponsor_option_title_{{x.count}}" name="sponsor_option_title_{{x.count}}" value="{{x.sponsor_option_title}}">
+                                <input  type="button"  onClick="remove_sign_up('sponsor_registration_{{x.display_count}}')" value="X"><br>
+                                
+                                <label>Strip Price Variable:  </label>
+                                <input type="text" id="stripe_price_variable_input_sponsor_{{x.count}}" name="stripe_price_variable_input_sponsor_{{x.count}}" value="{{x.stripe_price_variable}}"><br>
         
-                {% endfor %}
+                                <label>Option Description: </label><br>
+                                <textarea type="text" name="sponsor_option_textarea_{{x.count}}" id="sponsor_option_textarea_{{x.count}}" value="John" rows="6" cols="50"> {{x.sponsor_option_textarea}} </textarea><br><br>
+                            </div>
+                            
+                        </div>
+                    {% endfor %}
+                </div>
+    
+                <button id="submit" type="submit"> Submit</button>
             </div>
-
-            <br><label for="description">Event Images -- </label>
-            <input id="event_image_btn" type="button" onClick="add_event_image(); return false" value="Add Image to Event"><br>
-            <div id="event_images">
-                {% for e in data.event_images %}
-                    <div id="event_image_div_{{e.count}}">
-                        <input name="event_image_{{e.count}}" id="event_image_{{e.count}}" type="file" onchange="event_image_change_name(this, 'event_image_text_{{e.count}}'); return false" value="Add Day to Schedule">
-                        
-                        <input  type="button"  onClick="clear_event_image('event_image_text_{{e.count}}')" value="X">
-                        <input class="image_label" name="event_image_text_{{e.count}}" id="event_image_text_{{e.count}}" type="text" value="{{e.image_name}}" readonly>
-                    </div>
-
-                {% endfor %}
-            </div>
-
-            <br><label for="description">Sponsor Images -- </label>
-            <input id="sponsor_image_btn" type="button" onClick="add_sponsor_image(); return false" value="Add Sponsor Image to Event"><br>
-            <div id="sponsor_images">
-                {% for s in data.sponsor_images %}
-                    <div id="sponsor_image_div_{{e.count}}">
-                        <input name="sponsor_image_{{s.count}}" id="sponsor_image_{{s.count}}" type="file" onchange="event_image_change_name(this, 'sponsor_image_text_{{s.count}}'); return false" value="Add Day to Schedule">
-                        
-                        <input  type="button"  onClick="clear_event_image('sponsor_image_text_{{s.count}}')" value="X">
-                        <input class="image_label" name="sponsor_image_text_{{s.count}}" id="sponsor_image_text_{{s.count}}" type="text" value="{{s.image_name}}" readonly>
-                    </div>
-
-                {% endfor %}
-            </div>
-
-            <br><label for="description" id='golf-label'>Add Golf Sign Up Option-- </label>
-            <input id="golf_signup_btn" type="button" onClick="add_golf_sign_up(); return false" value="Add Golfer Sign Up Option to Event">
             
-            <div id="frm_golf_signup">
-                {% for x in data.golf_registration %}
-                    <div id="golf_registration_{{x.display_count}}">
-                        <p>Golfer Sign Up Option # {{x.display_count|add:1}}</p>
-                        <label>Title: </label>
-                        <input type="text" id="golf_option_title_{{x.count}}" name="golf_option_title_{{x.count}}" value="{{x.golf_option_title}}">
-                        <input  type="button"  onClick="remove_sign_up('golf_registration_{{x.display_count}}')" value="X"><br>
-                        
-                        <label>Strip Price Variable:  </label>
-                        <input type="text" id="stripe_price_variable_price_input_golf_{{x.count}}" name="stripe_price_variable_price_input_golf_{{x.count}}" value="{{x.stripe_price_variable}}"><br>
-
-                        <label>Option Description: </label><br>
-                        <textarea type="text" name="golf_option_textarea_{{x.count}}" id="golf_option_textarea_{{x.count}}" value="John" rows="6" cols="50"> {{x.golf_option_textarea}} </textarea><br><br>
-                    </div>
-                    
-                {% endfor %}
-            </div>
-
-            <br><label for="description"  id='sponsor-label'>Add Registration Sign Up Option-- </label>
-            <input id="sponsor_signup_btn" type="button" onClick="add_sponsor_sign_up(); return false" value="Add Sponsor Image to Event"><br><br>
-
-            <div id="frm_sponsor_signup">
-                {% for x in data.sponsor_registration %}
-                    <div id="sponsor_registration_{{x.display_count}}">
-
-                        <p>Sponsor Sign Up Option # {{x.display_count|add:1}}</p>
-                        <label>Title: </label>
-                        <input type="text" id="sponsor_option_title_{{x.count}}" name="sponsor_option_title_{{x.count}}" value="{{x.sponsor_option_title}}">
-                        <input  type="button"  onClick="remove_sign_up('sponsor_registration_{{x.display_count}}')" value="X"><br>
-                        
-                        <label>Strip Price Variable:  </label>
-                        <input type="text" id="stripe_price_variable_input_sponsor_{{x.count}}" name="stripe_price_variable_input_sponsor_{{x.count}}" value="{{x.stripe_price_variable}}"><br>
-
-                        <label>Option Description: </label><br>
-                        <textarea type="text" name="sponsor_option_textarea_{{x.count}}" id="sponsor_option_textarea_{{x.count}}" value="John" rows="6" cols="50"> {{x.sponsor_option_textarea}} </textarea><br><br>
-                    </div>
-                {% endfor %}
-            </div>
-
-            <button id="submit" type="submit"> Submit</button>
-        </div>
-        
-    </form>
+        </form>
+    </div>
+    
 {% endblock content %}

@@ -1,0 +1,18 @@
+{% extends "custAdmin/admin_base.html" %}
+
+
+{% block content %}
+
+    <div class="container">
+        <br>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token%}
+            <div id="frm">
+                <label> Contact Email - </label>
+                <input type="text" name="contact_email" id="contact_email" value="{{contact_email}}"><br>
+                <button id="submit" type="submit"> Submit</button>
+            </div>
+        </form>
+    </div>
+
+{% endblock content %}

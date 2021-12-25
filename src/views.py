@@ -61,6 +61,9 @@ def get_golf_outing_involvment(request, year):
     
     return render(request, 'src/golf_classic_involvement.html',context)
 
+def get_donation(request):
+    # if golf_active
+    return render(request, 'src/donation.html')
 
 class CreateSessionCheckoutView(View):
     def post(self, request, *args, **kwargs):
@@ -297,7 +300,7 @@ def get_home_data():
                 titles = ast.literal_eval(d_row['titles'])
                 text = ast.literal_eval(d_row['text'])
                 
-                data['two_pics'] += [{'key':'two_pic_frame','img1':images[0], 'img2':images[1], 'title':titles[0], 'text':text}]
+                data['blocks'] += [{'key':'two_pic_frame','img1':images[0], 'img2':images[1], 'title':titles[0], 'text':text}]
             elif 'golf_outing' == d_row['format']:
                 images = ast.literal_eval(d_row['images'])
                 titles = ast.literal_eval(d_row['titles'])
@@ -313,7 +316,7 @@ def get_home_data():
                 text = ast.literal_eval(d_row['text'])
                 
                 data[format] = {'title':titles[0], 'text':text}
-    
+    print(data)
     return data
 def get_week_day(day_val):
     mapp = {0:'Monday', 1:'Tuesday',2:'Wednesday',3:'Thursday',4:'Friday',5:'Saturday',6:'Sunday'}

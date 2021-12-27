@@ -65,8 +65,10 @@ def get_golf_outing_involvment(request, year):
     # print(FoursomeRegistration.objects.all())
     context = {'date_code':year}
     context.update(get_sign_up_data_event_date_code(year))
+    donation_data = get_donation_data()
+    context.update({'donations':[donation_data[:3],donation_data[3:]]})
     context.update({'contact_email':get_contact_email()})
-    
+    context.update({'home':get_home_data()})
     
     return render(request, 'src/golf_classic_involvement.html',context)
 
@@ -88,7 +90,7 @@ class CreateSessionCheckoutView(View):
             ],
             line_items=[
                 {
-                    'price': get_price(registration_type),
+                    'price': registration_type,
                     'quantity': 1,
                 },
             ],
@@ -102,7 +104,6 @@ class CreateSessionCheckoutView(View):
         form_results = dict(request.POST)
         form_results.pop('csrfmiddlewaretoken')
 
-        print(registration_type)
         # Checks wether or not registration is for golf (either single or foursome)
         if registration_type == '1s' or registration_type == '4s':
             print(request.GET)
@@ -284,6 +285,20 @@ def get_sign_up_data_event_date_code(date_code):
                     golf_sign_ups['4s'] = d_row
     
     return {'sponsor_options':sponsor_sign_ups, 'golf_options':golf_sign_ups}
+def get_donation_data():
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_main = os.path.dirname(__file__) + '/../media/static_page_data/'
+    else:
+        url_main = staticfiles_storage.path('static_page_data')
+
+    data = []
+    with open(url_main + '/donations.csv', newline='') as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
+        for row in spamreader:
+            d_row = dict(row)
+            data += [d_row]
+
+    return data
 
 def get_home_data():
     data = {'blocks':[], 'two_pics':[]}

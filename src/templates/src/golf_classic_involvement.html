@@ -59,6 +59,37 @@
     <div class="container">
 
         <br>
+        <h3>Donations</h3>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-4">
+                        {% for dd in donations %}
+                            <div class="row" style="height: 50%;">
+                                {% for d in dd %}
+                                    <div class="col-4">
+                                        <div class="d-flex align-items-center justify-content-center" style="height: 100%;">
+                                            <form id="payment-form" action="/create-checkout-session-view?type={{d.stripe_variable}}&date_code={{date_code}}" method="POST">
+                                                {% csrf_token%}
+                                                <button class="registration_btn yellow_background large_btn" type="submit">${{d.display_value}}</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                {% endfor %}                        
+                            </div>
+                        {% endfor %}  
+                    </div>
+                    <div class="col-8">
+                        <h3 style="padding-top: 0.5rem; padding-bottom: 1rem;">S3Cs Success Depends on Sponsors</h3>
+                        <p><b>{{home.irs.title}}</b></p>
+                        {% for t in home.irs.text %}
+                            <p>{{t}}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
         <h3>Golf Registration</h3>
         <div class="card">
             <div class="card-body">
@@ -74,7 +105,7 @@
                     <div class="col-6">
                         
                         <div id="single_div" style="display:none">
-                            <form id="payment-form" action="/create-checkout-session-view?type=1s&date_code={{date_code}}" method="POST">
+                            <form id="payment-form" action="/create-checkout-session-view?type={{golf_options.1s.stripe_price_variable}}&date_code={{date_code}}" method="POST">
                                 {% csrf_token%}
                                 <ul class="in_form">
                                     <li class="form-row">
@@ -117,7 +148,7 @@
                     </div>
                     <div class="col-6">
                         <div id="foursome_div" style="display:none" class="row">
-                            <form id="payment-form" action="/create-checkout-session-view?type=4s&date_code={{date_code}}" method="POST">
+                            <form id="payment-form" action="/create-checkout-session-view?type={{golf_options.4s.stripe_price_variable}}&date_code={{date_code}}" method="POST">
                                 {% csrf_token%}
                                 <ul class="in_form">
                                     <li class="form-row">

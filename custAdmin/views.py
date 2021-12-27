@@ -740,7 +740,7 @@ def proccess_golf_data(golf_dict, files):
             writer = csv.DictWriter(csvfile, delimiter='|', fieldnames=fieldnames)
             writer.writeheader()
             
-            writer.writerows([content[x] for x in content.keys()])
+            writer.writerows(sorted([content[x] for x in content.keys()], key = lambda i: i['year_key'],reverse=True))
         
         with open(link + 'golf_registration.csv', 'w', newline='') as csvfile:
             fieldnames = ['year_key','golf_option_title', 'price_display', 'stripe_price_variable', 'golf_option_textarea','count']
@@ -765,6 +765,7 @@ def proccess_golf_data(golf_dict, files):
             writer.writeheader()
             
             writer.writerows([event_schedule[x] for x in event_schedule.keys()])
+            
 def process_schedule(golf_dict, year_key):
     keys = list(filter(lambda x: ('day_' in x), golf_dict.keys()))
     schedule = {}

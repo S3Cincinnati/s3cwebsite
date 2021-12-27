@@ -39,7 +39,6 @@ def our_team(request):
     context = {'people':get_people_data(), 'about':get_about_us_data()}
     return render(request, 'src/our_team.html', context)
 
-
 def get_golf_outing(request, year):
 
     context = {}
@@ -56,14 +55,14 @@ def get_golf_outing_involvment(request, year):
     # print(FoursomeRegistration.objects.all())
     context = {'date_code':year}
     context.update(get_sign_up_data_event_date_code(year))
-
-    print(context)
+    context.update({'contact_email':get_contact_email()})
+    
     
     return render(request, 'src/golf_classic_involvement.html',context)
 
 def get_donation(request):
     # if golf_active
-    return render(request, 'src/donation.html')
+    return render(request, 'src/involvement.html')
 
 class CreateSessionCheckoutView(View):
     def post(self, request, *args, **kwargs):
@@ -367,3 +366,18 @@ def get_people_data():
             data += [d_row]
             index += 1
     return data
+
+def get_contact_email():
+    data = []
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_main = os.path.dirname(__file__) + '/../media/static_page_data/'
+    else:
+        url_main = staticfiles_storage.path('static_page_data')
+
+    with open(url_main + '/organization_information.csv', newline='') as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
+        for row in spamreader:
+            d_row = dict(row)
+            data += [d_row]
+
+    return data[0]['contact_email']

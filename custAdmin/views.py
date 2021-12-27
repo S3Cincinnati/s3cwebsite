@@ -490,9 +490,71 @@ def get_payed_registrations(date_):
 
     workbook.close()
 
+# Donations
+def edit_donations(request):
+    if request.method == 'POST':
+        
+        form_results = dict(request.POST)
+        form_results.pop('csrfmiddlewaretoken')
 
+        git_clone()
 
+        process_donation_values(form_results)
 
+        git_publish_all()
+
+    context = {'donations':get_donation_values()}
+    return render(request, 'custAdmin/donations_form.html', context)
+def process_donation_values(results):
+    
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_write_backup = os.path.dirname(__file__) + '/../media/static_page_data/'
+    else:
+        url_write_backup = os.path.dirname(__file__) + '/git_publishing/deploy/media/static_page_data/'
+
+    donations = {}
+    for key in results:
+        if 'display_value' in key:
+            k = 'display_value'
+            val = key.replace('display_value_','')
+        elif 'stripe_variable' in key:
+            k = 'stripe_variable'
+            val = key.replace('stripe_variable_','')
+        
+        if val not in donations:
+            donations.update({val:{}})
+        if k == 'display_value':
+            donations[val].update({'srt':int(results[key][0])})
+
+        donations[val].update({k:results[key][0]})
+    
+    rows = [donations[x] for x in donations]
+    rows = sorted(rows, key = lambda i: i['srt'])
+    rows = [{k: v for k, v in x.items() if k != 'srt'} for x in rows]
+    
+    with open(url_write_backup + 'donations.csv', 'w', newline='') as csvfile:
+        fieldnames = ['display_value','stripe_variable']
+
+        writer = csv.DictWriter(csvfile, delimiter='|', fieldnames=fieldnames)
+        writer.writeheader()
+        
+        writer.writerows(rows)
+def get_donation_values():
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_main = os.path.dirname(__file__) + '/../media/static_page_data/'
+    else:
+        url_main = staticfiles_storage.path('static_page_data')
+    
+    context = []
+    with open(url_main + '/donations.csv', newline='') as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
+        i = 0
+        for row in spamreader:
+            row.update({'count':i})
+            context += [row]
+            i += 1
+
+    return context
 
 def get_event_data():
     golf_main_context = []

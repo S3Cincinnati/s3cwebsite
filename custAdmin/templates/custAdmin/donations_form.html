@@ -1,0 +1,75 @@
+{% extends "custAdmin/admin_base.html" %}
+
+
+{% block content %}
+    <script>
+        count=-1
+
+        function add_donation_value(){
+            if (count < 0){
+                count = document.getElementById('frm').childElementCount;
+            }
+
+            var div = document.createElement('div')
+            div.id = 'donation_' + count
+            document.getElementById('frm').appendChild(div)
+
+            var display_label = document.createElement('label')
+            display_label.textContent = 'Display Value: ' 
+            display_label.id = 'display_label_' + count
+            div.appendChild(display_label)
+
+            var display_value = document.createElement('input')
+            display_value.id = 'display_value_' + count
+            display_value.name = 'display_value_' + count
+            display_value.type = 'text'
+            div.appendChild(display_value)
+
+            var stripe_label = document.createElement('label')
+            stripe_label.textContent = 'Stripe Price Variable: ' 
+            stripe_label.id = 'stripe_label_' + count
+            div.appendChild(stripe_label)
+
+            var stripe_value = document.createElement('input')
+            stripe_value.id = 'stripe_variable_' + count
+            stripe_value.name = 'stripe_variable_' + count
+            stripe_value.type = 'text'
+            div.appendChild(stripe_value)
+
+            var donation_btn = document.createElement('input')
+            donation_btn.type = 'button'
+            donation_btn.value = 'X'
+            donation_btn.setAttribute('onclick','remove_donation_value(\'' + count + '\')')
+            div.appendChild(donation_btn)
+            div.appendChild(document.createElement('br'))
+        }
+
+        function remove_donation_value(num){
+            document.getElementById('donation_' + num).remove()
+        }
+    </script>
+    <div class="container">
+        <br>
+        <form method="post" enctype="multipart/form-data">
+            <h3 style="display: inline; padding-right: 1rem;">Donation Values</h3>
+            <input  type="button"  onClick="add_donation_value()" value="Add Donation Value">
+            <hr>
+            {% csrf_token%}
+            <div id="frm">
+                
+                {% for d in donations %}
+                    <div id="donation_{{d.count}}" class="indent_div_content">
+                        <label id="display_label_{{d.count}}" name="display_label_{{d.count}}">Display Value:</label>
+                        <input id="display_value_{{d.count}}" name="display_value_{{d.count}}" value="{{d.display_value}}"></input>
+                        <label id="stripe_label_{{d.count}}" name="stripe_label_{{d.count}}">Stripe Price Variable:</label>
+                        <input id="stripe_variable_{{d.count}}" name="stripe_variable_{{d.count}}" value="{{d.stripe_variable}}"></input>
+                        <input  type="button"  onClick="remove_donation_value('{{d.count}}')" value="X">
+                        <br>
+                    </div>
+                {% endfor %}
+            </div><br>
+            <button id="submit" type="submit"> Submit</button>
+        </form>
+    </div>
+
+{% endblock content %}

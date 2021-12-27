@@ -162,7 +162,9 @@
                         </div>
                         <div class="col-6">
                             <div class="d-flex align-items-center justify-content-center" style="height: 100%;">
-                                <button class="registration_btn yellow_background large_btn"> Email to Get Involved</button>
+                                <form action="mailto:{{contact_email}}?subject={{s.sponsor_option_title}}!" method="GET">
+                                    <button type="submit" class="registration_btn yellow_background large_btn"> Email to Get Involved</button>
+                                </form>
                             </div>
                         </div>
                     </div>

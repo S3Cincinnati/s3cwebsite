@@ -39,9 +39,19 @@ def our_team(request):
     context = {'people':get_people_data(), 'about':get_about_us_data()}
     return render(request, 'src/our_team.html', context)
 
-def get_golf_outing(request, year):
+def get_golf_outing(request):
 
     context = {}
+    
+    context.update(get_data_by_event_date_code(get_active_outing()))
+    
+    return render(request, 'src/golf_classic.html',context)
+
+def get_golf_outing_by_year(request, year):
+
+    context = {}
+    
+    get_active_outing()
     context.update(get_data_by_event_date_code(year))
     
     return render(request, 'src/golf_classic.html',context)
@@ -131,7 +141,6 @@ def my_webhook_view(request):
     # valid_json_string = "[" + payload + "]"  # or "[{0}]".format(your_string)
     data = json.loads(payload)
 
-    print(data['type'])
     if (data['type'] == "checkout.session.completed"):
         # For now, you only need to print out the webhook payload so you can see
         # the structure.
@@ -188,7 +197,6 @@ def _handle_successful_payment(checkout_session):
     registration = FoursomeRegistration.objects.get(payment_id=checkout_session['payment_intent'])
     registration.is_payed = True
     registration.save()
-    print(registration)
 
 def get_data_by_event_date_code(date_code):
     
@@ -227,11 +235,9 @@ def get_data_by_event_date_code(date_code):
             'location':' ' if len(data) == 0 else data[0]['location'],
             'data':data}]
 
-    # schedule = [schedule[x] for x in schedule.keys()]
-    print(schedule)
+    
     date_obj = date.fromisoformat(date_code)
 
-    print('**', golf_main_context['sponsor_images'])
     # print()
     return {
         'date_code':date_code,
@@ -315,7 +321,6 @@ def get_home_data():
                 text = ast.literal_eval(d_row['text'])
                 
                 data[format] = {'title':titles[0], 'text':text}
-    print(data)
     return data
 def get_week_day(day_val):
     mapp = {0:'Monday', 1:'Tuesday',2:'Wednesday',3:'Thursday',4:'Friday',5:'Saturday',6:'Sunday'}
@@ -381,3 +386,21 @@ def get_contact_email():
             data += [d_row]
 
     return data[0]['contact_email']
+
+def get_active_outing():
+    data = []
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_main = os.path.dirname(__file__) + '/../media/golf_data/'
+    else:
+        url_main = staticfiles_storage.path('golf_data')
+
+    with open(url_main + '/golf.csv', newline='') as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
+        for row in spamreader:
+            d_row = dict(row)
+            data += [d_row]
+
+    data = [x['year_key'] for x in list(filter(lambda x: x['active'] == 'True', data))]
+    data.sort()
+    
+    return data[-1]

@@ -494,9 +494,20 @@
             remove_event_image_btn.setAttribute('onclick',"remove_sign_up('golf_registration_" + golf_option_count + "')")
             div.appendChild(remove_event_image_btn)
             div.appendChild(document.createElement('br'))
+     
+            var stripe_price_variable_price = document.createElement('label')
+            stripe_price_variable_price.textContent = 'Price Display Value: ' 
+            div.appendChild(stripe_price_variable_price)
+
+            var stripe_price_variable_price_input = document.createElement('input')
+            stripe_price_variable_price_input.id = 'stripe_price_input_golf_' + golf_option_count
+            stripe_price_variable_price_input.name = 'stripe_price_input_golf_' + golf_option_count
+            stripe_price_variable_price_input.type = 'text'
+            div.appendChild(stripe_price_variable_price_input)
+            div.appendChild(document.createElement('br'))
 
             var stripe_price_variable_price = document.createElement('label')
-            stripe_price_variable_price.textContent = 'Strip Price Variable: ' 
+            stripe_price_variable_price.textContent = 'Stripe Price Variable: ' 
             div.appendChild(stripe_price_variable_price)
 
             var stripe_price_variable_price_input = document.createElement('input')
@@ -582,7 +593,7 @@
             div.appendChild(document.createElement('br'))
 
             var stripe_price_variable_price = document.createElement('label')
-            stripe_price_variable_price.textContent = 'Strip Price Variable: ' 
+            stripe_price_variable_price.textContent = 'Display Price: ' 
             div.appendChild(stripe_price_variable_price)
 
             var stripe_price_variable_price_input = document.createElement('input')
@@ -650,9 +661,19 @@
     
                 <label for="golf_course">Golf Course:  </label>
                 <input type="text" name="golf_course" id="golf_course" value="{{data.course}}"><br>
-    
+                
+                <label>Active Golf Outing: </label>
+                <input type="checkbox" id="active" name="active" {% if data.active %} checked {% endif%}>
+                <br>
+
+                <label>Open Sign Ups: </label>
+                <input type="checkbox" id="open_signup" name="open_signup" {% if data.open_signup %} checked {% endif%}><br>
+
                 <label for="description">Description:</label><br>
-                <textarea type="text" name="description" id="description" value="John" rows="6" cols="50"> {{data.descr}} </textarea><br><br>
+                <div class="indent_div_content">
+                    <textarea type="text" name="description" id="description" value="John" rows="6" cols="50"> {{data.descr}} </textarea><br><br>
+                </div>
+                
                 <b><label for="description">Schedule -- </label></b>
                 <input id="day_btn" type="button" onClick="add_new_day_to_schedule(event, 'event_image_text_{{e.count}}'); return false" value="Add Day to Schedule"><br>
                 <div id="frm_event_add">
@@ -768,7 +789,7 @@
                                 <input type="text" id="sponsor_option_title_{{x.count}}" name="sponsor_option_title_{{x.count}}" value="{{x.sponsor_option_title}}">
                                 <input  type="button"  onClick="remove_sign_up('sponsor_registration_{{x.display_count}}')" value="X"><br>
                                 
-                                <label>Strip Price Variable:  </label>
+                                <label>Display Price:  </label>
                                 <input type="text" id="stripe_price_variable_input_sponsor_{{x.count}}" name="stripe_price_variable_input_sponsor_{{x.count}}" value="{{x.stripe_price_variable}}"><br>
         
                                 <label>Option Description: </label><br>

@@ -56,13 +56,23 @@ def get_golf_outing_by_year(request, year):
     
     return render(request, 'src/golf_classic.html',context)
 
-def get_golf_outing_involvment(request, year):
+def get_golf_outing_involvment(request):
+    
+    year = get_active_outing()
+    donation_data = get_donation_data()
+    
+    context = {'date_code':year, 'active': is_open_signup(year)}
+    context.update({'donations':[donation_data[:3],donation_data[3:]]})
+    context.update({'home':get_home_data()})
+    if is_open_signup(year):
+        context.update(get_sign_up_data_event_date_code(year))
+        context.update({'contact_email':get_contact_email()})
+    
+    return render(request, 'src/golf_classic_involvement.html',context)
 
-    # if request.method == 'POST':
-        
 
-    # print(year)
-    # print(FoursomeRegistration.objects.all())
+def get_golf_outing_involvment_by_year(request, year):
+
     context = {'date_code':year}
     context.update(get_sign_up_data_event_date_code(year))
     donation_data = get_donation_data()
@@ -418,4 +428,21 @@ def get_active_outing():
     data = [x['year_key'] for x in list(filter(lambda x: x['active'] == 'True', data))]
     data.sort()
     
-    return data[-1]
+    return None if len(data) == 0 else data[-1]
+
+def is_open_signup(year):
+    data = []
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_main = os.path.dirname(__file__) + '/../media/golf_data/'
+    else:
+        url_main = staticfiles_storage.path('golf_data')
+
+    with open(url_main + '/golf.csv', newline='') as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
+        for row in spamreader:
+            d_row = dict(row)
+            data += [d_row]
+
+    data = [x['open_signup'] for x in list(filter(lambda x: year == x['year_key'], data))]
+    
+    return data[0] == 'True'

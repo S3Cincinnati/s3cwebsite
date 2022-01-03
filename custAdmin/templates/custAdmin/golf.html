@@ -4,13 +4,20 @@
     <div class="container">
         <div class="row">
             <div class="col-8">
+                <br>
+                <a href="/admin/new-golf"> 
+                    <button>
+                        New Golf Outing
+                    </button>
+                </a>
+                <br>
+                <br>
                 <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th scope="col">year_key</th>
                             <th scope="col">full_date</th>
                             <th scope="col">golf_course</th>
-                            <th scope="col">download</th>
                             <th scope="col">edit</th>
                             <th scope="col">delete</th>
                         </tr>
@@ -21,9 +28,8 @@
                             <td>{{outing.year_key}}</td>
                             <td>{{outing.full_date}}</td>
                             <td>{{outing.golf_course}}</td>
-                            <td><a href="/admin/edit-golf-{{outing.year_key}}">Download</a></td>
                             <td><a href="/admin/edit-golf-{{outing.year_key}}">Edit</a></td>
-                            <td><a href="/">Delete</a></td>
+                            <td><a href="/admin/delete-golf-{{outing.year_key}}">Delete</a></td>
                         </tr>
                         {% endfor %}
                     </tbody>

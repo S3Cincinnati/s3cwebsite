@@ -432,14 +432,14 @@ def new_golf_classic_request(request):
         f_date = date.fromisoformat(form_results['full_date'][0])
         git_clone()
 
-        proccess_golf_data(form_results, request.FILES)
+        proccess_golf_data(form_results)
         process_golf_images(form_results['full_date'][0], request.FILES)
 
         git_publish_all()
 
     # form = GolfForm()
     context = {}
-    return render(request, 'custAdmin/form.html', context)
+    return render(request, 'custAdmin/golf_form.html', context)
 def edit_golf_classic_request(request, key):
 
     if request.method == 'POST':
@@ -450,7 +450,7 @@ def edit_golf_classic_request(request, key):
         git_clone()
 
         # print(form_results)
-        proccess_golf_data(form_results, request.FILES)
+        proccess_golf_data(form_results)
         process_golf_images(form_results['full_date'][0], request.FILES)
 
         git_publish_all()
@@ -458,9 +458,22 @@ def edit_golf_classic_request(request, key):
 
     outing_data = get_data_by_event_date_code(key)
     outing_data['descr'] = '\r\n'.join(outing_data['descr'])
-    # print(outing_data)
     context = {'data':outing_data}
+
     return render(request, 'custAdmin/golf_form.html', context)
+def delete_golf_classic_request(request, key):
+    
+    form_results = {'full_date':[key]}
+
+    git_clone()
+
+    proccess_golf_data(form_results, is_delete=True)
+    process_golf_images(form_results['full_date'][0], request.FILES)
+
+    git_publish_all()
+
+    return redirect('/admin/golf')
+
 
 # Get Current registrations 
 def get_golf_registrations(request):
@@ -565,6 +578,8 @@ def get_event_data():
         for row in spamreader:
             d_row = dict(row)
             golf_main_context += [d_row]
+
+    print(golf_main_context)
     return golf_main_context
     
 def get_data_by_event_date_code(date_code):
@@ -645,7 +660,7 @@ def get_data_by_event_date_code(date_code):
         'event_images':[{'count':x, 'image_name':img} for x, img in enumerate(get_images(date_code, 'event'))],
         'sponsor_images':[{'count':x, 'image_name':img} for x, img in enumerate(get_images(date_code, 'sponsor'))]
         }
-def proccess_golf_data(golf_dict, files):
+def proccess_golf_data(golf_dict, is_delete = False):
 
     year_key = golf_dict['full_date'][0]
     f_date = date.fromisoformat(year_key)
@@ -683,56 +698,57 @@ def proccess_golf_data(golf_dict, files):
             d_row = dict(row)
             event_schedule += [d_row]
 
-    content = {x['year_key']:x for x in content}
+    print(content)
+    content = {x['year_key']:x for x in content if x['year_key'] != year_key}
     golf_registrations = {x['year_key'] + x['golf_option_title']:x for x in golf_registrations if x['year_key'] != year_key}
     sponsor_registrations = {x['year_key'] + x['sponsor_option_title']:x for x in sponsor_registrations if x['year_key'] != year_key}
     event_schedule = {x['year_key'] + x['event_day'] + x['time']+ x['description']:x for x in event_schedule if x['year_key'] != year_key}
-
-    content.update({year_key:{
-        'active': True if 'active' in golf_dict else False,
-        'open_signup':True if 'open_signup' in golf_dict else False,
-        'year_key':year_key,
-        'golf_course':golf_dict['golf_course'][0].strip(),
-        'description':golf_dict['description'][0].replace('\r\n','%&').strip(),
-        'event_images':get_image_list(year_key, golf_dict, 'event'),
-        'sponsor_images':get_image_list(year_key, golf_dict, 'sponsor')
-        }})
-
-    golf_option_title = list(filter(lambda x: ('golf_option_title_' in x), golf_dict.keys()))
-    stripe_price_input_golf = list(filter(lambda x: ('stripe_price_input_golf_' in x), golf_dict.keys()))
-    stripe_price_variable_price_input_golf = list(filter(lambda x: ('stripe_price_variable_price_input_golf_' in x), golf_dict.keys()))
-    golf_option_textarea = list(filter(lambda x: ('golf_option_textarea_' in x), golf_dict.keys()))
-
-    [golf_registrations.update({year_key + golf_dict[golf_option_title[x]][0].strip():
-        {
+    
+    if not is_delete:
+        content.update({year_key:{
+            'active': True if 'active' in golf_dict else False,
+            'open_signup':True if 'open_signup' in golf_dict else False,
             'year_key':year_key,
-            'golf_option_title':golf_dict[golf_option_title[x]][0].strip(),
-            'price_display':golf_dict[stripe_price_input_golf[x]][0].strip(),
-            'stripe_price_variable':golf_dict[stripe_price_variable_price_input_golf[x]][0].strip(),
-            'golf_option_textarea':golf_dict[golf_option_textarea[x]][0].strip(),
-            'count':x
-        }
-    }) for x in range(len(golf_option_textarea))]
-    
-        
-    sponsor_option_title = list(filter(lambda x: ('sponsor_option_title_' in x), golf_dict.keys()))
-    stripe_price_variable_input_sponsor = list(filter(lambda x: ('stripe_price_variable_input_sponsor_' in x), golf_dict.keys()))
-    sponsor_option_textarea = list(filter(lambda x: ('sponsor_option_textarea_' in x), golf_dict.keys()))
+            'golf_course':golf_dict['golf_course'][0].strip(),
+            'description':golf_dict['description'][0].replace('\r\n','%&').strip(),
+            'event_images':get_image_list(year_key, golf_dict, 'event'),
+            'sponsor_images':get_image_list(year_key, golf_dict, 'sponsor')
+            }})
 
-    
-    [sponsor_registrations.update({year_key + golf_dict[sponsor_option_title[x]][0].strip():
-        {
-            'year_key':year_key,
-            'sponsor_option_title':golf_dict[sponsor_option_title[x]][0].strip(),
-            'stripe_price_variable':golf_dict[stripe_price_variable_input_sponsor[x]][0].strip(),
-            'sponsor_option_textarea':golf_dict[sponsor_option_textarea[x]][0].strip(),
-            'count':x
-        }
-    }) for x in range(len(sponsor_option_title))]
+        golf_option_title = list(filter(lambda x: ('golf_option_title_' in x), golf_dict.keys()))
+        stripe_price_input_golf = list(filter(lambda x: ('stripe_price_input_golf_' in x), golf_dict.keys()))
+        stripe_price_variable_price_input_golf = list(filter(lambda x: ('stripe_price_variable_price_input_golf_' in x), golf_dict.keys()))
+        golf_option_textarea = list(filter(lambda x: ('golf_option_textarea_' in x), golf_dict.keys()))
 
-    new_events = process_schedule(golf_dict,year_key)
-    [event_schedule.update({x['year_key'] + x['event_day'] + x['time']+ x['description']:x}) for x in new_events]
-    
+        [golf_registrations.update({year_key + golf_dict[golf_option_title[x]][0].strip():
+            {
+                'year_key':year_key,
+                'golf_option_title':golf_dict[golf_option_title[x]][0].strip(),
+                'price_display':golf_dict[stripe_price_input_golf[x]][0].strip(),
+                'stripe_price_variable':golf_dict[stripe_price_variable_price_input_golf[x]][0].strip(),
+                'golf_option_textarea':golf_dict[golf_option_textarea[x]][0].strip(),
+                'count':x
+            }
+        }) for x in range(len(golf_option_textarea))]
+
+        sponsor_option_title = list(filter(lambda x: ('sponsor_option_title_' in x), golf_dict.keys()))
+        stripe_price_variable_input_sponsor = list(filter(lambda x: ('stripe_price_variable_input_sponsor_' in x), golf_dict.keys()))
+        sponsor_option_textarea = list(filter(lambda x: ('sponsor_option_textarea_' in x), golf_dict.keys()))
+
+        [sponsor_registrations.update({year_key + golf_dict[sponsor_option_title[x]][0].strip():
+            {
+                'year_key':year_key,
+                'sponsor_option_title':golf_dict[sponsor_option_title[x]][0].strip(),
+                'stripe_price_variable':golf_dict[stripe_price_variable_input_sponsor[x]][0].strip(),
+                'sponsor_option_textarea':golf_dict[sponsor_option_textarea[x]][0].strip(),
+                'count':x
+            }
+        }) for x in range(len(sponsor_option_title))]
+
+        new_events = process_schedule(golf_dict,year_key)
+        [event_schedule.update({x['year_key'] + x['event_day'] + x['time']+ x['description']:x}) for x in new_events]
+
+
     for link in [url_write_backup]:
         with open(link + 'golf.csv', 'w', newline='') as csvfile:
             fieldnames = ['year_key', 'active','open_signup','golf_course', 'description', 'event_images','sponsor_images']
@@ -765,6 +781,8 @@ def proccess_golf_data(golf_dict, files):
             writer.writeheader()
             
             writer.writerows([event_schedule[x] for x in event_schedule.keys()])
+
+
             
 def process_schedule(golf_dict, year_key):
     keys = list(filter(lambda x: ('day_' in x), golf_dict.keys()))

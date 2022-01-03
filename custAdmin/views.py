@@ -859,15 +859,18 @@ def get_images(date_code, type):
             d_row = dict(row)
             if date_code in d_row['year_key']:
                golf_main_context = d_row
-
-    image_array_str = golf_main_context[type + '_images']
-    images = ast.literal_eval(image_array_str)
     
-    for i in range(len(images)):
-        img = images[i]
-        while img.find('/') >= 0:
-            img = img[img.find('/')+1:]
-        images[i] = img
+    images = []
+    
+    if type + '_images' in golf_main_context:
+        image_array_str = golf_main_context[type + '_images']
+        images = ast.literal_eval(image_array_str)
+        
+        for i in range(len(images)):
+            img = images[i]
+            while img.find('/') >= 0:
+                img = img[img.find('/')+1:]
+            images[i] = img
     return images
 def get_image_list(date_code, golf_dict, type):
     images = list(filter(lambda x: (type + '_image_text_' in x), golf_dict.keys()))

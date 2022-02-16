@@ -17,6 +17,7 @@ import ast
 
 from src.models import *
 import xlsxwriter
+import json
 
 # Create your views here.
 def home(request):
@@ -107,7 +108,6 @@ def process_home_data(home_dict, image_list):
     irs_text = {'titles':[],'text':[],'images':[],'format':'irs_panel'}
 
     for d in home_dict.keys():
-        print(d, home_dict[d])
         temp_d = d
         if 'donation_' in temp_d:
             temp_d = temp_d.replace('donation_', '')
@@ -142,42 +142,38 @@ def process_home_data(home_dict, image_list):
                 text = [x.strip() for x in home_dict[d][0].split('\r\n')]
                 two_image_frames[index].update({'text':text})
             if 'image_left_current' in temp_d:
-                two_image_frames[index]['images'][0] = home_dict[d][0]
+                two_image_frames[index]['images'][0] = clean_and_split_string(home_dict[d][0])[0]
             if 'image_right_current' in temp_d:
-                two_image_frames[index]['images'][1] = home_dict[d][0]
+                two_image_frames[index]['images'][1] = clean_and_split_string(home_dict[d][0])[0]
         
         if 'left_text_' in temp_d:
             temp_d = temp_d.replace('left_text_', '')
             
             if 'title' in temp_d:
-                left_text['titles'] = [home_dict[d][0]]
+                left_text['titles'] = clean_and_split_string(home_dict[d][0])
             if 'text' in temp_d:
-                text = [x.strip() for x in home_dict[d][0].split('\r\n')]
-                left_text['text'] = text
+                left_text['text'] = clean_and_split_string(home_dict[d][0])
         if 'right_text_' in temp_d:
             temp_d = temp_d.replace('right_text_', '')
             
             if 'title' in temp_d:
-                right_text['titles'] = [home_dict[d][0]]
+                right_text['titles'] = clean_and_split_string(home_dict[d][0])
             if 'text' in temp_d:
-                text = [x.strip() for x in home_dict[d][0].split('\r\n')]
-                right_text['text'] = text
+                right_text['text'] = clean_and_split_string(home_dict[d][0])
         if 'tax_text_' in temp_d:
             temp_d = temp_d.replace('tax_text_', '')
             
             if 'title' in temp_d:
-                irs_text['titles'] = [home_dict[d][0]]
+                irs_text['titles'] = clean_and_split_string(home_dict[d][0])
             if 'text' in temp_d:
-                text = [x.strip() for x in home_dict[d][0].split('\r\n')]
-                irs_text['text'] = text
+                irs_text['text'] = clean_and_split_string(home_dict[d][0])
 
     for im in image_list:
         temp_d = im
-        print(temp_d, im)
+        # print(temp_d, im)
         if 'golf_event_' in temp_d:
             temp_d = temp_d.replace('golf_event_', '')
             if 'image' in temp_d:
-                print(image_list[im].name)
                 golf_event['images'] = [image_list[im].name]
         if 'two_pic_frame_' in temp_d:
             temp_d = temp_d.replace('two_pic_frame_', '')
@@ -198,7 +194,6 @@ def process_home_data(home_dict, image_list):
     golf_event['titles'] += golf_event['full_date']
     golf_event.pop('full_date', None)
     rows += [golf_event]
-    print(golf_event)
     for i in two_image_frames.keys():
         rows += [two_image_frames[i]]
     
@@ -209,9 +204,11 @@ def process_home_data(home_dict, image_list):
     with open(url_write_backup + 'home.csv', 'w', newline='') as csvfile:
         fieldnames = ['titles', 'text','images', 'format']
 
-        writer = csv.DictWriter(csvfile, delimiter='|', fieldnames=fieldnames)
+        writer = csv.DictWriter(csvfile, delimiter='|', fieldnames=fieldnames, quotechar="\"", quoting=csv.QUOTE_NONE)
         writer.writeheader()
-        
+        # print(rows)
+        # rows = [json.loads(str(row)) for row in rows]
+        # print(rows)
         writer.writerows(rows)
     
     for im in image_list:
@@ -262,23 +259,23 @@ def get_home_data():
                     count += 1
                 data['blocks'] += [donations_arr]
             elif 'two_pic_frame' == d_row['format']:
-                images = ast.literal_eval(d_row['images'])
-                titles = ast.literal_eval(d_row['titles'])
-                text = ast.literal_eval(d_row['text'])
+                images = present_string_arr(ast.literal_eval(d_row['images']))
+                titles = present_string_arr(ast.literal_eval(d_row['titles']))
+                text = present_string_arr(ast.literal_eval(d_row['text']))
                 
                 data['two_pics'] += [{'key':'two_pic_frame', 'title':titles[0], 'descr':'\n'.join(text), 'golf_image_left':images[0], 'golf_image_right':images[1], 'count':two_frame_count}]
                 two_frame_count += 1
             elif 'golf_outing' == d_row['format']:
-                images = ast.literal_eval(d_row['images'])
-                titles = ast.literal_eval(d_row['titles'])
-                text = ast.literal_eval(d_row['text'])
+                images = present_string_arr(ast.literal_eval(d_row['images']))
+                titles = present_string_arr(ast.literal_eval(d_row['titles']))
+                text = present_string_arr(ast.literal_eval(d_row['text']))
                 
                 data['blocks'] += [{'key':'golf_outing', 'title':titles[0], 'descr':'\n'.join(text), 'date':titles[1], 'file_name':images[0]}]
             elif 'left_panel' == d_row['format'] or 'right_panel' == d_row['format'] or 'irs_panel' == d_row['format']:
                 format = d_row['format'].replace('_panel','')
-                images = ast.literal_eval(d_row['images'])
-                titles = ast.literal_eval(d_row['titles'])
-                text = ast.literal_eval(d_row['text'])
+                images = present_string_arr(ast.literal_eval(d_row['images']))
+                titles = present_string_arr(ast.literal_eval(d_row['titles']))
+                text = present_string_arr(ast.literal_eval(d_row['text']))
                 
                 data[format] = {'title':titles[0], 'text':'\n'.join(text).strip()}
 
@@ -893,4 +890,12 @@ def get_image_list(date_code, golf_dict, type):
                 new_images += [actual_images[i]]
 
     return new_images
-     
+
+def clean_and_split_string(s):
+    s = s.replace('\'','#apos#')
+    text = s.split("\r\n")
+    return [t.strip() for t in text]
+
+def present_string_arr(s):
+    
+    return [x.replace('#apos#','\'') for x in s]

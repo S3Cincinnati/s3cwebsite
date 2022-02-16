@@ -326,24 +326,24 @@ def get_home_data():
                 # d_row.pop('sponsor_option_textarea')
                 # sponsor_sign_ups += [d_row]
             elif 'two_pic_frame' == d_row['format']:
-                images = ast.literal_eval(d_row['images'])
-                titles = ast.literal_eval(d_row['titles'])
-                text = ast.literal_eval(d_row['text'])
+                images = present_string_arr(ast.literal_eval(d_row['images']))
+                titles = present_string_arr(ast.literal_eval(d_row['titles']))
+                text = present_string_arr(ast.literal_eval(d_row['text']))
                 
                 data['blocks'] += [{'key':'two_pic_frame','img1':images[0], 'img2':images[1], 'title':titles[0], 'text':text}]
             elif 'golf_outing' == d_row['format']:
-                images = ast.literal_eval(d_row['images'])
-                titles = ast.literal_eval(d_row['titles'])
-                text = ast.literal_eval(d_row['text'])
+                images = present_string_arr(ast.literal_eval(d_row['images']))
+                titles = present_string_arr(ast.literal_eval(d_row['titles']))
+                text = present_string_arr(ast.literal_eval(d_row['text']))
                 
                 t = 'Join us at S3C\'s ' + titles[0] + ' Annual fundraiseing golf outing'
 
                 data['blocks'] += [{'key':'golf_outing','img1':images[0], 'title':t, 'text':text}]
             elif 'left_panel' == d_row['format'] or 'right_panel' == d_row['format'] or 'irs_panel' == d_row['format']:
                 format = d_row['format'].replace('_panel','')
-                images = ast.literal_eval(d_row['images'])
-                titles = ast.literal_eval(d_row['titles'])
-                text = ast.literal_eval(d_row['text'])
+                images = present_string_arr(ast.literal_eval(d_row['images']))
+                titles = present_string_arr(ast.literal_eval(d_row['titles']))
+                text = present_string_arr(ast.literal_eval(d_row['text']))
                 
                 data[format] = {'title':titles[0], 'text':text}
     return data
@@ -446,3 +446,6 @@ def is_open_signup(year):
     data = [x['open_signup'] for x in list(filter(lambda x: year == x['year_key'], data))]
     
     return data[0] == 'True'
+
+def present_string_arr(s):
+    return [x.replace('#apos#','\'') for x in s]

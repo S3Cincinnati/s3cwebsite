@@ -203,8 +203,8 @@ def process_home_data(home_dict, image_list):
     
     with open(url_write_backup + 'home.csv', 'w', newline='') as csvfile:
         fieldnames = ['titles', 'text','images', 'format']
-
-        writer = csv.DictWriter(csvfile, delimiter='|', fieldnames=fieldnames, quotechar="\"", quoting=csv.QUOTE_NONE)
+        # , quotechar="\"", quoting=csv.QUOTE_NONE
+        writer = csv.DictWriter(csvfile, delimiter='|', fieldnames=fieldnames)
         writer.writeheader()
         # print(rows)
         # rows = [json.loads(str(row)) for row in rows]

@@ -455,6 +455,7 @@ def edit_golf_classic_request(request, key):
 
     outing_data = get_data_by_event_date_code(key)
     outing_data['descr'] = '\r\n'.join(outing_data['descr'])
+    outing_data['sponsor_description'] = '\r\n'.join(outing_data['sponsor_description'])
     context = {'data':outing_data}
 
     return render(request, 'custAdmin/golf_form.html', context)
@@ -651,6 +652,7 @@ def get_data_by_event_date_code(date_code):
         'open_signup': 'True' == golf_main_context['open_signup'].strip(),
         'date':golf_main_context['year_key'],
         'descr': golf_main_context['description'].split('%&'),
+        'sponsor_description': golf_main_context['sponsor_description'].split('%&'),
         'schedule':schedule,
         'golf_registration':golf_reg_context,
         'sponsor_registration':sponsor_reg_context,
@@ -695,12 +697,12 @@ def proccess_golf_data(golf_dict, is_delete = False):
             d_row = dict(row)
             event_schedule += [d_row]
 
-    print(content)
     content = {x['year_key']:x for x in content if x['year_key'] != year_key}
     golf_registrations = {x['year_key'] + x['golf_option_title']:x for x in golf_registrations if x['year_key'] != year_key}
     sponsor_registrations = {x['year_key'] + x['sponsor_option_title']:x for x in sponsor_registrations if x['year_key'] != year_key}
     event_schedule = {x['year_key'] + x['event_day'] + x['time']+ x['description']:x for x in event_schedule if x['year_key'] != year_key}
     
+    print(golf_dict)
     if not is_delete:
         content.update({year_key:{
             'active': True if 'active' in golf_dict else False,
@@ -708,6 +710,7 @@ def proccess_golf_data(golf_dict, is_delete = False):
             'year_key':year_key,
             'golf_course':golf_dict['golf_course'][0].strip(),
             'description':golf_dict['description'][0].replace('\r\n','%&').strip(),
+            'sponsor_description':golf_dict['sponsor_description'][0].replace('\r\n','%&').strip(),
             'event_images':get_image_list(year_key, golf_dict, 'event'),
             'sponsor_images':get_image_list(year_key, golf_dict, 'sponsor')
             }})
@@ -716,7 +719,7 @@ def proccess_golf_data(golf_dict, is_delete = False):
         stripe_price_input_golf = list(filter(lambda x: ('stripe_price_input_golf_' in x), golf_dict.keys()))
         stripe_price_variable_price_input_golf = list(filter(lambda x: ('stripe_price_variable_price_input_golf_' in x), golf_dict.keys()))
         golf_option_textarea = list(filter(lambda x: ('golf_option_textarea_' in x), golf_dict.keys()))
-        print('^^^', golf_option_title)
+        
         [golf_registrations.update({year_key + golf_dict[golf_option_title[x]][0].strip():
             {
                 'year_key':year_key,
@@ -748,7 +751,7 @@ def proccess_golf_data(golf_dict, is_delete = False):
 
     for link in [url_write_backup]:
         with open(link + 'golf.csv', 'w', newline='') as csvfile:
-            fieldnames = ['year_key', 'active','open_signup','golf_course', 'description', 'event_images','sponsor_images']
+            fieldnames = ['year_key', 'active','open_signup','golf_course', 'description', 'sponsor_description', 'event_images','sponsor_images']
 
             writer = csv.DictWriter(csvfile, delimiter='|', fieldnames=fieldnames)
             writer.writeheader()

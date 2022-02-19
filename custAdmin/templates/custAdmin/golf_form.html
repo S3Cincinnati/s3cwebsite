@@ -669,9 +669,14 @@
                 <label>Open Sign Ups: </label>
                 <input type="checkbox" id="open_signup" name="open_signup" {% if data.open_signup %} checked {% endif%}><br>
 
-                <label for="description">Description:</label><br>
+                <label for="description">Golf Description:</label><br>
                 <div class="indent_div_content">
                     <textarea type="text" name="description" id="description" value="John" rows="6" cols="50"> {{data.descr}} </textarea><br><br>
+                </div>
+
+                <label for="description">Sponsor Description:</label><br>
+                <div class="indent_div_content">
+                    <textarea type="text" name="sponsor_description" id="sponsor_description" value="John" rows="6" cols="50"> {{data.sponsor_description}} </textarea><br><br>
                 </div>
                 
                 <b><label for="description">Schedule -- </label></b>

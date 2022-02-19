@@ -6,6 +6,7 @@ urlpatterns = [
     path('', views.home, name='Home'),
     path('our-team', views.our_team, name='Our Team'),
     path('golf-classic', views.get_golf_outing, name=''),
+    path('golf-classic-sponsor', views.get_golf_outing_sponsorship, name=''),
     path('involvement', views.get_golf_outing_involvment, name=''),
     path('golf-classic-<year>/involvement', views.get_golf_outing_involvment_by_year, name=''),
     path('donate', views.get_donation, name=''),

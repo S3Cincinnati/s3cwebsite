@@ -1,14 +1,7 @@
 {% extends "src/base.html" %}
 
 {% block content %}
-    <!-- <div style="display: flex;">
-        <div style="flex: 4; background-color: red;">
-            <p>Hello</p>
-        </div>
-        <div style="flex: 3; background-color: black;">
-            <p>Hello</p>
-        </div>
-    </div> -->
+    
     <script src="https://js.stripe.com/v3/"></script>
     <script>
 
@@ -20,7 +13,11 @@
             document.getElementById(div_id_close).style.display = 'none';
         }
 
-    
+        function signupScroll(){
+            document.getElementById('signup').scrollIntoView();
+            console.log('click')
+        }
+
     </script>
 
     <style>
@@ -55,156 +52,76 @@
             padding-left: .25rem;
         }
     </style>
-    <!-- <script src="/static/scripts/client.js" defer></script> -->
+
     <div class="container">
 
-        <br>
-        <h3>Donations</h3>
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-4">
-                        {% for dd in donations %}
-                            <div class="row" style="height: 50%;">
-                                {% for d in dd %}
-                                    <div class="col-4">
+        <h1 class="text-center">Sponsor the {{ year }} S3C Golf Classic!</h1>
+        <h5 class="text-center">{{date_str}} at {{course}}</h5>
+        {% if is_golf_registration %}
+            <h4 class="text-center">Sponsorship Opportunites Open Below</h4>
+            <div style="display: flex;justify-content: center;">
+                <a class="nav-link primary_text text-center" style="text-align: center;">
+                    <h5  onclick="signupScroll()" class="yellow_background" style="border-radius: 25px;width: 10rem; height: 3rem; display: flex;justify-content: center;align-items: center;text-align: center;">Get Invloved</h5>
+                </a>
+            </div>
+        {% endif %}
+            
+        </button>
+        <div class="row">
+            <div class="row">
+                {% for pic in top_pics %}
+                    <div class="col-4" style="height: 20rem;">
+                        <img src="{{pic.link}}" style="max-height: 95%; max-width: 95%; padding-top: 1rem;"  class="mx-auto d-block">
+                    </div>
+                {% endfor %}
+            </div>   
+            <div class="row">
+                {% for description_paragraph in sponsor_description %}
+                    <p> {{description_paragraph}}</p>
+                {% endfor %}
+            </div> 
+
+            <div class="row">
+                {% for row in row_of_pics %}
+                    {% for pic in row %}
+                        <div class="col-3">
+                            <img src="{{pic.link}}" style="width: 85%; padding-top: 1rem;"  class="mx-auto d-block">
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>   
+
+            {% if active %}
+                <div id="signup">
+                    <hr>
+                    <h4>Sponsorship Opportunites</h4>
+                    {% for s in sponsor_options %}
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <h5>{{s.sponsor_option_title}} - ${{s.stripe_price_variable}}</h5>
+                                        <ul>
+                                            {% for d in s.description %}
+                                                <li> {{d}}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    <div class="col-6">
                                         <div class="d-flex align-items-center justify-content-center" style="height: 100%;">
-                                            <form id="payment-form" action="/create-checkout-session-view?type={{d.stripe_variable}}&date_code={{date_code}}" method="POST">
-                                                {% csrf_token%}
-                                                <button class="registration_btn yellow_background large_btn" type="submit">${{d.display_value}}</button>
+                                            <form action="mailto:{{contact_email}}?subject={{s.sponsor_option_title}}!" method="GET">
+                                                <button type="submit" class="registration_btn yellow_background large_btn"> Email to Get Involved</button>
                                             </form>
                                         </div>
                                     </div>
-                                {% endfor %}                        
+                                </div>
                             </div>
-                        {% endfor %}  
-                    </div>
-                    <div class="col-8">
-                        <h3 style="padding-top: 0.5rem; padding-bottom: 1rem;">S3Cs Success Depends on Sponsors</h3>
-                        <p><b>{{home.irs.title}}</b></p>
-                        {% for t in home.irs.text %}
-                            <p>{{t}}</p>
-                        {% endfor %}
-                    </div>
+                        </div>
+                        <br>
+                    {% endfor %}
                 </div>
-            </div>
+            {% endif %}
+            
         </div>
-        {% if active %}
-            <hr>
-            <h3>Golf Registration</h3>
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-6">
-                            <h5>Single Golfer Registration - ${{golf_options.1s.price_display}}</h5>
-                            <ul>
-                                {% for d in golf_options.1s.description %}
-                                    <li> {{d}}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                        <div class="col-6">
-                            
-                            <div id="single_div" style="display:none">
-                                <form id="payment-form" action="/create-checkout-session-view?type={{golf_options.1s.stripe_price_variable}}&date_code={{date_code}}" method="POST">
-                                    {% csrf_token%}
-                                    <ul class="in_form">
-                                        <li class="form-row">
-                                            <label>Contact Email:</label>
-                                            <input type="text" name="email" id="email" value="{{data.course}}"><br>
-                                        </li>
-                                        <li class="form-row">
-                                            <label>Golfer First Name:</label>
-                                            <input type="text" name="fname_1" id="fname_1" value="{{data.course}}"><br>
-                                        </li>
-                                        <li class="form-row">
-                                            <label>Golfer Last Name:</label>
-                                            <input type="text" name="lname_1" id="lname_1" value="{{data.course}}"><br>
-                                        </li>
-                                    </ul>
-                                    <button class="registration_btn yellow_background" type="submit">Proceed to Secure Checkout</button>
-                                    <button class="registration_btn yellow_background" onclick="open_form('single_div_btn','single_div')" type="button">X</button>
-                                </form>
-                            </div>
-                            <div id="single_div_btn"  style="height: 100%;">
-                                <div class="d-flex align-items-center justify-content-center" style="height: 100%;">
-                                    <button class="registration_btn yellow_background large_btn" onclick="open_form('single_div', 'single_div_btn')">Register</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <br>
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-6">
-                            <h5>Foursome Golfer Registration - ${{golf_options.4s.price_display}}</h5>
-                            <ul>
-                                {% for d in golf_options.4s.description %}
-                                    <li> {{d}}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                        <div class="col-6">
-                            <div id="foursome_div" style="display:none" class="row">
-                                <form id="payment-form" action="/create-checkout-session-view?type={{golf_options.4s.stripe_price_variable}}&date_code={{date_code}}" method="POST">
-                                    {% csrf_token%}
-                                    <ul class="in_form">
-                                        <li class="form-row">
-                                            <label>Contact Email:</label>
-                                            <input type="text" name="email" id="email" value="{{data.course}}"><br>
-                                        </li>
-                                        <li class="form-row">
-                                            <label>Main Golfer First Name:</label>
-                                            <input type="text" name="fname_1" id="fname_1" value="{{data.course}}"><br>
-                                        </li>
-                                        <li class="form-row">
-                                            <label>Main Golfer Last Name:</label>
-                                            <input type="text" name="lname_1" id="lname_1" value="{{data.course}}"><br>
-                                        </li>
-                                    </ul>
-                                    <button class="registration_btn yellow_background" type="submit">Proceed to Secure Checkout</button>
-                                    <button class="registration_btn yellow_background" onclick="open_form('foursome_div_btn','foursome_div')" type="button">X</button>
-                                </form>
-                            </div>
-                            <div id="foursome_div_btn" style="height: 100%;">
-                                <div class="d-flex align-items-center justify-content-center" style="height: 100%;">
-                                    <button class="registration_btn yellow_background large_btn" onclick="open_form('foursome_div', 'foursome_div_btn')">Register</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <hr>
-            <h4>Sponsorship Opportunites</h4>
-            {% for s in sponsor_options %}
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-6">
-                                <h5>{{s.sponsor_option_title}} - ${{s.stripe_price_variable}}</h5>
-                                <ul>
-                                    {% for d in s.description %}
-                                        <li> {{d}}</li>
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                            <div class="col-6">
-                                <div class="d-flex align-items-center justify-content-center" style="height: 100%;">
-                                    <form action="mailto:{{contact_email}}?subject={{s.sponsor_option_title}}!" method="GET">
-                                        <button type="submit" class="registration_btn yellow_background large_btn"> Email to Get Involved</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <br>
-            {% endfor %}
-        {% endif %}
-    </div>
-
-{% endblock %}
+    </div> 
+{% endblock content %}

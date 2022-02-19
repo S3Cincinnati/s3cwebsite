@@ -47,10 +47,10 @@ def process_organization_info(request):
     else:
         url_write_backup = os.path.dirname(__file__) + '/git_publishing/deploy/media/static_page_data/'
 
-    rows = [{'contact_email':request['contact_email'][0]}]
+    rows = [{'contact_email':request['contact_email'][0],'street_addr':request['street_addr'][0],'street_addr_2':request['street_addr_2'][0],'facebook':request['facebook'][0]}]
 
     with open(url_write_backup + 'organization_information.csv', 'w', newline='') as csvfile:
-        fieldnames = ['contact_email']
+        fieldnames = ['contact_email','street_addr','street_addr_2','facebook']
 
         writer = csv.DictWriter(csvfile, delimiter='|', fieldnames=fieldnames)
         writer.writeheader()
@@ -62,11 +62,14 @@ def get_organization_information():
     else:
         url_main = staticfiles_storage.path('static_page_data')
 
-    context = {'contact_email':''}
+    context = {'contact_email':'','street_addr':'','street_addr_2':'','facebook':''}
     with open(url_main + '/organization_information.csv', newline='') as csvfile:
         spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
         for row in spamreader:
             context['contact_email'] = row['contact_email']
+            context['street_addr'] = row['street_addr']
+            context['street_addr_2'] = row['street_addr_2']
+            context['facebook'] = row['facebook']
 
     return context
 

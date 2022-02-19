@@ -19,16 +19,16 @@
             <p>Support Us!</p>
 
             <p>S3C, Inc.<br>
-                9399 Dundee Drive<br>
-                West Chester, OH 45069<br>
-                www.facebook.com/s3cohio
+                {{address.0}}<br>
+                {{address.1}}<br>
+                {{social}}
             </p>
 
             {% for p in people %}
                 <p>
                     <b>{{p.name}}</b><br>
                     <i>{{p.title}}</i><br>
-                    {{p.email}}<br>
+                    <a href='mailto:{{p.email}}'>{{p.email}}</a><br>
                     {{p.phone}}
                 </p>
             {% endfor %}

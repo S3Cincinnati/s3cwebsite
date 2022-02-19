@@ -36,7 +36,7 @@ def home(request):
 
 def our_team(request):
 
-    context = {'people':get_people_data(), 'about':get_about_us_data()}
+    context = {'people':get_people_data(), 'about':get_about_us_data(), 'address':get_address(), 'social':get_social()}
     return render(request, 'src/our_team.html', context)
 
 def get_golf_outing(request):
@@ -441,6 +441,36 @@ def get_contact_email():
             data += [d_row]
 
     return data[0]['contact_email']
+
+def get_address():
+    data = []
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_main = os.path.dirname(__file__) + '/../media/static_page_data/'
+    else:
+        url_main = staticfiles_storage.path('static_page_data')
+
+    with open(url_main + '/organization_information.csv', newline='') as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
+        for row in spamreader:
+            d_row = dict(row)
+            data += [d_row]
+
+    return [data[0]['street_addr'],data[0]['street_addr_2']] 
+
+def get_social():
+    data = []
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_main = os.path.dirname(__file__) + '/../media/static_page_data/'
+    else:
+        url_main = staticfiles_storage.path('static_page_data')
+
+    with open(url_main + '/organization_information.csv', newline='') as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
+        for row in spamreader:
+            d_row = dict(row)
+            data += [d_row]
+
+    return data[0]['facebook']
 
 def get_active_outing():
     data = []

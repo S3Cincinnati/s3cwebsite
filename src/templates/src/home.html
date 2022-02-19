@@ -15,7 +15,7 @@
           <div class="carousel-inner"  style="height: 100% !important">
           {% for b in blocks %}
             {% if b.key == 'count_vals' %}
-            <div class="carousel-item active" style="height: 100% !important">
+            <div class="carousel-item" style="height: 100% !important">
               <h6>Our reach ...</h6>
               {% for d in b.vals%}
                 <h4> <b>{{d.text}}:</b> {{d.val}}</h4>
@@ -44,7 +44,7 @@
             </div>
           
           {% elif b.key == 'golf_outing' %}
-            <div class="carousel-item" style="height: 100% !important">
+            <div class="carousel-item active" style="height: 100% !important">
               <div style="display: flex; width: 100% !important; height: 100%;">
 
                 <div style="flex: 3;">

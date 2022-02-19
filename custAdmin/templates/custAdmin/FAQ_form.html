@@ -1,0 +1,98 @@
+{% extends "custAdmin/admin_base.html" %}
+
+
+{% block content %}
+    <script>
+        count=-1
+
+        function add_faq(){
+            if (count < 0){
+                count = document.getElementById('frm_about').childElementCount;
+            }
+            // store_vals()
+            var div = document.createElement('div')
+            div.id = 'faq_' + count
+            document.getElementById('frm_about').appendChild(div)
+            
+            var faq_title = document.createElement('h5')
+            faq_title.style.display = 'inline'
+            faq_title.textContent = 'FAQ ' + count
+            div.appendChild(faq_title)
+
+            var about_remove_btn = document.createElement('input')
+            about_remove_btn.id = 'about_remove' + count
+            about_remove_btn.type = 'button'
+            about_remove_btn.value = 'X'
+            about_remove_btn.setAttribute('onclick','remove_team(parseInt(' + count + '))')
+            div.appendChild(about_remove_btn)
+            div.appendChild(document.createElement('br'))
+
+            var q_label = document.createElement('label')
+            q_label.textContent = 'Question: ' 
+            q_label.id = 'l_label' + count
+            div.appendChild(q_label)
+            div.appendChild(document.createElement('br'))
+
+            var question_textarea = document.createElement('textarea')
+            question_textarea.id = 'question_text_' + count
+            question_textarea.name = 'question_text_' + count
+            question_textarea.type = 'text'
+            question_textarea.rows = "6" 
+            question_textarea.cols = "50"
+            div.appendChild(question_textarea)
+            div.appendChild(document.createElement('br'))
+
+            var a_label = document.createElement('label')
+            a_label.textContent = 'Answer: ' 
+            a_label.id = 'a_label' + count
+            div.appendChild(a_label)
+            div.appendChild(document.createElement('br'))
+
+            var answer_textarea = document.createElement('textarea')
+            answer_textarea.id = 'answer_text_' + count
+            answer_textarea.name = 'answer_text_' + count
+            answer_textarea.type = 'text'
+            answer_textarea.rows = "6" 
+            answer_textarea.cols = "50"
+            div.appendChild(answer_textarea)
+            div.appendChild(document.createElement('br'))
+
+            div.appendChild(document.createElement('br'))
+            div.appendChild(document.createElement('br'))
+
+            count++;
+        }
+
+        function remove_team(num)
+        {
+            document.getElementById('faq_' + num).remove()
+        }
+       
+    </script>
+
+    <div class="container">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token%}
+            <h2>FAQ From</h2>
+            <div id="frm_about">
+                {% for d in data %}
+                <div id="faq_{{d.index}}">
+                    <h5 style="display: inline;">FAQ {{d.index}}</h5>
+                    <input  type="button"  onClick="remove_team(parseInt('{{d.index}}'))" value="X" id='remove_about_btn_{{d.count}}'>
+                    <br>
+                    <label id="q_label">Question: </label><br>
+                    <textarea type="text" name="question_text_{{d.index}}" id="question_text_{{d.index}}" rows="6" cols="50"> {{d.question}} </textarea><br>
+                    <label id="answer_label">Answer: </label><br>
+                    <textarea type="text" name="answer_text_{{d.index}}" id="answer_text_{{d.index}}" rows="6" cols="50"> {{d.answer}} </textarea><br>
+                    <br>
+                </div>
+                {% endfor %}
+                
+            </div>
+            <input  type="button"  onClick="add_faq()" value="Add Question">
+            <button id="submit" type="submit"> Submit</button>
+        </form>
+    </div>
+
+
+{% endblock content %}

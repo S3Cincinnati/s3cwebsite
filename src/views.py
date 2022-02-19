@@ -94,6 +94,28 @@ def get_golf_outing_involvment(request):
     
     return render(request, 'src/golf_classic_involvement.html',context)
 
+def get_faq(request):
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_main = os.path.dirname(__file__) + '/../media/static_page_data/'
+    else:
+        url_main = staticfiles_storage.path('static_page_data')
+    
+    data = []
+    with open(url_main + '/faq.csv', newline='') as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
+        i = 0
+        for r in spamreader:
+            row = dict(r)
+            for k in row:
+                row[k] = present_string_arr(ast.literal_eval(row[k]))
+            row.update({'index':i})
+            print(row)
+            data += [row]
+            i += 1
+
+    
+    return render(request, 'src/faq.html',{'data':data})
+
 
 def get_golf_outing_involvment_by_year(request, year):
     
@@ -309,7 +331,7 @@ def get_sign_up_data_event_date_code(date_code):
         for row in spamreader:
             d_row = dict(row)
             if date_code in d_row['year_key']:
-                d_row.update({'description':d_row['sponsor_option_textarea'].split(';')})
+                d_row.update({'description':present_string_arr(ast.literal_eval(d_row['sponsor_option_textarea']))})
                 d_row.pop('sponsor_option_textarea')
                 sponsor_sign_ups += [d_row]
 
@@ -319,7 +341,7 @@ def get_sign_up_data_event_date_code(date_code):
         for row in spamreader:
             d_row = dict(row)
             if date_code in d_row['year_key']:
-                d_row.update({'description':d_row['golf_option_textarea'].split(';'), 'count':count})
+                d_row.update({'description':present_string_arr(ast.literal_eval(d_row['golf_option_textarea']))})
                 d_row.pop('golf_option_textarea')
                 golf_sign_ups += [d_row]
                 count += 1

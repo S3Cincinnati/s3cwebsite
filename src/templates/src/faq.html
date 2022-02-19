@@ -1,0 +1,67 @@
+{% extends "src/base.html" %}
+
+{% block content %}
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+
+        var hide1s = true;
+
+        function open_form(div_id_open, div_id_close)
+        {
+            document.getElementById(div_id_open).style.display = 'block';
+            document.getElementById(div_id_close).style.display = 'none';
+        }
+
+    
+    </script>
+
+    <style>
+        .registration_btn{
+            border-radius: 25px;
+            min-width: 2.5rem;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            height: 2rem;
+        }
+
+        .large_btn{
+            font-size: 1.1rem !important;
+            height: auto !important;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            padding-top: 0.3rem;
+            padding-bottom: 0.3rem;
+        }
+        .form-row {
+            display: flex;
+            padding-bottom: 0.5rem;
+            /* justify-content: flex-end; */
+        }
+        .form-row > label {
+            flex: 1;
+        }
+        .form-row > input {
+            flex: 2; 
+        }
+        .in_form{
+            padding-left: .25rem;
+        }
+    </style>
+    
+    <div class="container">
+        <br>
+        <h2>Frequently Asked Questions</h2>
+        <hr>
+        {% for d in data %}
+            {% for q in d.question %}
+                <h4>{{q}}</h4>
+            {% endfor %}
+            {% for a in d.answer %}
+                <p>{{a}}</p>
+            {% endfor %}
+        {% endfor %}
+        
+    </div>
+
+{% endblock %}

@@ -459,6 +459,10 @@ def edit_golf_classic_request(request, key):
     outing_data = get_data_by_event_date_code(key)
     outing_data['descr'] = '\r\n'.join(outing_data['descr'])
     outing_data['sponsor_description'] = '\r\n'.join(outing_data['sponsor_description'])
+    for i, d in enumerate(outing_data['sponsor_registration']):
+        d['sponsor_option_textarea'] = '\n'.join(d['sponsor_option_textarea'])
+    for d in outing_data['golf_registration']:
+        d['golf_option_textarea'] = '\n'.join(d['golf_option_textarea'])
     context = {'data':outing_data}
 
     return render(request, 'custAdmin/golf_form.html', context)
@@ -570,6 +574,70 @@ def get_donation_values():
 
     return context
 
+# FAQ
+def edit_faq(request):
+    if request.method == 'POST':
+        
+        form_results = dict(request.POST)
+        form_results.pop('csrfmiddlewaretoken')
+
+        git_clone()
+
+        process_faq(form_results)
+
+        git_publish_all()
+
+    context = {'data':get_faq()}
+    return render(request, 'custAdmin/FAQ_form.html',context)
+def process_faq(results):
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_write_backup = os.path.dirname(__file__) + '/../media/static_page_data/'
+    else:
+        url_write_backup = os.path.dirname(__file__) + '/git_publishing/deploy/media/static_page_data/'
+
+    donations = {}
+    for key in results:
+        if 'question' in key:
+            k = 'question'
+            val = key.replace('question_text_','')
+        elif 'answer' in key:
+            k = 'answer'
+            val = key.replace('answer_text_','')
+        
+        if val not in donations:
+            donations.update({val:{}})
+
+        donations[val].update({k:clean_and_split_string(results[key][0])})
+    
+    rows = [donations[x] for x in donations]
+    
+    with open(url_write_backup + 'faq.csv', 'w', newline='') as csvfile:
+        fieldnames = ['question','answer']
+
+        writer = csv.DictWriter(csvfile, delimiter='|', fieldnames=fieldnames)
+        writer.writeheader()
+        
+        writer.writerows(rows)  
+def get_faq():
+    if os.getenv('DJANGO_ENV','') == 'local':
+        url_main = os.path.dirname(__file__) + '/../media/static_page_data/'
+    else:
+        url_main = staticfiles_storage.path('static_page_data')
+    
+    context = []
+    with open(url_main + '/faq.csv', newline='') as csvfile:
+        spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
+        i = 0
+        for row in spamreader:
+            for k in row:
+                row[k] = '\r\n'.join(present_string_arr(ast.literal_eval(row[k])))
+            row.update({'index':i})
+            context += [row]
+            i += 1
+
+    return context
+
+
 def get_event_data():
     golf_main_context = []
     url_main = staticfiles_storage.path('golf_data/golf.csv')
@@ -611,6 +679,7 @@ def get_data_by_event_date_code(date_code):
         for row in spamreader:
             d_row = dict(row)
             if date_code in d_row['year_key']:
+                d_row['golf_option_textarea'] = present_string_arr(ast.literal_eval(d_row['golf_option_textarea']))
                 d_row.update({'display_count':int(d_row['count'])})
                 golf_reg_context += [d_row]
 
@@ -619,6 +688,7 @@ def get_data_by_event_date_code(date_code):
         for row in spamreader:
             d_row = dict(row)
             if date_code in d_row['year_key']:
+                d_row['sponsor_option_textarea'] = present_string_arr(ast.literal_eval(d_row['sponsor_option_textarea']))
                 d_row.update({'display_count':int(d_row['count'])})
                 sponsor_reg_context += [d_row]
     
@@ -705,7 +775,6 @@ def proccess_golf_data(golf_dict, is_delete = False):
     sponsor_registrations = {x['year_key'] + x['sponsor_option_title']:x for x in sponsor_registrations if x['year_key'] != year_key}
     event_schedule = {x['year_key'] + x['event_day'] + x['time']+ x['description']:x for x in event_schedule if x['year_key'] != year_key}
     
-    print(golf_dict)
     if not is_delete:
         content.update({year_key:{
             'active': True if 'active' in golf_dict else False,
@@ -729,7 +798,7 @@ def proccess_golf_data(golf_dict, is_delete = False):
                 'golf_option_title':golf_dict[golf_option_title[x]][0].strip(),
                 'price_display':golf_dict[stripe_price_input_golf[x]][0].strip(),
                 'stripe_price_variable':golf_dict[stripe_price_variable_price_input_golf[x]][0].strip(),
-                'golf_option_textarea':golf_dict[golf_option_textarea[x]][0].strip(),
+                'golf_option_textarea':clean_and_split_string(golf_dict[golf_option_textarea[x]][0]),
                 'count':x
             }
         }) for x in range(len(golf_option_textarea))]
@@ -743,7 +812,7 @@ def proccess_golf_data(golf_dict, is_delete = False):
                 'year_key':year_key,
                 'sponsor_option_title':golf_dict[sponsor_option_title[x]][0].strip(),
                 'stripe_price_variable':golf_dict[stripe_price_variable_input_sponsor[x]][0].strip(),
-                'sponsor_option_textarea':golf_dict[sponsor_option_textarea[x]][0].strip(),
+                'sponsor_option_textarea':clean_and_split_string(golf_dict[sponsor_option_textarea[x]][0]),
                 'count':x
             }
         }) for x in range(len(sponsor_option_title))]

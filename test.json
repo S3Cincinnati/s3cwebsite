@@ -1,0 +1,51 @@
+{
+  "id": "cs_test_a1yctrt5tGg7pAjSNrcfg7NmDvvCIyToLqu4QOcNXhiKFzqhm5CTPMlW8k",
+  "object": "checkout.session",
+  "after_expiration": None,
+  "allow_promotion_codes": None,
+  "amount_subtotal": 10000,
+  "amount_total": 10000,
+  "automatic_tax": {
+    "enabled": False,
+    "status": None
+  },
+  "billing_address_collection": None,
+  "cancel_url": "http://localhost:8000/",
+  "client_reference_id": None,
+  "consent": None,
+  "consent_collection": None,
+  "currency": "usd",
+  "customer": "cus_KUvD7NatdlP8gN",
+  "customer_details": {
+    "email": "jakecarlson00@gmail.com",
+    "phone": None,
+    "tax_exempt": "none",
+    "tax_ids": []
+  },
+  "customer_email": None,
+  "expires_at": 1635601433,
+  "livemode": False,
+  "locale": None,
+  "metadata": {},
+  "mode": "payment",
+  "payment_intent": "pi_3JpvN7Dym2z9hVAO2klAe82H",
+  "payment_method_options": {},
+  "payment_method_types": ["card"],
+  "payment_status": "paid",
+  "phone_number_collection": {
+    "enabled": False
+  },
+  "recovered_from": None,
+  "setup_intent": None,
+  "shipping": None,
+  "shipping_address_collection": None,
+  "submit_type": None,
+  "subscription": None,
+  "success_url": "http://localhost:8000/golf-classic-2017-05-13",
+  "total_details": {
+    "amount_discount": 0,
+    "amount_shipping": 0,
+    "amount_tax": 0
+  },
+  "url": None
+}

@@ -57,23 +57,35 @@
               <a class="nav-link primary_text" href="/our-team">About Us</a>
             </li>
 
+            {% if newsActive%} <li class="nav-item active" style="margin: auto;">
+              {% else %} <li class="nav-item" style="margin: auto;">
+              {% endif %}
+                <a class="nav-link primary_text" href="/donate">Donations</a>
+              </li>
+
             <li class="nav-item">
                 <a class="nav-link" href="/" style="padding: 0 !important;">
-                    <img src="/static/images/paying_it_forward.png" style="height: 80px">
+                    <img src="/static/images/s3c_golf_header.png" style="height: 80px">
                 </a>
             </li>
 
             {% if scheduleActive%} <li class="nav-item active" style="margin: auto;"> 
             {% else %} <li class="nav-item" style="margin: auto;">
             {% endif %}
-              <a class="nav-link primary_text" href="/golf-classic">Golf Classic</a>
+              <a class="nav-link primary_text" href="/golf-classic">Golf Registration</a>
             </li>
 
             {% if scheduleActive%} <li class="nav-item active" style="margin: auto;"> 
             {% else %} <li class="nav-item" style="margin: auto;">
             {% endif %}
-              <a class="nav-link primary_text" href="/involvement">Get Involved</a>
+              <a class="nav-link primary_text" href="/involvement">Sponsor Registration</a>
             </li>
+
+            {% if scheduleActive%} <li class="nav-item active" style="margin: auto;"> 
+              {% else %} <li class="nav-item" style="margin: auto;">
+              {% endif %}
+                <a class="nav-link primary_text" href="/involvement">FAQ</a>
+              </li>
             
           </ul>
           <!-- <ul class="navbar-nav ml-auto nav-flex-icons">

@@ -1,0 +1,87 @@
+{% extends "src/base.html" %}
+
+{% block content %}
+
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+
+        var hide1s = true;
+
+        function open_form(div_id_open, div_id_close)
+        {
+            document.getElementById(div_id_open).style.display = 'block';
+            document.getElementById(div_id_close).style.display = 'none';
+        }
+
+    
+    </script>
+
+    <style>
+        .registration_btn{
+            border-radius: 25px;
+            min-width: 2.5rem;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            height: 2rem;
+        }
+
+        .large_btn{
+            font-size: 1.1rem !important;
+            height: auto !important;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            padding-top: 0.3rem;
+            padding-bottom: 0.3rem;
+        }
+        .form-row {
+            display: flex;
+            padding-bottom: 0.5rem;
+            /* justify-content: flex-end; */
+        }
+        .form-row > label {
+            flex: 1;
+        }
+        .form-row > input {
+            flex: 2; 
+        }
+        .in_form{
+            padding-left: .25rem;
+        }
+    </style>
+    
+    <div class="container">
+        <br>
+        <h3>Donations</h3>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-4">
+                        {% for dd in donations %}
+                            <div class="row" style="height: 50%;">
+                                {% for d in dd %}
+                                    <div class="col-4">
+                                        <div class="d-flex align-items-center justify-content-center" style="height: 100%;">
+                                            <form id="payment-form" action="/create-checkout-session-view?type={{d.stripe_variable}}&date_code={{date_code}}" method="POST">
+                                                {% csrf_token%}
+                                                <button class="registration_btn yellow_background large_btn" type="submit">${{d.display_value}}</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                {% endfor %}                        
+                            </div>
+                        {% endfor %}  
+                    </div>
+                    <div class="col-8">
+                        <h3 style="padding-top: 0.5rem; padding-bottom: 1rem;">S3Cs Success Depends on Sponsors</h3>
+                        <p><b>{{home.irs.title}}</b></p>
+                        {% for t in home.irs.text %}
+                            <p>{{t}}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+{% endblock %}

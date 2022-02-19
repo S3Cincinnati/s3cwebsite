@@ -83,8 +83,14 @@ def get_golf_outing_involvment_by_year(request, year):
     return render(request, 'src/golf_classic_involvement.html',context)
 
 def get_donation(request):
-    # if golf_active
-    return render(request, 'src/involvement.html')
+    
+    year = get_active_outing()
+    
+    context = {'date_code':year}
+    context.update({'donations':chunk_data(get_donation_data(), 3)})
+    context.update({'home':get_home_data()})
+    
+    return render(request, 'src/donations.html', context)
 
 class CreateSessionCheckoutView(View):
     def post(self, request, *args, **kwargs):
@@ -449,3 +455,14 @@ def is_open_signup(year):
 
 def present_string_arr(s):
     return [x.replace('#apos#','\'') for x in s]
+
+def chunk_data(arr, k):
+    n_arr = []
+    x = 0
+    while x < len(arr):
+        if x + k < len(arr):
+            n_arr += [arr[x:x+k]]
+        else:
+            n_arr += [arr[x:]]
+        x += k
+    return n_arr 

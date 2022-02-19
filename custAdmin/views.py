@@ -716,7 +716,7 @@ def proccess_golf_data(golf_dict, is_delete = False):
         stripe_price_input_golf = list(filter(lambda x: ('stripe_price_input_golf_' in x), golf_dict.keys()))
         stripe_price_variable_price_input_golf = list(filter(lambda x: ('stripe_price_variable_price_input_golf_' in x), golf_dict.keys()))
         golf_option_textarea = list(filter(lambda x: ('golf_option_textarea_' in x), golf_dict.keys()))
-
+        print('^^^', golf_option_title)
         [golf_registrations.update({year_key + golf_dict[golf_option_title[x]][0].strip():
             {
                 'year_key':year_key,

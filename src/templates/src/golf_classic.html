@@ -1,14 +1,58 @@
 {% extends "src/base.html" %}
 
 {% block content %}
-    <!-- <div style="display: flex;">
-        <div style="flex: 4; background-color: red;">
-            <p>Hello</p>
-        </div>
-        <div style="flex: 3; background-color: black;">
-            <p>Hello</p>
-        </div>
-    </div> -->
+    
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+
+        var hide1s = true;
+
+        function open_form(div_id_open, div_id_close)
+        {
+            document.getElementById(div_id_open).style.display = 'block';
+            document.getElementById(div_id_close).style.display = 'none';
+        }
+
+        function signupScroll(){
+            document.getElementById('signup').scrollIntoView();
+            console.log('click')
+        }
+
+    </script>
+
+    <style>
+        .registration_btn{
+            border-radius: 25px;
+            min-width: 2.5rem;
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            height: 2rem;
+        }
+
+        .large_btn{
+            font-size: 1.1rem !important;
+            height: auto !important;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            padding-top: 0.3rem;
+            padding-bottom: 0.3rem;
+        }
+        .form-row {
+            display: flex;
+            padding-bottom: 0.5rem;
+            /* justify-content: flex-end; */
+        }
+        .form-row > label {
+            flex: 1;
+        }
+        .form-row > input {
+            flex: 2; 
+        }
+        .in_form{
+            padding-left: .25rem;
+        }
+    </style>
+
     <div class="container">
 
         <h1 class="text-center">Welcome to the {{ year }} S3C Golf Classic!</h1>
@@ -16,8 +60,8 @@
         {% if is_golf_registration %}
             <h4 class="text-center">Sponsorship Opportunites and Golfer Registration Open Now</h4>
             <div style="display: flex;justify-content: center;">
-                <a class="nav-link primary_text text-center" style="text-align: center;" href="/golf-classic-{{date_code}}/involvement">
-                    <h5 class="yellow_background" style="border-radius: 25px;width: 10rem; height: 3rem; display: flex;justify-content: center;align-items: center;text-align: center;">Get Invloved</h5>
+                <a class="nav-link primary_text text-center" style="text-align: center;">
+                    <h5  onclick="signupScroll()" class="yellow_background" style="border-radius: 25px;width: 10rem; height: 3rem; display: flex;justify-content: center;align-items: center;text-align: center;">Sign up</h5>
                 </a>
             </div>
         {% endif %}
@@ -26,12 +70,14 @@
         </button>
         <div class="row">
             <div class="col-9">
-                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" style="height: 400px !important">
+                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" style="height: 28rem !important">
                     
                     <div class="carousel-inner"  style="height: 100% !important">
                         {% for e in event_images %}
                             <div class="carousel-item {{e.visible}}" style="height: 100% !important">
-                                <img src="{{e.link}}" style="width: 85%; padding-bottom: 1rem;" class="mx-auto d-block">
+                                <div style="height: 100% !important; display: flex;">
+                                    <img src="{{e.link}}" style="max-width:95% !important; max-height: 95%; width:auto; object-fit: contain; height:auto; padding-bottom: 1rem; align-items: middle;" class="mx-auto d-block">
+                                </div>
                             </div>
                         {% endfor %}
                     </div>
@@ -65,12 +111,66 @@
                         {% endfor %}
                     </div> 
                 </div> 
+
+                {% if active %}
+                    <div id="signup">
+                        <hr>
+                        <h3>Golf Registration</h3>
+                        {% for g in golf_options %}
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <h5>{{g.golf_option_title}} - ${{g.price_display}}</h5>
+                                            <ul>
+                                                {% for d in g.description %}
+                                                    <li> {{d}}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                        <div class="col-6">
+                                            
+                                            <div id="{{g.count}}_div" style="display:none">
+                                                <form id="payment-form" action="/create-checkout-session-view?type={{golf_options.1s.stripe_price_variable}}&date_code={{date_code}}" method="POST">
+                                                    {% csrf_token%}
+                                                    <ul class="in_form">
+                                                        <li class="form-row">
+                                                            <label>Contact Email:</label>
+                                                            <input type="text" name="email" id="email" value="{{data.course}}"><br>
+                                                        </li>
+                                                        <li class="form-row">
+                                                            <label>Golfer First Name:</label>
+                                                            <input type="text" name="fname_1" id="fname_1" value="{{data.course}}"><br>
+                                                        </li>
+                                                        <li class="form-row">
+                                                            <label>Golfer Last Name:</label>
+                                                            <input type="text" name="lname_1" id="lname_1" value="{{data.course}}"><br>
+                                                        </li>
+                                                    </ul>
+                                                    <button class="registration_btn yellow_background" type="submit">Proceed to Secure Checkout</button>
+                                                    <button class="registration_btn yellow_background" onclick="open_form('{{g.count}}_btn','{{g.count}}_div')" type="button">X</button>
+                                                </form>
+                                            </div>
+                                            <div id="{{g.count}}_btn"  style="height: 100%;">
+                                                <div class="d-flex align-items-center justify-content-center" style="height: 100%;">
+                                                    <button class="registration_btn yellow_background large_btn" onclick="open_form('{{g.count}}_div', '{{g.count}}_btn')">Register</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                        {% endfor %}
+                    </div>
+                {% endif %}
             </div> 
             <div class="col-3">
+                <h6 class="text-center">A few of this years sponsors</h6>
                 {% for im in sponsor_images %}
-                    <img src="{{im.link}}" style="width: 100%;">
+                    <img src="{{im.link}}" style="width: 85%; padding-top: 1rem;"  class="mx-auto d-block">
                 {% endfor %}
             </div> 
-        </div> 
+        </div>
     </div> 
 {% endblock content %}

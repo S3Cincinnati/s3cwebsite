@@ -147,30 +147,7 @@
                 </div>
             </div>
         </div>
-        <hr>
-        <h4>Sponsorship Opportunites</h4>
-        {% for s in sponsor_options %}
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-6">
-                            <h5>{{s.sponsor_option_title}} - ${{s.stripe_price_variable}}</h5>
-                            <ul>
-                                {% for d in s.description %}
-                                    <li> {{d}}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                        <div class="col-6">
-                            <div class="d-flex align-items-center justify-content-center" style="height: 100%;">
-                                <button class="registration_btn yellow_background large_btn"> Email to Get Involved</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <br>
-        {% endfor %}
+        
     </div>
 
 {% endblock %}

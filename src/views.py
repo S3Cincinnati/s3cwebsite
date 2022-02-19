@@ -44,6 +44,15 @@ def get_golf_outing(request):
     context = {}
     
     context.update(get_data_by_event_date_code(get_active_outing()))
+    context.update({'active': is_open_signup(context['date_code'])})
+    context.update(get_sign_up_data_event_date_code(context['date_code']))
+
+    print(context)
+    # context = {'date_code':year, 'active': is_open_signup(year)}
+    # donation_data = get_donation_data()
+    # context.update({'donations':[donation_data[:3],donation_data[3:]]})
+    # context.update({'contact_email':get_contact_email()})
+    # context.update({'home':get_home_data()})
     
     return render(request, 'src/golf_classic.html',context)
 
@@ -57,8 +66,10 @@ def get_golf_outing_by_year(request, year):
     return render(request, 'src/golf_classic.html',context)
 
 def get_golf_outing_involvment(request):
-    
+    print('get_golf_outing_involvment')
     year = get_active_outing()
+
+    print(year)
     donation_data = get_donation_data()
     
     context = {'date_code':year, 'active': is_open_signup(year)}
@@ -72,8 +83,8 @@ def get_golf_outing_involvment(request):
 
 
 def get_golf_outing_involvment_by_year(request, year):
-
-    context = {'date_code':year}
+    
+    context = {'date_code':year, 'active': is_open_signup(year)}
     context.update(get_sign_up_data_event_date_code(year))
     donation_data = get_donation_data()
     context.update({'donations':[donation_data[:3],donation_data[3:]]})
@@ -271,7 +282,7 @@ def get_data_by_event_date_code(date_code):
 
 def get_sign_up_data_event_date_code(date_code):
     
-    golf_sign_ups = {'1s':{}, '4s':{}}
+    golf_sign_ups = []
     sponsor_sign_ups = []
 
     if os.getenv('DJANGO_ENV','') == 'local':
@@ -288,17 +299,20 @@ def get_sign_up_data_event_date_code(date_code):
                 d_row.pop('sponsor_option_textarea')
                 sponsor_sign_ups += [d_row]
 
+    count = 0
     with open(url_main + '/golf_registration.csv', newline='') as csvfile:
         spamreader = csv.DictReader(csvfile, delimiter='|', quotechar='|')
         for row in spamreader:
             d_row = dict(row)
+            print(date_code, d_row)
             if date_code in d_row['year_key']:
-                d_row.update({'description':d_row['golf_option_textarea'].split(';')})
+                print('*')
+                d_row.update({'description':d_row['golf_option_textarea'].split(';'), 'count':count})
                 d_row.pop('golf_option_textarea')
-                if d_row['golf_option_title'] == '1s':
-                    golf_sign_ups['1s'] = d_row
-                if d_row['golf_option_title'] == '4s':
-                    golf_sign_ups['4s'] = d_row
+                golf_sign_ups += [d_row]
+                count += 1
+                
+    print(golf_sign_ups)
     
     return {'sponsor_options':sponsor_sign_ups, 'golf_options':golf_sign_ups}
 def get_donation_data():
@@ -431,6 +445,7 @@ def get_active_outing():
             d_row = dict(row)
             data += [d_row]
 
+    print(data)
     data = [x['year_key'] for x in list(filter(lambda x: x['active'] == 'True', data))]
     data.sort()
     

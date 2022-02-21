@@ -39,6 +39,7 @@
             question_textarea.type = 'text'
             question_textarea.rows = "6" 
             question_textarea.cols = "50"
+            question_textarea.required = true
             div.appendChild(question_textarea)
             div.appendChild(document.createElement('br'))
 
@@ -54,6 +55,7 @@
             answer_textarea.type = 'text'
             answer_textarea.rows = "6" 
             answer_textarea.cols = "50"
+            answer_textarea.required = true
             div.appendChild(answer_textarea)
             div.appendChild(document.createElement('br'))
 
@@ -81,9 +83,9 @@
                     <input  type="button"  onClick="remove_team(parseInt('{{d.index}}'))" value="X" id='remove_about_btn_{{d.count}}'>
                     <br>
                     <label id="q_label">Question: </label><br>
-                    <textarea type="text" name="question_text_{{d.index}}" id="question_text_{{d.index}}" rows="6" cols="50"> {{d.question}} </textarea><br>
+                    <textarea type="text" name="question_text_{{d.index}}" id="question_text_{{d.index}}" rows="6" cols="50" required> {{d.question}} </textarea><br>
                     <label id="answer_label">Answer: </label><br>
-                    <textarea type="text" name="answer_text_{{d.index}}" id="answer_text_{{d.index}}" rows="6" cols="50"> {{d.answer}} </textarea><br>
+                    <textarea type="text" name="answer_text_{{d.index}}" id="answer_text_{{d.index}}" rows="6" cols="50" required> {{d.answer}} </textarea><br>
                     <br>
                 </div>
                 {% endfor %}

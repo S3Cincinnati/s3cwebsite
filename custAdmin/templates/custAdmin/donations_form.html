@@ -23,6 +23,7 @@
             display_value.id = 'display_value_' + count
             display_value.name = 'display_value_' + count
             display_value.type = 'text'
+            display_value.required = true
             div.appendChild(display_value)
 
             var stripe_label = document.createElement('label')
@@ -34,6 +35,7 @@
             stripe_value.id = 'stripe_variable_' + count
             stripe_value.name = 'stripe_variable_' + count
             stripe_value.type = 'text'
+            stripe_value.required = true
             div.appendChild(stripe_value)
 
             var donation_btn = document.createElement('input')
@@ -60,9 +62,9 @@
                 {% for d in donations %}
                     <div id="donation_{{d.count}}" class="indent_div_content">
                         <label id="display_label_{{d.count}}" name="display_label_{{d.count}}">Display Value:</label>
-                        <input id="display_value_{{d.count}}" name="display_value_{{d.count}}" value="{{d.display_value}}"></input>
+                        <input id="display_value_{{d.count}}" name="display_value_{{d.count}}" value="{{d.display_value}}" required></input>
                         <label id="stripe_label_{{d.count}}" name="stripe_label_{{d.count}}">Stripe Price Variable:</label>
-                        <input id="stripe_variable_{{d.count}}" name="stripe_variable_{{d.count}}" value="{{d.stripe_variable}}"></input>
+                        <input id="stripe_variable_{{d.count}}" name="stripe_variable_{{d.count}}" value="{{d.stripe_variable}}" required></input>
                         <input  type="button"  onClick="remove_donation_value('{{d.count}}')" value="X">
                         <br>
                     </div>

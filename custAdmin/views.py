@@ -901,9 +901,9 @@ def process_golf_images(date_key, image_list):
     f_date = date.fromisoformat(date_key)
 
     if os.getenv('DJANGO_ENV','') == 'local':
-        url_write_backup = os.path.dirname(__file__) + '/../media/images/golf/' + str(f_date.year) + '/'
+        url_write_backup = os.path.dirname(__file__) + '/../media/images/golf/'
     else:
-        url_write_backup = os.path.dirname(__file__) + '/git_publishing/deploy/media/images/golf/' + str(f_date.year) + '/'
+        url_write_backup = os.path.dirname(__file__) + '/git_publishing/deploy/media/images/golf/'
 
     for link in [url_write_backup]:
         

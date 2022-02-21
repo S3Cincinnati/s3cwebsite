@@ -9,13 +9,13 @@
             {% csrf_token%}
             <div id="frm">
                 <label> Contact Email - </label>
-                <input type="text" name="contact_email" id="contact_email" value="{{contact_email}}"><br>
+                <input type="text" name="contact_email" id="contact_email" value="{{contact_email}}" required><br>
                 <label> Street Adress - </label>
-                <input type="text" name="street_addr" id="street_addr" value="{{street_addr}}"><br>
+                <input type="text" name="street_addr" id="street_addr" value="{{street_addr}}" required><br>
                 <label> City, State ZIP - </label>
-                <input type="text" name="street_addr_2" id="street_addr_2" value="{{street_addr_2}}"><br>
+                <input type="text" name="street_addr_2" id="street_addr_2" value="{{street_addr_2}}" required><br>
                 <label> Social Media - </label>
-                <input type="text" name="facebook" id="facebook" value="{{facebook}}"><br>
+                <input type="text" name="facebook" id="facebook" value="{{facebook}}" required><br>
                 <button id="submit" type="submit"> Submit</button>
             </div>
         </form>

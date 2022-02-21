@@ -36,6 +36,7 @@
             title_value.id = 'title_text_' + count
             title_value.name = 'title_text_' + count
             title_value.type = 'text'
+            title_value.required = true
             div.appendChild(title_value)
             div.appendChild(document.createElement('br'))
 
@@ -50,6 +51,7 @@
             text_text_area.name = 'text_text_' + count
             text_text_area.rows = '6'
             text_text_area.cols = '50'
+            text_text_area.required = true
             div.appendChild(text_text_area)
             div.appendChild(document.createElement('br'))
             div.appendChild(document.createElement('br'))
@@ -76,9 +78,9 @@
                     <input  type="button"  onClick="remove_about(parseInt('{{d.index}}'))" value="X" id='remove_about_btn_{{d.count}}'>
                     <br>
                     <label id="title_label">Title: </label>
-                    <input type="text" name="title_text_{{d.index}}" id="title_text_{{d.index}}" value="{{d.title}}"><br>
+                    <input type="text" name="title_text_{{d.index}}" id="title_text_{{d.index}}" value="{{d.title}}" required><br>
                     <label id="text_label">Value: </label><br>
-                    <textarea type="text" name="text_text_{{d.index}}" id="text_text_{{d.index}}" rows="6" cols="50"> {{d.text}} </textarea>
+                    <textarea type="text" name="text_text_{{d.index}}" id="text_text_{{d.index}}" rows="6" cols="50" required> {{d.text}} </textarea>
                     <br>
                     <br>
                 </div>

@@ -64,6 +64,7 @@
             text_input.id = 'donation_text_' + donation_line_count
             text_input.name = 'donation_text_' + donation_line_count
             text_input.type = 'text'
+            text_input.required = true
             document.getElementById('donation_div').appendChild(text_input)
 
             var input_label = document.createElement('label')
@@ -75,14 +76,18 @@
             input_value.id = 'donation_value_' + donation_line_count
             input_value.name = 'donation_value_' + donation_line_count
             input_value.type = 'text'
+            input_value.required = true
             document.getElementById('donation_div').appendChild(input_value)
 
             var remove_line_btn = document.createElement('input')
             remove_line_btn.id = 'remove_line_btn_' + donation_line_count
             remove_line_btn.name = 'remove_line_btn_' + donation_line_count
             remove_line_btn.type = 'button'
-            remove_line_btn.onclick = "remove_line(parseInt('{{d.count}}'))"
+            // remove_line_btn.onclick = "remove_line(parseInt('{{d.count}}'))"
+
+            remove_line_btn.setAttribute('onclick',"remove_line(parseInt(" + donation_line_count + "))")
             remove_line_btn.value = 'X'
+            remove_line_btn.required = true
             document.getElementById('donation_div').appendChild(remove_line_btn)
             br = document.createElement('br')
             br.id = 'br_line_' + donation_line_count
@@ -123,6 +128,7 @@
             two_picture_remove_btn.id = 'two_picture_remove_btn_' + two_picture_count
             two_picture_remove_btn.type = 'button'
             two_picture_remove_btn.value = 'X'
+            two_picture_remove_btn.required = true
             two_picture_remove_btn.setAttribute('onclick','remove_two_picture_frame(parseInt(' + two_picture_count + '))')
             div.appendChild(two_picture_remove_btn)
             div.appendChild(document.createElement('br'))
@@ -137,6 +143,7 @@
             title_value.id = 'two_pic_frame_title_' + two_picture_count
             title_value.name = 'two_pic_frame_title_' + two_picture_count
             title_value.type = 'text'
+            title_value.required = true
             div.appendChild(title_value)
             div.appendChild(document.createElement('br'))
 
@@ -151,6 +158,7 @@
             description_text_area.name = 'two_pic_frame_description_' + two_picture_count
             description_text_area.rows = '6'
             description_text_area.cols = '50'
+            description_text_area.required = true
             div.appendChild(description_text_area)
             div.appendChild(document.createElement('br'))
 
@@ -220,25 +228,25 @@
                 <h5>Left side text:</h5>
                 <div class="indent_div_content">
                     <label id="left_text_title_label">Title: </label>
-                    <input type="text" name="left_text_title" id="left_text_title" value="{{left.title}}"><br>
+                    <input type="text" name="left_text_title" id="left_text_title" value="{{left.title}}" required><br>
                     <label id="left_text_text_label">Value: </label><br>
-                    <textarea type="text" name="left_text_text" id="left_text_text" rows="6" cols="50"> {{left.text}} </textarea><br>    
+                    <textarea type="text" name="left_text_text" id="left_text_text" rows="6" cols="50" required> {{left.text}} </textarea><br>    
                 </div>
                 
                 <h5>Right side text:</h5>
                 <div class="indent_div_content">
                     <label id="right_text_title_label">Title: </label>
-                    <input type="text" name="right_text_title" id="right_text_title" value="{{right.title}}"><br>
+                    <input type="text" name="right_text_title" id="right_text_title" value="{{right.title}}" required><br>
                     <label id="right_text_text_label">Value: </label><br>
-                    <textarea type="text" name="right_text_text" id="right_text_text" rows="6" cols="50"> {{right.text}} </textarea><br>
+                    <textarea type="text" name="right_text_text" id="right_text_text" rows="6" cols="50" required> {{right.text}} </textarea><br>
                 </div>
 
                 <h5>Tax Deduction text:</h5>
                 <div class="indent_div_content">
                     <label id="tax_text_title_label">Title: </label>
-                    <input type="text" name="tax_text_title" id="tax_text_title" value="{{irs.title}}"><br>
+                    <input type="text" name="tax_text_title" id="tax_text_title" value="{{irs.title}}" required><br>
                     <label id="tax_text_text_label">Value: </label><br>
-                    <textarea type="text" name="tax_text_text" id="tax_text_text" rows="6" cols="50"> {{irs.text}} </textarea><br>
+                    <textarea type="text" name="tax_text_text" id="tax_text_text" rows="6" cols="50" required> {{irs.text}} </textarea><br>
                 </div>
                 <hr><br>
                 <h2>Rotating Panel Content</h2>
@@ -249,9 +257,9 @@
                         <div id='donation_div' class="indent_div_content">  
                             {% for d in b.vals %}
                                 <label id="donation_text_label_{{d.count}}">Text: </label>
-                                <input type="text" name="donation_text_{{d.count}}" id="donation_text_{{d.count}}" value="{{d.text}}">
+                                <input type="text" name="donation_text_{{d.count}}" id="donation_text_{{d.count}}" value="{{d.text}}" required>
                                 <label id="donation_value_label_{{d.count}}">Value: </label>
-                                <input type="text" name="donation_value_{{d.count}}" id="donation_value_{{d.count}}" value="{{d.val}}">
+                                <input type="text" name="donation_value_{{d.count}}" id="donation_value_{{d.count}}" value="{{d.val}}" required>
                                 <input  type="button"  onClick="remove_line(parseInt('{{d.count}}'))" value="X" id='remove_line_btn_{{d.count}}'>
                                 <br id='br_line_{{d.count}}'>
                             {% endfor %}
@@ -262,11 +270,11 @@
                         <h5>Current Golf Outing</h5>
                         <div id='golf_div' class="indent_div_content">  
                             <label id="golf_event_text_label">Title: </label>
-                            <input type="text" name="golf_event_text" id="golf_event_text" value="{{b.title}}"><br>
+                            <input type="text" name="golf_event_text" id="golf_event_text" value="{{b.title}}" required><br>
                             <label for="golf_event_full_date">Outing Date:  </label>
-                            <input type="date" name="golf_event_full_date" id="golf_event_full_date" value="{{b.date}}"><br>
+                            <input type="date" name="golf_event_full_date" id="golf_event_full_date" value="{{b.date}}" required><br>
                             <label id="golf_event_description_label">Description: </label><br>
-                            <textarea type="text" name="golf_event_description" id="golf_event_description" rows="6" cols="50"> {{b.descr}} </textarea><br>
+                            <textarea type="text" name="golf_event_description" id="golf_event_description" rows="6" cols="50" required> {{b.descr}} </textarea><br>
                             <input type="file" id="golf_event_image" name="golf_event_image">                            
                             <input class="image_label" name="golf_event_image_current" id="golf_event_image_current" type="text" value="{{b.file_name}}" readonly><br>
 
@@ -283,9 +291,9 @@
                             <input type="button" onClick="remove_two_picture_frame(parseInt('{{b.count}}'))" value="X">
                             <br>
                             <label id="two_pic_frame_title_label_{{b.count}}">Title: </label>
-                            <input type="text" name="two_pic_frame_title_{{b.count}}" id="two_pic_frame_title_{{b.count}}" value="{{b.title}}"><br>
+                            <input type="text" name="two_pic_frame_title_{{b.count}}" id="two_pic_frame_title_{{b.count}}" value="{{b.title}}" required><br>
                             <label id="two_pic_frame_description_label_{{b.count}}">Description: </label><br>
-                            <textarea type="text" name="two_pic_frame_description_{{b.count}}" id="two_pic_frame_description_{{b.count}}" rows="6" cols="50"> {{b.descr}} </textarea><br>
+                            <textarea type="text" name="two_pic_frame_description_{{b.count}}" id="two_pic_frame_description_{{b.count}}" rows="6" cols="50" required> {{b.descr}} </textarea><br>
                             <label id="two_pic_frame_image_left_label_{{b.count}}">Image-left: </label>
                             <input type="file" id="two_pic_frame_image_left_{{b.count}}" name="two_pic_frame_image_left_{{b.count}}">
                             <input class="image_label" name="two_pic_frame_image_left_current_{{b.count}}" id="two_pic_frame_image_left_current_{{b.count}}" type="text" value="{{b.golf_image_left}}" readonly><br>

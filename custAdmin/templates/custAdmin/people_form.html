@@ -23,6 +23,7 @@
             about_remove_btn.id = 'about_remove' + count
             about_remove_btn.type = 'button'
             about_remove_btn.value = 'X'
+            about_remove_btn.required = true
             about_remove_btn.setAttribute('onclick','remove_team(parseInt(' + count + '))')
             div.appendChild(about_remove_btn)
             div.appendChild(document.createElement('br'))
@@ -36,6 +37,7 @@
             name_value.id = 'name_text_' + count
             name_value.name = 'name_text_' + count
             name_value.type = 'text'
+            name_value.required = true
             div.appendChild(name_value)
             div.appendChild(document.createElement('br'))
 
@@ -48,6 +50,7 @@
             title_value.id = 'title_text_' + count
             title_value.name = 'title_text_' + count
             title_value.type = 'text'
+            title_value.required = true
             div.appendChild(title_value)
             div.appendChild(document.createElement('br'))
 
@@ -60,6 +63,7 @@
             email_value.id = 'email_text_' + count
             email_value.name = 'email_text_' + count
             email_value.type = 'text'
+            email_value.required = true
             div.appendChild(email_value)
             div.appendChild(document.createElement('br'))
 
@@ -72,6 +76,7 @@
             phone_value.id = 'phone_text_' + count
             phone_value.name = 'phone_text_' + count
             phone_value.type = 'text'
+            phone_value.required = true
             div.appendChild(phone_value)
             div.appendChild(document.createElement('br'))
             div.appendChild(document.createElement('br'))
@@ -99,13 +104,13 @@
                     <input  type="button"  onClick="remove_team(parseInt('{{d.index}}'))" value="X" id='remove_about_btn_{{d.count}}'>
                     <br>
                     <label id="name_label">Name: </label>
-                    <input type="text" name="name_text_{{d.index}}" id="name_text_{{d.index}}" value="{{d.name}}"><br>
+                    <input type="text" name="name_text_{{d.index}}" id="name_text_{{d.index}}" value="{{d.name}}" required><br>
                     <label id="title_label">Title: </label>
-                    <input type="text" name="title_text_{{d.index}}" id="title_text_{{d.index}}" value="{{d.title}}"><br>
+                    <input type="text" name="title_text_{{d.index}}" id="title_text_{{d.index}}" value="{{d.title}}" required><br>
                     <label id="email_label">Email: </label>
-                    <input type="text" name="email_text_{{d.index}}" id="email_text_{{d.index}}" value="{{d.email}}"><br>
+                    <input type="text" name="email_text_{{d.index}}" id="email_text_{{d.index}}" value="{{d.email}}" required><br>
                     <label id="phone_label">Phone: </label>
-                    <input type="text" name="phone_text_{{d.index}}" id="phone_text_{{d.index}}" value="{{d.phone}}"><br>
+                    <input type="text" name="phone_text_{{d.index}}" id="phone_text_{{d.index}}" value="{{d.phone}}" required><br>
                     <br>
                     <br>
                 </div>

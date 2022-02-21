@@ -246,6 +246,7 @@
             date_value.name = 'day_' + day_count
             date_value.type = 'date'
             date_value.placeholder = 'Day '+day_count
+            date_value.required = true
             div.appendChild(date_value)
             
             var day_remove_btn = document.createElement('input')
@@ -266,6 +267,7 @@
             day_location_value.name = 'day_location_' + day_count
             day_location_value.type = 'text'
             day_location_value.placeholder = 'Location '+day_count
+            day_location_value.required = true
             div.appendChild(day_location_value)
             div.appendChild(document.createElement('br'))
 
@@ -320,9 +322,9 @@
             document.getElementById('event_div_day_'+day_count_val).appendChild(div)
 
             div.innerHTML+='<label for="description">Time:</label>';
-            div.innerHTML+='<input type="text" id="'+day_count_event_count_str + '_time" name="'+day_count_event_count_str + '_time" placeholder="'+day_count_event_count_str +'"  />';
+            div.innerHTML+='<input type="text" id="'+day_count_event_count_str + '_time" name="'+day_count_event_count_str + '_time" placeholder="'+day_count_event_count_str +'"  required/>';
             div.innerHTML+='<label for="description"> Description:</label>';
-            div.innerHTML+='<input type="text" id="'+day_count_event_count_str + '_description" name="'+day_count_event_count_str + '_description" placeholder="'+day_count_event_count_str+'"  />';
+            div.innerHTML+='<input type="text" id="'+day_count_event_count_str + '_description" name="'+day_count_event_count_str + '_description" placeholder="'+day_count_event_count_str+'"  required/>';
 
             var event_remove_btn = document.createElement('input')
             event_remove_btn.id = 'event_remove_' + day_count
@@ -331,10 +333,6 @@
             event_remove_btn.setAttribute('onclick','remove_event_from_day(parseInt(' + day_count_val + '), parseInt(' + event_count[day_count_val] + '))')
             div.appendChild(event_remove_btn)
             div.appendChild(document.createElement('br'))
-            // for (pop of popped_nodes)
-            // {
-            //     document.getElementById('frm').appendChild(pop);
-            // }
             
             event_count[day_count_val]++;
 
@@ -485,6 +483,7 @@
             golf_option_title.id = 'golf_option_title_' + golf_option_count
             golf_option_title.name = 'golf_option_title_' + golf_option_count
             golf_option_title.type = 'text'
+            golf_option_title.required = true
             div.appendChild(golf_option_title)
 
             var remove_event_image_btn = document.createElement('input')
@@ -503,6 +502,7 @@
             stripe_price_variable_price_input.id = 'stripe_price_input_golf_' + golf_option_count
             stripe_price_variable_price_input.name = 'stripe_price_input_golf_' + golf_option_count
             stripe_price_variable_price_input.type = 'text'
+            stripe_price_variable_price_input.required = true
             div.appendChild(stripe_price_variable_price_input)
             div.appendChild(document.createElement('br'))
 
@@ -514,6 +514,7 @@
             stripe_price_variable_price_input.id = 'stripe_price_variable_price_input_golf_' + golf_option_count
             stripe_price_variable_price_input.name = 'stripe_price_variable_price_input_golf_' + golf_option_count
             stripe_price_variable_price_input.type = 'text'
+            stripe_price_variable_price_input.required = true
             div.appendChild(stripe_price_variable_price_input)
             div.appendChild(document.createElement('br'))
 
@@ -528,14 +529,9 @@
             golf_option_textarea.type = 'text'
             golf_option_textarea.rows = "6" 
             golf_option_textarea.cols = "50"
+            golf_option_textarea.required = true
             div.appendChild(golf_option_textarea)
             div.appendChild(document.createElement('br'))
-
-            
-            // for (pop of popped_nodes)
-            // {
-            //     document.getElementById('frm').appendChild(pop);
-            // }
 
             golf_option_count++;
 
@@ -582,6 +578,7 @@
             sponsor_option_title.id = 'sponsor_option_title_' + sponsor_option_count
             sponsor_option_title.name = 'sponsor_option_title_' + sponsor_option_count
             sponsor_option_title.type = 'text'
+            sponsor_option_title.required = true
             div.appendChild(sponsor_option_title)
 
             var remove_event_image_btn = document.createElement('input')
@@ -600,6 +597,7 @@
             stripe_price_variable_price_input.id = 'stripe_price_variable_input_sponsor_' + sponsor_option_count
             stripe_price_variable_price_input.name = 'stripe_price_variable_input_sponsor_' + sponsor_option_count
             stripe_price_variable_price_input.type = 'text'
+            stripe_price_variable_price_input.required = true
             div.appendChild(stripe_price_variable_price_input)
             div.appendChild(document.createElement('br'))
 
@@ -614,6 +612,7 @@
             sponsor_option_textarea.type = 'text'
             sponsor_option_textarea.rows = "6" 
             sponsor_option_textarea.cols = "50"
+            sponsor_option_textarea.required = true
             div.appendChild(sponsor_option_textarea)
             div.appendChild(document.createElement('br'))
 
@@ -657,10 +656,10 @@
             <div id="frm">
     
                 <label for="full_date">Full Date:  </label>
-                <input type="date" name="full_date" id="full_date" value="{{data.date}}"><br>
+                <input type="date" name="full_date" id="full_date" value="{{data.date}}" required><br>
     
                 <label for="golf_course">Golf Course:  </label>
-                <input type="text" name="golf_course" id="golf_course" value="{{data.course}}"><br>
+                <input type="text" name="golf_course" id="golf_course" value="{{data.course}}" required><br>
                 
                 <label>Active Golf Outing: </label>
                 <input type="checkbox" id="active" name="active" {% if data.active %} checked {% endif%}>
@@ -671,27 +670,27 @@
 
                 <label for="description">Golf Description:</label><br>
                 <div class="indent_div_content">
-                    <textarea type="text" name="description" id="description" value="John" rows="6" cols="50"> {{data.descr}} </textarea><br><br>
+                    <textarea type="text" name="description" id="description" value="John" rows="6" cols="50" required> {{data.descr}} </textarea><br><br>
                 </div>
 
                 <label for="description">Sponsor Description:</label><br>
                 <div class="indent_div_content">
-                    <textarea type="text" name="sponsor_description" id="sponsor_description" value="John" rows="6" cols="50"> {{data.sponsor_description}} </textarea><br><br>
+                    <textarea type="text" name="sponsor_description" id="sponsor_description" value="John" rows="6" cols="50" required> {{data.sponsor_description}} </textarea><br><br>
                 </div>
                 
                 <b><label for="description">Schedule -- </label></b>
-                <input id="day_btn" type="button" onClick="add_new_day_to_schedule(event, 'event_image_text_{{e.count}}'); return false" value="Add Day to Schedule"><br>
+                <input id="day_btn" type="button" onClick="add_new_day_to_schedule(event, 'event_image_text_{{e.count}}'); return false" value="Add Day to Schedule" required><br>
                 <div id="frm_event_add">
                     {% for x in data.schedule.data %}
                         <div id="day_{{x.count}}" class="indent_div_content">
                             <!-- <br/> -->
                             <label for="description">Date:</label>
-                            <input type="date" id="day_{{x.count}}" name="day_{{x.count}}" value="{{x.date}}"  />
-                            <input  type="button"  onClick="remove_day_from_schedule(parseInt('{{x.count}}'))" value="X" id='remove_day_from_schedule_btn_{{d.count}}'>
+                            <input type="date" id="day_{{x.count}}" name="day_{{x.count}}" value="{{x.date}}" required/>
+                            <input  type="button"  onClick="remove_day_from_schedule(parseInt('{{x.count}}'))" value="X" id='remove_day_from_schedule_btn_{{d.count}}' required>
                         
                             <br/>
                             <label for="description">Location:</label>
-                            <input type="text" id="day_location_{{x.count}}" name="day_location_{{x.count}}" value="{{x.location}}"  />
+                            <input type="text" id="day_location_{{x.count}}" name="day_location_{{x.count}}" value="{{x.location}}" required/>
                             <br/>
                             
                             <div id="event_div_day_{{x.count}}"  class="indent_div_content"> 
@@ -700,12 +699,12 @@
     
                                     <!-- </div> -->
                                     <label for="description">Time:</label>
-                                    <input type="text" id="day_{{x.count}}_event_{{e.count}}_time" name="day_{{x.count}}_event_{{e.count}}_time" value="{{e.time}}"  />
+                                    <input type="text" id="day_{{x.count}}_event_{{e.count}}_time" name="day_{{x.count}}_event_{{e.count}}_time" value="{{e.time}}" required/>
                                     
                                     <label for="description">Description:</label>
-                                    <input type="text" id="day_{{x.count}}_event_{{e.count}}_description" name="day_{{x.count}}_event_{{e.count}}_description" value="{{e.description}}"  />
+                                    <input type="text" id="day_{{x.count}}_event_{{e.count}}_description" name="day_{{x.count}}_event_{{e.count}}_description" value="{{e.description}}" required/>
     
-                                    <input  type="button"  onClick="remove_event_from_day(parseInt('{{x.count}}'), parseInt('{{e.count}}'))" value="X" id='remove_day_from_schedule_btn_{{d.count}}'>
+                                    <input  type="button"  onClick="remove_event_from_day(parseInt('{{x.count}}'), parseInt('{{e.count}}'))" value="X" id='remove_day_from_schedule_btn_{{d.count}}' required>
                                     <br/>
                                 </div>
                 
@@ -724,7 +723,7 @@
                 </div>
     
                 <br><b><label for="description">Event Images -- </label></b>
-                <input id="event_image_btn" type="button" onClick="add_event_image(); return false" value="Add Image to Event"><br>
+                <input id="event_image_btn" type="button" onClick="add_event_image(); return false" value="Add Image to Event" required><br>
                 <div id="event_images"  class="indent_div_content">
                     {% for e in data.event_images %}
                         <div id="event_image_div_{{e.count}}">
@@ -759,17 +758,17 @@
                             <u><p>Golfer Sign Up Option # {{x.display_count|add:1}}</p></u>
                             <div  class="indent_div_content">
                                 <label>Title: </label>
-                                <input type="text" id="golf_option_title_{{x.count}}" name="golf_option_title_{{x.count}}" value="{{x.golf_option_title}}">
+                                <input type="text" id="golf_option_title_{{x.count}}" name="golf_option_title_{{x.count}}" value="{{x.golf_option_title}}" required>
                                 <input  type="button"  onClick="remove_sign_up('golf_registration_{{x.display_count}}')" value="X"><br>
                                 
                                 <label>Price Display Value:  </label>
                                 <input type="text" id="stripe_price_input_golf_{{x.count}}" name="stripe_price_input_golf_{{x.count}}" value="{{x.price_display}}"><br>
         
                                 <label>Strip Price Variable:  </label>
-                                <input type="text" id="stripe_price_variable_price_input_golf_{{x.count}}" name="stripe_price_variable_price_input_golf_{{x.count}}" value="{{x.stripe_price_variable}}"><br>
+                                <input type="text" id="stripe_price_variable_price_input_golf_{{x.count}}" name="stripe_price_variable_price_input_golf_{{x.count}}" value="{{x.stripe_price_variable}}" required><br>
         
                                 <label>Option Description: - this will be a bulleted list and pressing enter will create a new line</label><br>
-                                <textarea type="text" name="golf_option_textarea_{{x.count}}" id="golf_option_textarea_{{x.count}}" value="John" rows="6" cols="50"> {{x.golf_option_textarea}} </textarea><br><br>
+                                <textarea type="text" name="golf_option_textarea_{{x.count}}" id="golf_option_textarea_{{x.count}}" value="John" rows="6" cols="50" required> {{x.golf_option_textarea}} </textarea><br><br>
                             </div>
                         </div>
                         
@@ -795,11 +794,11 @@
                                 <input  type="button"  onClick="remove_sign_up('sponsor_registration_{{x.display_count}}')" value="X"><br>
                                 
                                 <label>Display Price:  </label>
-                                <input type="text" id="stripe_price_variable_input_sponsor_{{x.count}}" name="stripe_price_variable_input_sponsor_{{x.count}}" value="{{x.stripe_price_variable}}"><br>
+                                <input type="text" id="stripe_price_variable_input_sponsor_{{x.count}}" name="stripe_price_variable_input_sponsor_{{x.count}}" value="{{x.stripe_price_variable}}" required><br>
         
                                 <label>Option Description: </label><br>
                                 <label>Option Description: - this will be a bulleted list and pressing enter will create a new line</label><br>
-                                <textarea type="text" name="sponsor_option_textarea_{{x.count}}" id="sponsor_option_textarea_{{x.count}}" value="John" rows="6" cols="50"> {{x.sponsor_option_textarea}} </textarea><br><br>
+                                <textarea type="text" name="sponsor_option_textarea_{{x.count}}" id="sponsor_option_textarea_{{x.count}}" value="John" rows="6" cols="50" required> {{x.sponsor_option_textarea}} </textarea><br><br>
                             </div>
                             
                         </div>
